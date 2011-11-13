@@ -23,7 +23,8 @@ import java.io.Serializable;
  * ProxyFactory: The Interface ProxyFactory, used as part of all proxy factories
  * which inherit the {@link AbstractProxyFactory}.
  * 
- * @author Kasra Robert Rasaee
+ * @author Kasra Rasaee
+ * 
  * @see AbstractProxyFactory for implementation details
  */
 public interface ProxyFactory extends Serializable {
