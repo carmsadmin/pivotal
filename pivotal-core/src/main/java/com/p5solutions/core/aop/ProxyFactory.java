@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.aop;
 
 import java.io.Serializable;
@@ -43,13 +43,15 @@ public interface ProxyFactory extends Serializable {
   /**
    * Creates a new Proxy object with a target object.
    * 
-   * @param clazz the clazz
-   * @param target the target
+   * @param clazz
+   *          the clazz
+   * @param target
+   *          the target
    * 
    * @return the T
    */
   public abstract <T> T createProxy(Class<T> clazz, Object target);
-  
+
   /**
    * The class type which the proxy factory creates.
    * 

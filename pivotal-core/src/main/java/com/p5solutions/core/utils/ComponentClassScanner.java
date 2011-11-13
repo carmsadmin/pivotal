@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.utils;
 
 import java.util.ArrayList;
@@ -32,23 +32,23 @@ import org.springframework.util.ClassUtils;
  */
 public class ComponentClassScanner<T> extends ClassPathScanningCandidateComponentProvider {
 
-	public ComponentClassScanner() {
-		super(false);
-	}
+  public ComponentClassScanner() {
+    super(false);
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public final Collection<Class<? extends T>> getComponentClasses(String basePackage) {
-		basePackage = basePackage == null ? "" : basePackage;
-		List<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
-		for (BeanDefinition candidate : findCandidateComponents(basePackage)) {
-			try {
-				Class cls = ClassUtils.resolveClassName(candidate.getBeanClassName(), ClassUtils.getDefaultClassLoader());
-				classes.add(cls);
-			} catch (Throwable e) {
-				throw new RuntimeException("Cannot perform scanning for the package " + basePackage, e);
-			}
-		}
-		return classes;
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public final Collection<Class<? extends T>> getComponentClasses(String basePackage) {
+    basePackage = basePackage == null ? "" : basePackage;
+    List<Class<? extends T>> classes = new ArrayList<Class<? extends T>>();
+    for (BeanDefinition candidate : findCandidateComponents(basePackage)) {
+      try {
+        Class cls = ClassUtils.resolveClassName(candidate.getBeanClassName(), ClassUtils.getDefaultClassLoader());
+        classes.add(cls);
+      } catch (Throwable e) {
+        throw new RuntimeException("Cannot perform scanning for the package " + basePackage, e);
+      }
+    }
+    return classes;
+  }
 
 }

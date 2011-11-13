@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.aop;
 
 import java.lang.reflect.Method;
@@ -22,8 +22,9 @@ import java.lang.reflect.Method;
 import javassist.util.proxy.MethodHandler;
 
 /**
- * TargetInterceptor: Convenient interface to be implemented as part of the all subclass of
- * {@link AbstractMethodHandler}, used to handle method interceptors in a more sequential approach.
+ * TargetInterceptor: Convenient interface to be implemented as part of the all
+ * subclass of {@link AbstractMethodHandler}, used to handle method interceptors
+ * in a more sequential approach.
  * 
  * @author Kasra Rasaee
  * @since 2009-02-06
@@ -32,53 +33,53 @@ import javassist.util.proxy.MethodHandler;
  */
 public interface TargetInterceptor {
 
-	/**
-	 * Before.
-	 * 
-	 * @param method
-	 *          the method
-	 * @param args
-	 *          the args
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean before(Method method, Object[] args);
+  /**
+   * Before.
+   * 
+   * @param method
+   *          the method
+   * @param args
+   *          the args
+   * 
+   * @return true, if successful
+   */
+  public boolean before(Method method, Object[] args);
 
-	/**
-	 * After.
-	 * 
-	 * @param method
-	 *          the method
-	 * @param args
-	 *          the args
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean after(Method method, Object[] args);
+  /**
+   * After.
+   * 
+   * @param method
+   *          the method
+   * @param args
+   *          the args
+   * 
+   * @return true, if successful
+   */
+  public boolean after(Method method, Object[] args);
 
-	/**
-	 * After throwing.
-	 * 
-	 * @param method
-	 *          the method
-	 * @param args
-	 *          the args
-	 * @param throwable
-	 *          the throwable
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean afterThrowing(Method method, Object[] args, Throwable throwable);
+  /**
+   * After throwing.
+   * 
+   * @param method
+   *          the method
+   * @param args
+   *          the args
+   * @param throwable
+   *          the throwable
+   * 
+   * @return true, if successful
+   */
+  public boolean afterThrowing(Method method, Object[] args, Throwable throwable);
 
-	/**
-	 * After finally.
-	 * 
-	 * @param method
-	 *          the method
-	 * @param args
-	 *          the args
-	 * 
-	 * @return true, if successful
-	 */
-	public boolean afterFinally(Method method, Object[] args);
+  /**
+   * After finally.
+   * 
+   * @param method
+   *          the method
+   * @param args
+   *          the args
+   * 
+   * @return true, if successful
+   */
+  public boolean afterFinally(Method method, Object[] args);
 }
