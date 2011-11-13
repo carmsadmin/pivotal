@@ -14,27 +14,27 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.transaction;
 
 public class EntityKey {
-	private String[] bindingPaths;
-	private Object[] bindingValues;
+  private String[] bindingPaths;
+  private Object[] bindingValues;
 
-	public String[] getBindingPaths() {
-		return bindingPaths;
-	}
+  public String[] getBindingPaths() {
+    return bindingPaths;
+  }
 
-	public void setBindingPaths(String[] bindingPaths) {
-		this.bindingPaths = bindingPaths;
-	}
+  public void setBindingPaths(String[] bindingPaths) {
+    this.bindingPaths = bindingPaths;
+  }
 
-	public Object[] getBindingValues() {
-		return bindingValues;
-	}
+  public Object[] getBindingValues() {
+    return bindingValues;
+  }
 
-	public void setBindingValues(Object[] bindingValues) {
-		this.bindingValues = bindingValues;
-	}
+  public void setBindingValues(Object[] bindingValues) {
+    this.bindingValues = bindingValues;
+  }
 
 }

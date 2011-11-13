@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.transaction;
 
 import javax.sql.DataSource;
@@ -32,78 +32,74 @@ import org.springframework.transaction.support.ResourceTransactionManager;
 
 @Deprecated
 // REMOVE
-public class TransactionManager extends AbstractPlatformTransactionManager
-		implements ResourceTransactionManager, BeanFactoryAware,
-		InitializingBean {
+public class TransactionManager extends AbstractPlatformTransactionManager implements ResourceTransactionManager, BeanFactoryAware, InitializingBean {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private DataSource dataSource;
+  private static final long serialVersionUID = 1L;
 
-	public TransactionManager() {
-		super();
-	}
-	
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
-	}
+  private DataSource dataSource;
 
-	@Override
-	public void setBeanFactory(BeanFactory arg0) throws BeansException {
-		// TODO Auto-generated method stub
+  public TransactionManager() {
+    super();
+  }
 
-	}
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    // TODO Auto-generated method stub
+  }
 
-	@Override
-	public Object getResourceFactory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+  @Override
+  public void setBeanFactory(BeanFactory arg0) throws BeansException {
+    // TODO Auto-generated method stub
 
-	@Override
-	protected Object doGetTransaction() throws TransactionException {
-		
-		return null;
-	}
+  }
 
-	@Override
-	protected void doBegin(Object transaction, TransactionDefinition definition)
-			throws TransactionException {
-		// TODO Auto-generated method stub
+  @Override
+  public Object getResourceFactory() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 
-	}
+  @Override
+  protected Object doGetTransaction() throws TransactionException {
 
-	@Override
-	protected void doCommit(DefaultTransactionStatus status)
-			throws TransactionException {
-		// TODO Auto-generated method stub
+    return null;
+  }
 
-	}
+  @Override
+  protected void doBegin(Object transaction, TransactionDefinition definition) throws TransactionException {
+    // TODO Auto-generated method stub
 
-	@Override
-	protected void doRollback(DefaultTransactionStatus status)
-			throws TransactionException {
-		// TODO Auto-generated method stub
+  }
 
-	}
+  @Override
+  protected void doCommit(DefaultTransactionStatus status) throws TransactionException {
+    // TODO Auto-generated method stub
 
-	public DataSource getDataSource() {
-		return dataSource;
-	}
+  }
 
-	public void setDataSource(DataSource dataSource) {
-		if (dataSource instanceof TransactionAwareDataSourceProxy) {
-			// If we got a TransactionAwareDataSourceProxy, we need to perform transactions
-			// for its underlying target DataSource, else data access code won't see
-			// properly exposed transactions (i.e. transactions for the target DataSource).
-			this.dataSource = ((TransactionAwareDataSourceProxy) dataSource).getTargetDataSource();
-		}
-		else {
-			this.dataSource = dataSource;
-		}
-	}
+  @Override
+  protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
+    // TODO Auto-generated method stub
+
+  }
+
+  public DataSource getDataSource() {
+    return dataSource;
+  }
+
+  public void setDataSource(DataSource dataSource) {
+    if (dataSource instanceof TransactionAwareDataSourceProxy) {
+      // If we got a TransactionAwareDataSourceProxy, we need to perform
+      // transactions
+      // for its underlying target DataSource, else data access code won't see
+      // properly exposed transactions (i.e. transactions for the target
+      // DataSource).
+      this.dataSource = ((TransactionAwareDataSourceProxy) dataSource).getTargetDataSource();
+    } else {
+      this.dataSource = dataSource;
+    }
+  }
 }

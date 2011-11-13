@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.annotations;
 
 import javax.persistence.Entity;
@@ -25,16 +25,16 @@ import com.p5solutions.core.jpa.orm.AbstractEntity;
 import com.p5solutions.core.utils.ComponentClassScanner;
 
 /**
- * EntityAnnotationScanner: used to scan entities, and build the graph, rather 
+ * EntityAnnotationScanner: used to scan entities, and build the graph, rather
  * than initializing them one-by-one via the bean.
  * 
  * @author Zvjezdan Guzijan
- *
+ * 
  */
-public class EntityAnnotationScanner extends ComponentClassScanner<AbstractEntity> { 
-	public EntityAnnotationScanner() {
-		super();
-		addIncludeFilter(new AnnotationTypeFilter(Entity.class));
-	}
+public class EntityAnnotationScanner extends ComponentClassScanner<AbstractEntity> {
+  public EntityAnnotationScanner() {
+    super();
+    addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+  }
 
 }

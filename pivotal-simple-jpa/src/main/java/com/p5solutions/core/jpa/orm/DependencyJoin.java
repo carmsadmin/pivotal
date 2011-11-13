@@ -14,38 +14,37 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 public class DependencyJoin {
-	private Class<?> dependencyClass;
+  private Class<?> dependencyClass;
 
-	private ParameterBinder dependencyParameterBinder;
+  private ParameterBinder dependencyParameterBinder;
 
-	private boolean inverseJoin;
+  private boolean inverseJoin;
 
-	public Class<?> getDependencyClass() {
-		return dependencyClass;
-	}
+  public Class<?> getDependencyClass() {
+    return dependencyClass;
+  }
 
-	public void setDependencyClass(Class<?> dependencyClass) {
-		this.dependencyClass = dependencyClass;
-	}
+  public void setDependencyClass(Class<?> dependencyClass) {
+    this.dependencyClass = dependencyClass;
+  }
 
-	public ParameterBinder getDependencyParameterBinder() {
-		return dependencyParameterBinder;
-	}
+  public ParameterBinder getDependencyParameterBinder() {
+    return dependencyParameterBinder;
+  }
 
-	public void setDependencyParameterBinder(
-			ParameterBinder dependencyParameterBinder) {
-		this.dependencyParameterBinder = dependencyParameterBinder;
-	}
+  public void setDependencyParameterBinder(ParameterBinder dependencyParameterBinder) {
+    this.dependencyParameterBinder = dependencyParameterBinder;
+  }
 
-	public boolean isInverseJoin() {
-		return inverseJoin;
-	}
+  public boolean isInverseJoin() {
+    return inverseJoin;
+  }
 
-	public void setInverseJoin(boolean inverseJoin) {
-		this.inverseJoin = inverseJoin;
-	}
+  public void setInverseJoin(boolean inverseJoin) {
+    this.inverseJoin = inverseJoin;
+  }
 }

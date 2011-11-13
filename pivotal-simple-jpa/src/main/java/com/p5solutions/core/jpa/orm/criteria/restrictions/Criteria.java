@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
 import java.util.ArrayList;
@@ -47,322 +47,321 @@ import com.p5solutions.core.utils.Comparison;
  */
 public class Criteria<T> {
 
-	/** The entity class. */
-	protected Class<T> entityClass;
+  /** The entity class. */
+  protected Class<T> entityClass;
 
-	// protected EntityUtility entityUtility;
-	/** The restrictions. */
-	protected List<Criterion> restrictions;
+  // protected EntityUtility entityUtility;
+  /** The restrictions. */
+  protected List<Criterion> restrictions;
 
-	/** The orders. */
-	protected List<Order> orders;
+  /** The orders. */
+  protected List<Order> orders;
 
-	/**
-	 * Instantiates a new criteria.
-	 */
-	public Criteria() {
-		super();
-	}
+  /**
+   * Instantiates a new criteria.
+   */
+  public Criteria() {
+    super();
+  }
 
-	/**
-	 * Throw no table annotation definition.
-	 * 
-	 * @param entityClass
-	 *          the entity class
-	 * @param table
-	 *          the table
-	 */
-	protected void throwNoTableAnnotationDefinition(Class<T> entityClass, Table table) {
-		if (table == null) {
-			throw new EntityNotDefinedWithTableAnnotationException("No " + Table.class + " was defined on entity type "
-					+ entityClass + ", cannot call single find method without table definition");
-		}
-	}
+  /**
+   * Throw no table annotation definition.
+   * 
+   * @param entityClass
+   *          the entity class
+   * @param table
+   *          the table
+   */
+  protected void throwNoTableAnnotationDefinition(Class<T> entityClass, Table table) {
+    if (table == null) {
+      throw new EntityNotDefinedWithTableAnnotationException("No " + Table.class + " was defined on entity type " + entityClass
+          + ", cannot call single find method without table definition");
+    }
+  }
 
-	/**
-	 * Throw too many primary key definition.
-	 * 
-	 * @param entityClass
-	 *          the entity class
-	 * @param entityDetail
-	 *          the entity detail
-	 * @param pbsPK
-	 *          the pbs pk
-	 */
-	protected void throwTooManyPrimaryKeyDefinition(Class<T> entityClass, EntityDetail<T> entityDetail,
-			List<ParameterBinder> pbsPK) {
-		if (pbsPK.size() > 1) {
-			throw new TooManyIDColumnException("Cannot match result of a single primary " + "key value to table entity type "
-					+ entityClass + " having a composite primary key definition. " + entityDetail.toStringParamterBinders(pbsPK));
-		}
-	}
+  /**
+   * Throw too many primary key definition.
+   * 
+   * @param entityClass
+   *          the entity class
+   * @param entityDetail
+   *          the entity detail
+   * @param pbsPK
+   *          the pbs pk
+   */
+  protected void throwTooManyPrimaryKeyDefinition(Class<T> entityClass, EntityDetail<T> entityDetail, List<ParameterBinder> pbsPK) {
+    if (pbsPK.size() > 1) {
+      throw new TooManyIDColumnException("Cannot match result of a single primary " + "key value to table entity type " + entityClass
+          + " having a composite primary key definition. " + entityDetail.toStringParamterBinders(pbsPK));
+    }
+  }
 
-	/**
-	 * Throw null primary key column definition.
-	 * 
-	 * @param entityClass
-	 *          the entity class
-	 * @param pbsPK
-	 *          the pbs pk
-	 */
-	protected void throwNullPrimaryKeyColumnDefinition(Class<T> entityClass, List<ParameterBinder> pbsPK) {
-		if (Comparison.isEmptyOrNull(pbsPK)) {
-			throw new NullPointerException("No primary key parameters found for table entity type " + entityClass);
-		}
-	}
+  /**
+   * Throw null primary key column definition.
+   * 
+   * @param entityClass
+   *          the entity class
+   * @param pbsPK
+   *          the pbs pk
+   */
+  protected void throwNullPrimaryKeyColumnDefinition(Class<T> entityClass, List<ParameterBinder> pbsPK) {
+    if (Comparison.isEmptyOrNull(pbsPK)) {
+      throw new NullPointerException("No primary key parameters found for table entity type " + entityClass);
+    }
+  }
 
-	/**
-	 * Adds the.
-	 * 
-	 * @param restriction
-	 *          the restriction
-	 */
-	public void add(Criterion restriction) {
-		if (Comparison.isEmptyOrNull(restrictions)) {
-			restrictions = new ArrayList<Criterion>();
-		}
+  /**
+   * Adds the.
+   * 
+   * @param restriction
+   *          the restriction
+   */
+  public void add(Criterion restriction) {
+    if (Comparison.isEmptyOrNull(restrictions)) {
+      restrictions = new ArrayList<Criterion>();
+    }
 
-		restrictions.add(restriction);
-	}
+    restrictions.add(restriction);
+  }
 
-	/**
-	 * Adds the order.
-	 * 
-	 * @param order
-	 *          the order
-	 */
-	public void addOrder(Order order) {
-		if (this.orders == null) {
-			this.orders = new ArrayList<Order>();
-		}
-		orders.add(order);
-	}
+  /**
+   * Adds the order.
+   * 
+   * @param order
+   *          the order
+   */
+  public void addOrder(Order order) {
+    if (this.orders == null) {
+      this.orders = new ArrayList<Order>();
+    }
+    orders.add(order);
+  }
 
-	/**
-	 * Gets the query.
-	 * 
-	 * @param entityUtility
-	 *          the entity utility
-	 * @return the query
-	 */
-	public Query getQuery(EntityUtility entityUtility) {
+  /**
+   * Gets the query.
+   * 
+   * @param entityUtility
+   *          the entity utility
+   * @return the query
+   */
+  public Query getQuery(EntityUtility entityUtility) {
 
-		Query query = new Query(entityClass);
-		StringBuilder sb = new StringBuilder();
+    Query query = new Query(entityClass);
+    StringBuilder sb = new StringBuilder();
 
-		// build the basic select x, y, z from tab clause.
-		buildStandardSelectStatement(entityUtility, sb);
+    // build the basic select x, y, z from tab clause.
+    buildStandardSelectStatement(entityUtility, sb);
 
-		// build restrictions into query string
-		buildRestrictions(query, entityUtility, sb);
+    // build restrictions into query string
+    buildRestrictions(query, entityUtility, sb);
 
-		// build the order by list
-		buildOrderBy(query, entityUtility, sb);
+    // build the order by list
+    buildOrderBy(query, entityUtility, sb);
 
-		query.setQuery(sb.toString());
+    query.setQuery(sb.toString());
 
-		return query;
-	}
+    return query;
+  }
 
-	/**
-	 * Builds the restrictions.
-	 * 
-	 * @param query
-	 *          the query
-	 * @param entityUtility
-	 *          the entity utility
-	 * @param sb
-	 *          the sb
-	 */
-	protected void buildRestrictions(Query query, EntityUtility entityUtility, StringBuilder sb) {
+  /**
+   * Builds the restrictions.
+   * 
+   * @param query
+   *          the query
+   * @param entityUtility
+   *          the entity utility
+   * @param sb
+   *          the sb
+   */
+  protected void buildRestrictions(Query query, EntityUtility entityUtility, StringBuilder sb) {
 
-		// skip restrictions if list is empty
-		if (Comparison.isEmptyOrNull(restrictions)) {
-			return;
-		}
+    // skip restrictions if list is empty
+    if (Comparison.isEmptyOrNull(restrictions)) {
+      return;
+    }
 
-		// find the entity details
-		EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
-		sb.append(" WHERE ");
+    // find the entity details
+    EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
+    sb.append(" WHERE ");
 
-		StringBuilder sbWhere = new StringBuilder();
-		for (Criterion restriction : restrictions) {
-			if (sbWhere.length() > 0) {
-				// TODO add support for JUNCTIONs such as OR AND OR of PAIRED VALUES,
-				// ETC.
-				// PROBABLY NEEDS TO BE PART OF THE CRITERION ?
+    StringBuilder sbWhere = new StringBuilder();
+    for (Criterion restriction : restrictions) {
+      if (sbWhere.length() > 0) {
+        // TODO add support for JUNCTIONs such as OR AND OR of PAIRED VALUES,
+        // ETC.
+        // PROBABLY NEEDS TO BE PART OF THE CRITERION ?
 
-				sbWhere.append(" AND ");
-			}
+        sbWhere.append(" AND ");
+      }
 
-			String condition = restriction.toSql(entityDetail);
-			sbWhere.append(condition);
+      String condition = restriction.toSql(entityDetail);
+      sbWhere.append(condition);
 
-			// / add the actual parameter value binding
-			restriction.addQueryCriteriaToQuery(entityDetail, query);
+      // / add the actual parameter value binding
+      restriction.addQueryCriteriaToQuery(entityDetail, query);
 
-			// query.addQueryCriteria(restriction, value)
-			// TODO needs to support OR AND LIKE, CONJUNCTIONS, COMPOSITES, etc. etc.,
-			// etc..
-		}
-		sb.append(sbWhere);
-	}
+      // query.addQueryCriteria(restriction, value)
+      // TODO needs to support OR AND LIKE, CONJUNCTIONS, COMPOSITES, etc. etc.,
+      // etc..
+    }
+    sb.append(sbWhere);
+  }
 
-	/**
-	 * Builds the order by clause for this criteria.
-	 * 
-	 * @param query
-	 *          the query
-	 * @param entityUtility
-	 *          the entity utility
-	 * @param sb
-	 *          the sb
-	 */
-	protected void buildOrderBy(Query query, EntityUtility entityUtility, StringBuilder sb) {
-		// skip orders list if empty
-		if (Comparison.isEmptyOrNull(orders)) {
-			return;
-		}
+  /**
+   * Builds the order by clause for this criteria.
+   * 
+   * @param query
+   *          the query
+   * @param entityUtility
+   *          the entity utility
+   * @param sb
+   *          the sb
+   */
+  protected void buildOrderBy(Query query, EntityUtility entityUtility, StringBuilder sb) {
+    // skip orders list if empty
+    if (Comparison.isEmptyOrNull(orders)) {
+      return;
+    }
 
-		// find the entity details
-		EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
-		sb.append(" ORDER BY ");
+    // find the entity details
+    EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
+    sb.append(" ORDER BY ");
 
-		StringBuilder sbOrder = new StringBuilder();
-		for (Order order : orders) {
-			if (sbOrder.length() > 0) {
-				// TODO support for composite orders??
-				sbOrder.append(", ");
-			}
+    StringBuilder sbOrder = new StringBuilder();
+    for (Order order : orders) {
+      if (sbOrder.length() > 0) {
+        // TODO support for composite orders??
+        sbOrder.append(", ");
+      }
 
-			String ordering = order.toSql(entityDetail);
-			sbOrder.append(ordering);
-		}
-		sb.append(sbOrder);
-	}
+      String ordering = order.toSql(entityDetail);
+      sbOrder.append(ordering);
+    }
+    sb.append(sbOrder);
+  }
 
-	/**
-	 * Gets the primary key parameter binders.
-	 * 
-	 * @param entityUtility
-	 *          the entity utility
-	 * @return the primary key parameter binders
-	 */
-	protected List<ParameterBinder> getPrimaryKeyParameterBinders(EntityUtility entityUtility) {
+  /**
+   * Gets the primary key parameter binders.
+   * 
+   * @param entityUtility
+   *          the entity utility
+   * @return the primary key parameter binders
+   */
+  protected List<ParameterBinder> getPrimaryKeyParameterBinders(EntityUtility entityUtility) {
 
-		// find the entity details
-		EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
+    // find the entity details
+    EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
 
-		// find all the primary key parameter binders
-		List<ParameterBinder> pbsPK = entityDetail.getPrimaryKeyParameterBinders();
+    // find all the primary key parameter binders
+    List<ParameterBinder> pbsPK = entityDetail.getPrimaryKeyParameterBinders();
 
-		// check to make sure primary keys exist and within the single primary key
-		// value
-		throwNullPrimaryKeyColumnDefinition(entityClass, pbsPK);
-		throwTooManyPrimaryKeyDefinition(entityClass, entityDetail, pbsPK);
+    // check to make sure primary keys exist and within the single primary key
+    // value
+    throwNullPrimaryKeyColumnDefinition(entityClass, pbsPK);
+    throwTooManyPrimaryKeyDefinition(entityClass, entityDetail, pbsPK);
 
-		// get the one and only primary key column
-		// ParameterBinderExtended pkpb = pbsPK.get(0);
+    // get the one and only primary key column
+    // ParameterBinderExtended pkpb = pbsPK.get(0);
 
-		return pbsPK;
-	}
+    return pbsPK;
+  }
 
-	/**
-	 * Builds the standard select statement.
-	 * 
-	 * @param entityUtility
-	 *          the entity utility
-	 * @param sb
-	 *          the sb
-	 * @return the string builder
-	 */
-	protected StringBuilder buildStandardSelectStatement(EntityUtility entityUtility, StringBuilder sb) {
-		if (sb == null) {
-			sb = new StringBuilder();
-		}
+  /**
+   * Builds the standard select statement.
+   * 
+   * @param entityUtility
+   *          the entity utility
+   * @param sb
+   *          the sb
+   * @return the string builder
+   */
+  protected StringBuilder buildStandardSelectStatement(EntityUtility entityUtility, StringBuilder sb) {
+    if (sb == null) {
+      sb = new StringBuilder();
+    }
 
-		// find the entity details
-		EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
+    // find the entity details
+    EntityDetail<T> entityDetail = entityUtility.getEntityDetail(entityClass);
 
-		// get the table annotation for the table entity class, if any
-		Table table = entityDetail.getTableAnnotation();
+    // get the table annotation for the table entity class, if any
+    Table table = entityDetail.getTableAnnotation();
 
-		// check to make sure table annotation is present
-		throwNoTableAnnotationDefinition(entityClass, table);
+    // check to make sure table annotation is present
+    throwNoTableAnnotationDefinition(entityClass, table);
 
-		String tableName = table.name();
-		String catalogName = table.catalog();
-		String schemaName = table.schema();
+    String tableName = table.name();
+    String catalogName = table.catalog();
+    String schemaName = table.schema();
 
-		List<ParameterBinder> pbs = entityDetail.getParameterBinders();
-		for (ParameterBinder pb : pbs) {
+    List<ParameterBinder> pbs = entityDetail.getParameterBinders();
+    for (ParameterBinder pb : pbs) {
 
-			// TODO refactor - SIMPLIFY
+      // TODO refactor - SIMPLIFY
 
-			if (pb.isColumn()) {
-				if (sb.length() > 0) {
-					sb.append(',');
-				}
-				sb.append(pb.getColumnNameUpper());
-			} else if (pb.isJoinColumn()) {
-				if (sb.length() > 0) {
-					sb.append(',');
-				}
-				sb.append(pb.getJoinColumnNameUpper());
-			}
-		}
+      if (pb.isColumn()) {
+        if (sb.length() > 0) {
+          sb.append(',');
+        }
+        sb.append(pb.getColumnNameUpper());
+      } else if (pb.isJoinColumn()) {
+        if (sb.length() > 0) {
+          sb.append(',');
+        }
+        sb.append(pb.getJoinColumnNameUpper());
+      }
+    }
 
-		sb.insert(0, "SELECT ");
-		sb.append(" FROM ");
+    sb.insert(0, "SELECT ");
+    sb.append(" FROM ");
 
-		// TODO if MSSQL??? only??
-		if (Comparison.isNotEmpty(catalogName)) {
-			// TODO design for MSSQL / MYSQL, etc.
-			// TODO .. if MSSQL ,, usually requires something like
-			// [catalog].[schema].[table]
-			sb.append(catalogName);
-			sb.append('.');
-		}
+    // TODO if MSSQL??? only??
+    if (Comparison.isNotEmpty(catalogName)) {
+      // TODO design for MSSQL / MYSQL, etc.
+      // TODO .. if MSSQL ,, usually requires something like
+      // [catalog].[schema].[table]
+      sb.append(catalogName);
+      sb.append('.');
+    }
 
-		if (Comparison.isNotEmpty(schemaName)) {
-			// TODO .. if MSSQL ,, usually requires something like
-			// [catalog].[schema].[table]
-			sb.append(schemaName);
-			sb.append('.');
-		}
+    if (Comparison.isNotEmpty(schemaName)) {
+      // TODO .. if MSSQL ,, usually requires something like
+      // [catalog].[schema].[table]
+      sb.append(schemaName);
+      sb.append('.');
+    }
 
-		sb.append(table.name());
+    sb.append(table.name());
 
-		return sb;
-	}
+    return sb;
+  }
 
-	/**
-	 * Instantiates a new criteria.
-	 * 
-	 * @param entityClass
-	 *          the entity class
-	 */
-	public Criteria(Class<T> entityClass) {
-		this.entityClass = entityClass;
-	}
+  /**
+   * Instantiates a new criteria.
+   * 
+   * @param entityClass
+   *          the entity class
+   */
+  public Criteria(Class<T> entityClass) {
+    this.entityClass = entityClass;
+  }
 
-	/**
-	 * Gets the entity class.
-	 * 
-	 * @return the entity class
-	 */
-	public Class<T> getEntityClass() {
-		return entityClass;
-	}
+  /**
+   * Gets the entity class.
+   * 
+   * @return the entity class
+   */
+  public Class<T> getEntityClass() {
+    return entityClass;
+  }
 
-	/**
-	 * Sets the entity class.
-	 * 
-	 * @param entityClass
-	 *          the new entity class
-	 */
-	public void setEntityClass(Class<T> entityClass) {
-		this.entityClass = entityClass;
-	}
+  /**
+   * Sets the entity class.
+   * 
+   * @param entityClass
+   *          the new entity class
+   */
+  public void setEntityClass(Class<T> entityClass) {
+    this.entityClass = entityClass;
+  }
 
 }

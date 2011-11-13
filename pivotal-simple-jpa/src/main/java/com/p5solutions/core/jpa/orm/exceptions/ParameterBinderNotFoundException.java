@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.exceptions;
 
 import com.p5solutions.core.jpa.orm.Order;
@@ -29,18 +29,18 @@ import com.p5solutions.core.jpa.orm.Order;
  */
 public class ParameterBinderNotFoundException extends RuntimeException {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+  /** The Constant serialVersionUID. */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new parameter binder not found exception.
-	 * 
-	 * @param entityClass
-	 *          the entity class
-	 * @param bindingPath
-	 *          the binding path
-	 */
-	public ParameterBinderNotFoundException(Class<?> entityClass, String bindingPath) {
-		super("Cannot find parameter binding path: " + bindingPath + " within entity class of type " + entityClass);
-	}
+  /**
+   * Instantiates a new parameter binder not found exception.
+   * 
+   * @param entityClass
+   *          the entity class
+   * @param bindingPath
+   *          the binding path
+   */
+  public ParameterBinderNotFoundException(Class<?> entityClass, String bindingPath) {
+    super("Cannot find parameter binding path: " + bindingPath + " within entity class of type " + entityClass);
+  }
 }

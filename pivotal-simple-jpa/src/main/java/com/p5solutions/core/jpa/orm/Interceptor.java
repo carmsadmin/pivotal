@@ -14,14 +14,19 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 public interface Interceptor {
-	<T> T beforeSave(T entity);
-	<T> T afterSave(T entity);
-	<T> T beforeUpdate(T entity);
-	<T> T afterUpdate(T entity);
-	<T> void beforeDelete(T entity);
-	<T> void afterDelete(T entity);
+  <T> T beforeSave(T entity);
+
+  <T> T afterSave(T entity);
+
+  <T> T beforeUpdate(T entity);
+
+  <T> T afterUpdate(T entity);
+
+  <T> void beforeDelete(T entity);
+
+  <T> void afterDelete(T entity);
 }

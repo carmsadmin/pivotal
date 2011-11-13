@@ -14,31 +14,31 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.entity.aop;
 
 public interface EntityProxy extends Targetable {
 
-	public Object writeReplace();
+  public Object writeReplace();
 
-	/**
-	 * Reset the laundry list.
-	 */
-	void reset();
+  /**
+   * Reset the laundry list.
+   */
+  void reset();
 
-	/**
-	 * Sets the target.
-	 * 
-	 * @param target
-	 *          the new target
-	 */
-	void setTarget(Object target);
+  /**
+   * Sets the target.
+   * 
+   * @param target
+   *          the new target
+   */
+  void setTarget(Object target);
 
-	/**
-	 * Gets the target.
-	 * 
-	 * @return the target
-	 */
-	Object getTarget();
+  /**
+   * Gets the target.
+   * 
+   * @return the target
+   */
+  Object getTarget();
 
 }

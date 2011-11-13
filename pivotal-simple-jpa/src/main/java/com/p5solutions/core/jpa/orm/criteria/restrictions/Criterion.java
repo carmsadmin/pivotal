@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
 import java.util.List;
@@ -24,7 +24,9 @@ import com.p5solutions.core.jpa.orm.Query;
 import com.p5solutions.core.jpa.orm.SQLParameterCriteria;
 
 public interface Criterion {
-	String toSql(EntityDetail<?> entityDetail);
-	void addQueryCriteriaToQuery(EntityDetail<?> entityDetail, Query query);
-	List<SQLParameterCriteria> getQueryCriterias(EntityDetail<?> entityDetail);
+  String toSql(EntityDetail<?> entityDetail);
+
+  void addQueryCriteriaToQuery(EntityDetail<?> entityDetail, Query query);
+
+  List<SQLParameterCriteria> getQueryCriterias(EntityDetail<?> entityDetail);
 }

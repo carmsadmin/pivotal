@@ -14,17 +14,17 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.transaction;
 
 import org.springframework.jdbc.datasource.JdbcTransactionObjectSupport;
 
 public class TransactionObject extends JdbcTransactionObjectSupport {
 
-	@Override
-	public boolean isRollbackOnly() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+  @Override
+  public boolean isRollbackOnly() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 
 }

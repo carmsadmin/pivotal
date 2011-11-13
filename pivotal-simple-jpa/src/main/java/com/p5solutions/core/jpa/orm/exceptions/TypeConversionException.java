@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.exceptions;
 
 /**
@@ -22,15 +22,16 @@ package com.p5solutions.core.jpa.orm.exceptions;
  */
 public class TypeConversionException extends Exception {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+  /** The Constant serialVersionUID. */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new type conversion exception.
-	 *
-	 * @param message the message
-	 */
-	public TypeConversionException(String message) {
-		super(message);
-	}
+  /**
+   * Instantiates a new type conversion exception.
+   * 
+   * @param message
+   *          the message
+   */
+  public TypeConversionException(String message) {
+    super(message);
+  }
 }

@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
 import java.util.List;
@@ -29,32 +29,32 @@ import com.p5solutions.core.utils.Comparison;
 
 public class IsNullExpression extends AbstractRestriction implements Criterion {
 
-	private String bindingPath;
+  private String bindingPath;
 
-	public IsNullExpression(String bindingPath) {
-		this.bindingPath = bindingPath;
-	}
+  public IsNullExpression(String bindingPath) {
+    this.bindingPath = bindingPath;
+  }
 
-	@Override
-	public String toSql(EntityDetail<?> entityDetail) {
-		ParameterBinder pb = entityDetail.getParameterBinderByBindingPath(bindingPath);
-		throwParameterBinderNotFound(pb, entityDetail.getEntityClass(), bindingPath);
-		
-		StringBuilder sb = new StringBuilder();
-		if (Comparison.isNotNull(pb)) {
-			sb.append('(');
-			sb.append(pb.getColumnNameAnyJoinOrColumn());
-			sb.append(" IS NULL)");
-		}
+  @Override
+  public String toSql(EntityDetail<?> entityDetail) {
+    ParameterBinder pb = entityDetail.getParameterBinderByBindingPath(bindingPath);
+    throwParameterBinderNotFound(pb, entityDetail.getEntityClass(), bindingPath);
 
-		return sb.toString();
-	}
+    StringBuilder sb = new StringBuilder();
+    if (Comparison.isNotNull(pb)) {
+      sb.append('(');
+      sb.append(pb.getColumnNameAnyJoinOrColumn());
+      sb.append(" IS NULL)");
+    }
 
-	public void addQueryCriteriaToQuery(EntityDetail<?> entityDetail, Query query) {
-		query.addQueryCriteria(bindingPath, null);
-	}
+    return sb.toString();
+  }
 
-	public List<SQLParameterCriteria> getQueryCriterias(EntityDetail<?> entityDetail) {
-		throw new NotImplementedException("This method is not applicable for Simple Expressions");
-	}
+  public void addQueryCriteriaToQuery(EntityDetail<?> entityDetail, Query query) {
+    query.addQueryCriteria(bindingPath, null);
+  }
+
+  public List<SQLParameterCriteria> getQueryCriterias(EntityDetail<?> entityDetail) {
+    throw new NotImplementedException("This method is not applicable for Simple Expressions");
+  }
 }

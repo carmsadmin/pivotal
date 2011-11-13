@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
 import com.p5solutions.core.jpa.orm.EntityDetail;
@@ -23,33 +23,33 @@ import com.p5solutions.core.utils.Comparison;
 
 public class StringCaseInsensitiveExpression extends SimpleExpression implements Criterion {
 
-	public StringCaseInsensitiveExpression(String bindingPath, Object value) {
-		super(bindingPath, value);
-	}
+  public StringCaseInsensitiveExpression(String bindingPath, Object value) {
+    super(bindingPath, value);
+  }
 
-	@Override
-	public String toSql(EntityDetail<?> entityDetail) {
-		ParameterBinder pb = entityDetail.getParameterBinderByBindingPath(this.bindingPath);
-		throwParameterBinderNotFound(pb, entityDetail.getEntityClass(), this.bindingPath);
+  @Override
+  public String toSql(EntityDetail<?> entityDetail) {
+    ParameterBinder pb = entityDetail.getParameterBinderByBindingPath(this.bindingPath);
+    throwParameterBinderNotFound(pb, entityDetail.getEntityClass(), this.bindingPath);
 
-		StringBuilder sb = new StringBuilder();
-		if (Comparison.isNotNull(pb)) {
+    StringBuilder sb = new StringBuilder();
+    if (Comparison.isNotNull(pb)) {
 
-			sb.append('(');
-			sb.append("UPPER(");//
-			sb.append(pb.getColumnNameAnyJoinOrColumn());
-			sb.append(')');//
-			sb.append('=');
-			sb.append("UPPER(");//
-			sb.append(':'); // TODO should probably use
-											// EntityUtility.getBindingCharacter() based on the
-											// database source?? .NET is unique per database type
-			sb.append(pb.getBindingPathSQL());
-			sb.append(')');//
-			sb.append(')');
-		}
+      sb.append('(');
+      sb.append("UPPER(");//
+      sb.append(pb.getColumnNameAnyJoinOrColumn());
+      sb.append(')');//
+      sb.append('=');
+      sb.append("UPPER(");//
+      sb.append(':'); // TODO should probably use
+                      // EntityUtility.getBindingCharacter() based on the
+                      // database source?? .NET is unique per database type
+      sb.append(pb.getBindingPathSQL());
+      sb.append(')');//
+      sb.append(')');
+    }
 
-		return sb.toString();
-	}
+    return sb.toString();
+  }
 
 }

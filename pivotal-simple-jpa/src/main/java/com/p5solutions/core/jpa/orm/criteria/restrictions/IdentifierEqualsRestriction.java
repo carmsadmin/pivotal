@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
 import java.util.List;
@@ -25,58 +25,55 @@ import com.p5solutions.core.utils.Comparison;
 
 public class IdentifierEqualsRestriction extends AbstractRestriction implements Criterion {
 
-	protected void addSingleIdentifierEqualsRestriction(Object id) {
-		values.put("DEFAULT_FIRST_ID", id);
-	}
+  protected void addSingleIdentifierEqualsRestriction(Object id) {
+    values.put("DEFAULT_FIRST_ID", id);
+  }
 
-	public IdentifierEqualsRestriction(Object... keyValue) {
-		int length = keyValue.length;
-		if (length == 1) {
-			addSingleIdentifierEqualsRestriction(keyValue[0]);
-		} else {
-			double mod = length % 2;
-			if (mod == 0) {
-				int div = length / 2;
-				for (int i = 0; i < div; i++) {
-					String bindPath = (String) keyValue[i * 2];
-					Object value = keyValue[i * 2 + 1];
-					bindPath = ParameterBinder.getBindingPathSQL(bindPath);
-					values.put(bindPath, value);
-				}
-			} else {
-				throw new RuntimeException(
-						"Key value pair length must be a key + pair. the modulas of array size "
-								+ length + " by 2 = " + mod);
-			}
-		}
-	}
+  public IdentifierEqualsRestriction(Object... keyValue) {
+    int length = keyValue.length;
+    if (length == 1) {
+      addSingleIdentifierEqualsRestriction(keyValue[0]);
+    } else {
+      double mod = length % 2;
+      if (mod == 0) {
+        int div = length / 2;
+        for (int i = 0; i < div; i++) {
+          String bindPath = (String) keyValue[i * 2];
+          Object value = keyValue[i * 2 + 1];
+          bindPath = ParameterBinder.getBindingPathSQL(bindPath);
+          values.put(bindPath, value);
+        }
+      } else {
+        throw new RuntimeException("Key value pair length must be a key + pair. the modulas of array size " + length + " by 2 = " + mod);
+      }
+    }
+  }
 
-	// TODO support composite
+  // TODO support composite
 
-	@Override
-	public String toSql(EntityDetail<?> entityDetail) {
-		List<ParameterBinder> pks = entityDetail
-				.getPrimaryKeyParameterBinders();
+  @Override
+  public String toSql(EntityDetail<?> entityDetail) {
+    List<ParameterBinder> pks = entityDetail.getPrimaryKeyParameterBinders();
 
-		StringBuilder sb = new StringBuilder();
-		if (!Comparison.isEmptyOrNull(pks)) {
-			sb.append('(');
-			int i = 0;
-			for (ParameterBinder pk : pks) {
-				// TODO bind by index?
+    StringBuilder sb = new StringBuilder();
+    if (!Comparison.isEmptyOrNull(pks)) {
+      sb.append('(');
+      int i = 0;
+      for (ParameterBinder pk : pks) {
+        // TODO bind by index?
 
-				sb.append(pk.getColumnNameUpper());
-				sb.append('=');
-				sb.append(':');
-				sb.append(pk.getBindingPathSQL());
+        sb.append(pk.getColumnNameUpper());
+        sb.append('=');
+        sb.append(':');
+        sb.append(pk.getBindingPathSQL());
 
-				if (++i < pks.size()) {
-					sb.append(" AND ");
-				}
-			}
-			sb.append(')');
-		}
+        if (++i < pks.size()) {
+          sb.append(" AND ");
+        }
+      }
+      sb.append(')');
+    }
 
-		return sb.toString();
-	}
+    return sb.toString();
+  }
 }

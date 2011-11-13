@@ -14,22 +14,23 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.exceptions;
 
 import javax.persistence.JoinColumn;
 
 public class NoJoinColumnMethodsDefinedException extends RuntimeException {
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public NoJoinColumnMethodsDefinedException(Class<?> entityClass) {
-		super("No methods defined with the @" + JoinColumn.class + " annotation on entity class " + entityClass);
-	}
-	
-	public NoJoinColumnMethodsDefinedException(String message) {
-		super(message);;
-	}
+  public NoJoinColumnMethodsDefinedException(Class<?> entityClass) {
+    super("No methods defined with the @" + JoinColumn.class + " annotation on entity class " + entityClass);
+  }
+
+  public NoJoinColumnMethodsDefinedException(String message) {
+    super(message);
+    ;
+  }
 }

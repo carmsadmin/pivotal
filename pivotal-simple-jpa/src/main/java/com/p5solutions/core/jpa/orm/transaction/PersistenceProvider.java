@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.transaction;
 
 import java.util.Stack;
@@ -36,41 +36,41 @@ import com.p5solutions.core.jpa.orm.EntityPersisterImpl;
  */
 public class PersistenceProvider {
 
-	/** The local. */
-	protected static volatile ThreadLocal<Stack<PersistenceContext>> local = new ThreadLocal<Stack<PersistenceContext>>();
+  /** The local. */
+  protected static volatile ThreadLocal<Stack<PersistenceContext>> local = new ThreadLocal<Stack<PersistenceContext>>();
 
-	/**
-	 * Reset.
-	 */
-	public static void reset() {
-		if (local.get() != null) {
-			local.get().pop();
-			if (local.get().isEmpty()) {
-				local.remove();
-			}
-		}
-	}
+  /**
+   * Reset.
+   */
+  public static void reset() {
+    if (local.get() != null) {
+      local.get().pop();
+      if (local.get().isEmpty()) {
+        local.remove();
+      }
+    }
+  }
 
-	/**
-	 * Gets the.
-	 * 
-	 * @return the persistence context
-	 */
-	public static PersistenceContext get() {
-		return local.get() != null ? local.get().lastElement() : null;
-	}
+  /**
+   * Gets the.
+   * 
+   * @return the persistence context
+   */
+  public static PersistenceContext get() {
+    return local.get() != null ? local.get().lastElement() : null;
+  }
 
-	/**
-	 * Sets the.
-	 * 
-	 * @param context
-	 *          the context
-	 */
-	public synchronized static void set(PersistenceContext context) {
-		if (local.get() == null) {
-			local.set(new Stack<PersistenceContext>());
-		}
-		local.get().push(context);
-	}
+  /**
+   * Sets the.
+   * 
+   * @param context
+   *          the context
+   */
+  public synchronized static void set(PersistenceContext context) {
+    if (local.get() == null) {
+      local.set(new Stack<PersistenceContext>());
+    }
+    local.get().push(context);
+  }
 
 }

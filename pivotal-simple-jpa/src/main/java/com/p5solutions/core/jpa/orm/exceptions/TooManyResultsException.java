@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.exceptions;
 
 /**
@@ -28,34 +28,31 @@ package com.p5solutions.core.jpa.orm.exceptions;
  */
 public class TooManyResultsException extends RuntimeException {
 
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
+  /** The Constant serialVersionUID. */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new too many results exception.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public TooManyResultsException(String message) {
-		super(message);
-	}
+  /**
+   * Instantiates a new too many results exception.
+   * 
+   * @param message
+   *          the message
+   */
+  public TooManyResultsException(String message) {
+    super(message);
+  }
 
-	/**
-	 * Instantiates a new too many results exception.
-	 * 
-	 * @param resultCount
-	 *            the result count
-	 * @param entityClass
-	 *            the entity class
-	 * @param query
-	 *            the query
-	 */
-	public TooManyResultsException(int resultCount, Class<?> entityClass,
-			String query) {
+  /**
+   * Instantiates a new too many results exception.
+   * 
+   * @param resultCount
+   *          the result count
+   * @param entityClass
+   *          the entity class
+   * @param query
+   *          the query
+   */
+  public TooManyResultsException(int resultCount, Class<?> entityClass, String query) {
 
-		super("Expecting a single result but got " + resultCount
-				+ " when processing entity type " + entityClass
-				+ ", issueing query [" + query + "]");
-	}
+    super("Expecting a single result but got " + resultCount + " when processing entity type " + entityClass + ", issueing query [" + query + "]");
+  }
 }

@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 /**
@@ -22,43 +22,43 @@ package com.p5solutions.core.jpa.orm;
  */
 public class Query extends AbstractSQL {
 
-	/**
-	 * Instantiates a new query.
-	 * 
-	 * @param entityClass
-	 *            the entity class
-	 */
-	public Query(Class<?> entityClass) {
-		super(entityClass);
-	}
+  /**
+   * Instantiates a new query.
+   * 
+   * @param entityClass
+   *          the entity class
+   */
+  public Query(Class<?> entityClass) {
+    super(entityClass);
+  }
 
-	/**
-	 * Gets the query identifier. Generates a key value pair separated by a
-	 * semi-colon
-	 * 
-	 * @return the query identifier
-	 */
-	public String getQueryIdentifier() {
-		return super.getSQLIdentifier();
-	}
+  /**
+   * Gets the query identifier. Generates a key value pair separated by a
+   * semi-colon
+   * 
+   * @return the query identifier
+   */
+  public String getQueryIdentifier() {
+    return super.getSQLIdentifier();
+  }
 
-	/**
-	 * Gets the query.
-	 * 
-	 * @return the query
-	 */
-	public String getQuery() {
-		return super.getSQL();
-	}
+  /**
+   * Gets the query.
+   * 
+   * @return the query
+   */
+  public String getQuery() {
+    return super.getSQL();
+  }
 
-	/**
-	 * Sets the query.
-	 * 
-	 * @param query
-	 *            the new query
-	 */
-	public void setQuery(String query) {
-		super.setSQL(query);
-	}
+  /**
+   * Sets the query.
+   * 
+   * @param query
+   *          the new query
+   */
+  public void setQuery(String query) {
+    super.setSQL(query);
+  }
 
 }

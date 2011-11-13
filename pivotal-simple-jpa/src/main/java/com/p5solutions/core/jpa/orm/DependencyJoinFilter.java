@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import java.util.HashMap;
@@ -38,124 +38,124 @@ import com.p5solutions.core.jpa.orm.rowbinder.EntityRowBinder;
  */
 public class DependencyJoinFilter {
 
-	/**
-	 * The Class JoinFilterItem.
-	 */
-	public class JoinFilterItem {
+  /**
+   * The Class JoinFilterItem.
+   */
+  public class JoinFilterItem {
 
-		/** The id. */
-		public Object id;
+    /** The id. */
+    public Object id;
 
-		/** The instance. */
-		public Object instance;
+    /** The instance. */
+    public Object instance;
 
-		/**
-		 * Gets the id.
-		 * 
-		 * @return the id
-		 */
-		public Object getId() {
-			return id;
-		}
+    /**
+     * Gets the id.
+     * 
+     * @return the id
+     */
+    public Object getId() {
+      return id;
+    }
 
-		/**
-		 * Sets the id.
-		 * 
-		 * @param id
-		 *            the new id
-		 */
-		public void setId(Object id) {
-			this.id = id;
-		}
+    /**
+     * Sets the id.
+     * 
+     * @param id
+     *          the new id
+     */
+    public void setId(Object id) {
+      this.id = id;
+    }
 
-		/**
-		 * Gets the single instance of JoinFilterItem.
-		 * 
-		 * @return single instance of JoinFilterItem
-		 */
-		public Object getInstance() {
-			return instance;
-		}
+    /**
+     * Gets the single instance of JoinFilterItem.
+     * 
+     * @return single instance of JoinFilterItem
+     */
+    public Object getInstance() {
+      return instance;
+    }
 
-		/**
-		 * Sets the instance.
-		 * 
-		 * @param instance
-		 *            the new instance
-		 */
-		public void setInstance(Object instance) {
-			this.instance = instance;
-		}
-	}
+    /**
+     * Sets the instance.
+     * 
+     * @param instance
+     *          the new instance
+     */
+    public void setInstance(Object instance) {
+      this.instance = instance;
+    }
+  }
 
-	/** The join filter items. */
-	private Map<Object, JoinFilterItem> joinFilterItems;
+  /** The join filter items. */
+  private Map<Object, JoinFilterItem> joinFilterItems;
 
-	/**
-	 * Gets the join filter items.
-	 * 
-	 * @return the join filter items
-	 */
-	public Map<Object, JoinFilterItem> getJoinFilterItems() {
-		return joinFilterItems;
-	}
+  /**
+   * Gets the join filter items.
+   * 
+   * @return the join filter items
+   */
+  public Map<Object, JoinFilterItem> getJoinFilterItems() {
+    return joinFilterItems;
+  }
 
-	/**
-	 * Sets the join filter items.
-	 * 
-	 * @param joinFilterItems
-	 *            the join filter items
-	 */
-	public void setJoinFilterItems(Map<Object, JoinFilterItem> joinFilterItems) {
-		this.joinFilterItems = joinFilterItems;
-	}
+  /**
+   * Sets the join filter items.
+   * 
+   * @param joinFilterItems
+   *          the join filter items
+   */
+  public void setJoinFilterItems(Map<Object, JoinFilterItem> joinFilterItems) {
+    this.joinFilterItems = joinFilterItems;
+  }
 
-	/**
-	 * Checks for a given identifier within the join filter items list.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return true, if successful
-	 */
-	public boolean hasId(Object id) {
-		if (this.joinFilterItems == null) {
-			return false;
-		}
+  /**
+   * Checks for a given identifier within the join filter items list.
+   * 
+   * @param id
+   *          the id
+   * @return true, if successful
+   */
+  public boolean hasId(Object id) {
+    if (this.joinFilterItems == null) {
+      return false;
+    }
 
-		return this.joinFilterItems.containsKey(id);
-	}
+    return this.joinFilterItems.containsKey(id);
+  }
 
-	/**
-	 * Gets the join filter item by the identifier.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the join filter item
-	 */
-	public JoinFilterItem get(Object id) {
-		if (this.joinFilterItems != null) {
-			return this.joinFilterItems.get(id);
-		}
-		return null;
-	}
+  /**
+   * Gets the join filter item by the identifier.
+   * 
+   * @param id
+   *          the id
+   * @return the join filter item
+   */
+  public JoinFilterItem get(Object id) {
+    if (this.joinFilterItems != null) {
+      return this.joinFilterItems.get(id);
+    }
+    return null;
+  }
 
-	/**
-	 * Adds the.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param instance
-	 *            the instance
-	 * @return the join filter item
-	 */
-	public JoinFilterItem add(Object id, Object instance) {
-		if (this.joinFilterItems == null) {
-			this.joinFilterItems = new HashMap<Object, DependencyJoinFilter.JoinFilterItem>();
-		}
-		JoinFilterItem item = new JoinFilterItem();
-		item.setId(id);
-		item.setInstance(instance);
-		this.joinFilterItems.put(id, item);
-		return item;
-	}
+  /**
+   * Adds the.
+   * 
+   * @param id
+   *          the id
+   * @param instance
+   *          the instance
+   * @return the join filter item
+   */
+  public JoinFilterItem add(Object id, Object instance) {
+    if (this.joinFilterItems == null) {
+      this.joinFilterItems = new HashMap<Object, DependencyJoinFilter.JoinFilterItem>();
+    }
+    JoinFilterItem item = new JoinFilterItem();
+    item.setId(id);
+    item.setInstance(instance);
+    this.joinFilterItems.put(id, item);
+    return item;
+  }
 }

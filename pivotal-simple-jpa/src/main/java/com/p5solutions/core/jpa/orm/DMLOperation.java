@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import java.util.HashMap;
@@ -27,18 +27,18 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import com.p5solutions.core.utils.ReflectionUtility;
 
 public class DMLOperation {
-	public static enum OperationType {
-		INSERT, UPDATE, DELETE, MERGE
-	}
+  public static enum OperationType {
+    INSERT, UPDATE, DELETE, MERGE
+  }
 
-	private String statement;
+  private String statement;
 
-	public String getStatement() {
-		return statement;
-	}
+  public String getStatement() {
+    return statement;
+  }
 
-	public void setStatement(String statement) {
-		this.statement = statement;
-	}
+  public void setStatement(String statement) {
+    this.statement = statement;
+  }
 
 }

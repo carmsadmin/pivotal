@@ -14,22 +14,22 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.criteria.restrictions;
 
-public class Restrictions { 
-	public static <T> Criterion idEq(Class<T> entityClass, Object id) {
-		IdentifierEqualsRestriction restriction = new IdentifierEqualsRestriction(id);
-		return restriction;
-	}
-	
-	public static <T> Criterion eq(Class<T> entityClass, String bindingPath, Object value) {
-		SimpleExpression restriction = new SimpleExpression(bindingPath, value);
-		return restriction;
-	}
-	
-	public static <T> Criterion isNull(Class<T> entityClass, String bindingPath) {
-		IsNullExpression restriction = new IsNullExpression(bindingPath);
-		return restriction;
-	}
+public class Restrictions {
+  public static <T> Criterion idEq(Class<T> entityClass, Object id) {
+    IdentifierEqualsRestriction restriction = new IdentifierEqualsRestriction(id);
+    return restriction;
+  }
+
+  public static <T> Criterion eq(Class<T> entityClass, String bindingPath, Object value) {
+    SimpleExpression restriction = new SimpleExpression(bindingPath, value);
+    return restriction;
+  }
+
+  public static <T> Criterion isNull(Class<T> entityClass, String bindingPath) {
+    IsNullExpression restriction = new IsNullExpression(bindingPath);
+    return restriction;
+  }
 }

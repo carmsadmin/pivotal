@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import javax.persistence.Temporal;
@@ -25,142 +25,142 @@ import javax.persistence.Temporal;
  */
 public class SQLParameterCriteria {
 
-	/** The value. */
-	private Object value;
-	// private String bindingName;
-	/** The binding path. */
-	private String bindingPath;
+  /** The value. */
+  private Object value;
+  // private String bindingName;
+  /** The binding path. */
+  private String bindingPath;
 
-	/** The binding index. */
-	private Integer bindingIndex;
+  /** The binding index. */
+  private Integer bindingIndex;
 
-	/** The binding type. */
-	private Class<?> bindingType;
+  /** The binding type. */
+  private Class<?> bindingType;
 
-	/** The parameter binder. */
-	private ParameterBinder parameterBinder;
+  /** The parameter binder. */
+  private ParameterBinder parameterBinder;
 
-	// public QueryParameterCriteria(Class<?> bindingType) {
-	// this.setBindingType(bindingType);
-	// }
+  // public QueryParameterCriteria(Class<?> bindingType) {
+  // this.setBindingType(bindingType);
+  // }
 
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public Object getValue() {
-		return value;
-	}
+  /**
+   * Gets the value.
+   * 
+   * @return the value
+   */
+  public Object getValue() {
+    return value;
+  }
 
-	/**
-	 * Sets the value.
-	 * 
-	 * @param value
-	 *          the new value
-	 */
-	public void setValue(Object value) {
-		this.value = value;
-	}
+  /**
+   * Sets the value.
+   * 
+   * @param value
+   *          the new value
+   */
+  public void setValue(Object value) {
+    this.value = value;
+  }
 
-	/**
-	 * Gets the binding path.
-	 * 
-	 * @return the binding path
-	 */
-	public String getBindingPath() {
-		return bindingPath;
-	}
+  /**
+   * Gets the binding path.
+   * 
+   * @return the binding path
+   */
+  public String getBindingPath() {
+    return bindingPath;
+  }
 
-	/**
-	 * Sets the binding path.
-	 * 
-	 * @param bindingPath
-	 *          the new binding path
-	 */
-	public void setBindingPath(String bindingPath) {
-		this.bindingPath = bindingPath;
-	}
+  /**
+   * Sets the binding path.
+   * 
+   * @param bindingPath
+   *          the new binding path
+   */
+  public void setBindingPath(String bindingPath) {
+    this.bindingPath = bindingPath;
+  }
 
-	// public String getBindingName() {
-	// return bindingName;
-	// }
-	//
-	// public void setBindingName(String bindingName) {
-	// this.bindingName = bindingName;
-	// }
+  // public String getBindingName() {
+  // return bindingName;
+  // }
+  //
+  // public void setBindingName(String bindingName) {
+  // this.bindingName = bindingName;
+  // }
 
-	/**
-	 * Gets the binding index.
-	 * 
-	 * @return the binding index
-	 */
-	public Integer getBindingIndex() {
-		if (bindingIndex == null) {
-			throw new NullPointerException("Binding index is not defined, please use binding by name, instead");
-		}
-		return bindingIndex;
-	}
+  /**
+   * Gets the binding index.
+   * 
+   * @return the binding index
+   */
+  public Integer getBindingIndex() {
+    if (bindingIndex == null) {
+      throw new NullPointerException("Binding index is not defined, please use binding by name, instead");
+    }
+    return bindingIndex;
+  }
 
-	/**
-	 * Sets the binding index.
-	 * 
-	 * @param bindingIndex
-	 *          the new binding index
-	 */
-	public void setBindingIndex(Integer bindingIndex) {
-		this.bindingIndex = bindingIndex;
-	}
+  /**
+   * Sets the binding index.
+   * 
+   * @param bindingIndex
+   *          the new binding index
+   */
+  public void setBindingIndex(Integer bindingIndex) {
+    this.bindingIndex = bindingIndex;
+  }
 
-	/**
-	 * Gets the value type.
-	 * 
-	 * @return the value type
-	 */
-	public Class<?> getValueType() {
-		if (value != null) {
-			return value.getClass();
-		}
-		return null;
-	}
+  /**
+   * Gets the value type.
+   * 
+   * @return the value type
+   */
+  public Class<?> getValueType() {
+    if (value != null) {
+      return value.getClass();
+    }
+    return null;
+  }
 
-	/**
-	 * Sets the binding type.
-	 * 
-	 * @param bindingType
-	 *          the new binding type
-	 */
-	public void setBindingType(Class<?> bindingType) {
-		this.bindingType = bindingType;
-	}
+  /**
+   * Sets the binding type.
+   * 
+   * @param bindingType
+   *          the new binding type
+   */
+  public void setBindingType(Class<?> bindingType) {
+    this.bindingType = bindingType;
+  }
 
-	/**
-	 * Gets the binding type.
-	 * 
-	 * @return the binding type
-	 */
-	public Class<?> getBindingType() {
-		return bindingType;
-	}
+  /**
+   * Gets the binding type.
+   * 
+   * @return the binding type
+   */
+  public Class<?> getBindingType() {
+    return bindingType;
+  }
 
-	/**
-	 * Gets the parameter binder.
-	 * 
-	 * @return the parameter binder
-	 */
-	public ParameterBinder getParameterBinder() {
-		return parameterBinder;
-	}
+  /**
+   * Gets the parameter binder.
+   * 
+   * @return the parameter binder
+   */
+  public ParameterBinder getParameterBinder() {
+    return parameterBinder;
+  }
 
-	/**
-	 * Sets the parameter binder. (optional) This is usually used in the
-	 * {@link MapUtility} or {@link ConversionUtility} to determine the binding
-	 * specifics; for example {@link Temporal}
-	 * 
-	 * @param parameterBinder
-	 *          the new parameter binder
-	 */
-	public void setParameterBinder(ParameterBinder parameterBinder) {
-		this.parameterBinder = parameterBinder;
-	}
+  /**
+   * Sets the parameter binder. (optional) This is usually used in the
+   * {@link MapUtility} or {@link ConversionUtility} to determine the binding
+   * specifics; for example {@link Temporal}
+   * 
+   * @param parameterBinder
+   *          the new parameter binder
+   */
+  public void setParameterBinder(ParameterBinder parameterBinder) {
+    this.parameterBinder = parameterBinder;
+  }
 }

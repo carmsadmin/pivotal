@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.exceptions;
 
 /**
@@ -26,18 +26,18 @@ package com.p5solutions.core.jpa.orm.exceptions;
  */
 public class AnnotationNotDefinedException extends RuntimeException {
 
-	/**
+  /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Instantiates a new annotation not defined exception.
-	 * 
-	 * @param message
-	 *          the message
-	 */
-	public AnnotationNotDefinedException(String message) {
-		super(message);
-	}
+  /**
+   * Instantiates a new annotation not defined exception.
+   * 
+   * @param message
+   *          the message
+   */
+  public AnnotationNotDefinedException(String message) {
+    super(message);
+  }
 }

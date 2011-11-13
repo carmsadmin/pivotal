@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.annotations;
 
 import java.lang.annotation.ElementType;
@@ -23,9 +23,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates whether a given entity should be fetched before saving to see whether it exists or not... or whether it
- * needs to be merged or ... whatever. TODO: Maybe add the property enum for defining the level of usage... just fetch
- * for existence or fetch & merge.
+ * Indicates whether a given entity should be fetched before saving to see
+ * whether it exists or not... or whether it needs to be merged or ... whatever.
+ * TODO: Maybe add the property enum for defining the level of usage... just
+ * fetch for existence or fetch & merge.
  * 
  * @author Zvjezdan Guzijan
  */

@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import java.util.List;
@@ -26,43 +26,43 @@ import com.p5solutions.core.utils.ReflectionUtility;
  */
 public class DML extends AbstractSQL {
 
-	/**
-	 * Instantiates a new DML.
-	 * 
-	 * @param entityClass
-	 *            the entity class
-	 */
-	public DML(Class<?> entityClass) {
-		super(entityClass);
-	}
+  /**
+   * Instantiates a new DML.
+   * 
+   * @param entityClass
+   *          the entity class
+   */
+  public DML(Class<?> entityClass) {
+    super(entityClass);
+  }
 
-	/**
-	 * Gets the DML identifier. Generates a key value pair separated by a
-	 * semi-colon
-	 * 
-	 * @return the query identifier
-	 */
-	public String getDMLIdentifier() {
-		return super.getSQLIdentifier();
-	}
+  /**
+   * Gets the DML identifier. Generates a key value pair separated by a
+   * semi-colon
+   * 
+   * @return the query identifier
+   */
+  public String getDMLIdentifier() {
+    return super.getSQLIdentifier();
+  }
 
-	/**
-	 * Gets the DML.
-	 * 
-	 * @return the dml
-	 */
-	public String getDML() {
-		return super.getSQL();
-	}
+  /**
+   * Gets the DML.
+   * 
+   * @return the dml
+   */
+  public String getDML() {
+    return super.getSQL();
+  }
 
-	/**
-	 * Sets the DML.
-	 * 
-	 * @param dml
-	 *            the new query
-	 */
-	public void setDML(String dml) {
-		super.setSQL(dml);
-	}
+  /**
+   * Sets the DML.
+   * 
+   * @param dml
+   *          the new query
+   */
+  public void setDML(String dml) {
+    super.setSQL(dml);
+  }
 
 }

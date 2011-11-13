@@ -14,35 +14,35 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 public abstract class AbstractParameterBinder {
-	private int bindingIndex;
-	private String bindingName;
+  private int bindingIndex;
+  private String bindingName;
 
-	public int getBindingIndex() {
-		return bindingIndex;
-	}
+  public int getBindingIndex() {
+    return bindingIndex;
+  }
 
-	public void setBindingIndex(int bindingIndex) {
-		this.bindingIndex = bindingIndex;
-	}
+  public void setBindingIndex(int bindingIndex) {
+    this.bindingIndex = bindingIndex;
+  }
 
-	public String getBindingName() {
-		return bindingName;
-	}
-	
-	public String getBindingNameUpper() {
-		String bn = getBindingName();
-		if (bindingName == null) {
-			return null;
-		}
-		return bn.toUpperCase();
-	}
+  public String getBindingName() {
+    return bindingName;
+  }
 
-	public void setBindingName(String bindingName) {
-		this.bindingName = bindingName;
-	}
+  public String getBindingNameUpper() {
+    String bn = getBindingName();
+    if (bindingName == null) {
+      return null;
+    }
+    return bn.toUpperCase();
+  }
+
+  public void setBindingName(String bindingName) {
+    this.bindingName = bindingName;
+  }
 
 }

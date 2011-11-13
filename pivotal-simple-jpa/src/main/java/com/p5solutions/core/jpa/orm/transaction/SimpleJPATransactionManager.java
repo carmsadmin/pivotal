@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm.transaction;
 
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -35,55 +35,55 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
  */
 public class SimpleJPATransactionManager extends DataSourceTransactionManager {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Begin a transaction, issue a new {@link PersistenceContext} within the
-	 * local {@link PersistenceProvider}.
-	 * 
-	 * @param transaction
-	 *          the transaction
-	 * @param definition
-	 *          the definition
-	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doBegin(java.lang.Object,
-	 *      org.springframework.transaction.TransactionDefinition)
-	 */
-	@Override
-	protected void doBegin(Object transaction, TransactionDefinition definition) {
-		// reset the local thread variable if any
-		// PersistenceProvider.reset(); no point resetting as each transaction will
-		// stack its own context
+  /**
+   * Begin a transaction, issue a new {@link PersistenceContext} within the
+   * local {@link PersistenceProvider}.
+   * 
+   * @param transaction
+   *          the transaction
+   * @param definition
+   *          the definition
+   * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doBegin(java.lang.Object,
+   *      org.springframework.transaction.TransactionDefinition)
+   */
+  @Override
+  protected void doBegin(Object transaction, TransactionDefinition definition) {
+    // reset the local thread variable if any
+    // PersistenceProvider.reset(); no point resetting as each transaction will
+    // stack its own context
 
-		// create a new persistence context for this transaction
-		PersistenceContext context = new PersistenceContext();
-		PersistenceProvider.set(context);
+    // create a new persistence context for this transaction
+    PersistenceContext context = new PersistenceContext();
+    PersistenceProvider.set(context);
 
-		super.doBegin(transaction, definition);
-	}
+    super.doBegin(transaction, definition);
+  }
 
-	/**
-	 * Do commit of a transaction, then reset the {@link PersistenceContext} for
-	 * the given {@link ThreadLocal} within the {@link PersistenceProvider}
-	 * 
-	 * @param status
-	 *          the status
-	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doCommit(org.springframework.transaction.support.DefaultTransactionStatus)
-	 */
-	@Override
-	protected void doCommit(DefaultTransactionStatus status) {
-		super.doCommit(status);
-		PersistenceProvider.reset();
-	}
+  /**
+   * Do commit of a transaction, then reset the {@link PersistenceContext} for
+   * the given {@link ThreadLocal} within the {@link PersistenceProvider}
+   * 
+   * @param status
+   *          the status
+   * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doCommit(org.springframework.transaction.support.DefaultTransactionStatus)
+   */
+  @Override
+  protected void doCommit(DefaultTransactionStatus status) {
+    super.doCommit(status);
+    PersistenceProvider.reset();
+  }
 
-	/**
-	 * Do rollback of a transaction, then reset the {@link PersistenceContext} for
-	 * the given {@link ThreadLocal} within the {@link PersistenceProvider}
-	 * 
-	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doRollback(org.springframework.transaction.support.DefaultTransactionStatus)
-	 */
-	@Override
-	protected void doRollback(DefaultTransactionStatus status) {
-		super.doRollback(status);
-		PersistenceProvider.reset();
-	}
+  /**
+   * Do rollback of a transaction, then reset the {@link PersistenceContext} for
+   * the given {@link ThreadLocal} within the {@link PersistenceProvider}
+   * 
+   * @see org.springframework.jdbc.datasource.DataSourceTransactionManager#doRollback(org.springframework.transaction.support.DefaultTransactionStatus)
+   */
+  @Override
+  protected void doRollback(DefaultTransactionStatus status) {
+    super.doRollback(status);
+    PersistenceProvider.reset();
+  }
 }

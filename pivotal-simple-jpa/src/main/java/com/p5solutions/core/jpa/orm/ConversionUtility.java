@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
@@ -34,69 +34,68 @@ import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
  */
 public interface ConversionUtility {
 
-	/**
-	 * Convert a number to a given target type. Supports various target types, All
-	 * sub-types of {@link Number} including {@link Boolean}, and {@link String}
-	 * 
-	 * @param pb
-	 *          (optional) ParameterBinder used as part of the Query or DML
-	 *          statement
-	 * 
-	 * @param value
-	 *          the value to convert to the given target type
-	 * @param targetType
-	 *          the target type to convert the value to.
-	 * @return the converted value, if converted.
-	 * @throws TypeConversionException
-	 *           the type conversion exception
-	 */
-	Object convertNumber(ParameterBinder pb, Number value, Class<?> targetType) throws TypeConversionException;
+  /**
+   * Convert a number to a given target type. Supports various target types, All
+   * sub-types of {@link Number} including {@link Boolean}, and {@link String}
+   * 
+   * @param pb
+   *          (optional) ParameterBinder used as part of the Query or DML
+   *          statement
+   * 
+   * @param value
+   *          the value to convert to the given target type
+   * @param targetType
+   *          the target type to convert the value to.
+   * @return the converted value, if converted.
+   * @throws TypeConversionException
+   *           the type conversion exception
+   */
+  Object convertNumber(ParameterBinder pb, Number value, Class<?> targetType) throws TypeConversionException;
 
-	/**
-	 * Convert a value to a given target type. Supports various target types.
-	 * 
-	 * @param pb
-	 *          (optional) ParameterBinder used as part of the Query or DML
-	 *          statement
-	 * 
-	 * @param value
-	 *          the value to convert to the given target type
-	 * @param targetType
-	 *          the target type to convert the value to.
-	 * @return the converted value, if converted.
-	 * @throws TypeConversionException
-	 *           the type conversion exception
-	 */
-	Object convert(ParameterBinder pb, Object value, Class<?> targetType) throws TypeConversionException;
+  /**
+   * Convert a value to a given target type. Supports various target types.
+   * 
+   * @param pb
+   *          (optional) ParameterBinder used as part of the Query or DML
+   *          statement
+   * 
+   * @param value
+   *          the value to convert to the given target type
+   * @param targetType
+   *          the target type to convert the value to.
+   * @return the converted value, if converted.
+   * @throws TypeConversionException
+   *           the type conversion exception
+   */
+  Object convert(ParameterBinder pb, Object value, Class<?> targetType) throws TypeConversionException;
 
-	/**
-	 * Convert a value to a given target type. Supports various target types.
-	 * 
-	 * @param pb
-	 *          (optional) ParameterBinder used as part of the Query or DML
-	 *          statement
-	 * 
-	 * @param value
-	 *          the value to convert to the given target type
-	 * @param bindingPath
-	 *          the binding path of the sql paramater
-	 * @param targetType
-	 *          the target type to convert the value to.
-	 * @return the converted value, if converted.
-	 * @throws TypeConversionException
-	 *           the type conversion exception
-	 */
-	Object convert(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType)
-			throws TypeConversionException;
+  /**
+   * Convert a value to a given target type. Supports various target types.
+   * 
+   * @param pb
+   *          (optional) ParameterBinder used as part of the Query or DML
+   *          statement
+   * 
+   * @param value
+   *          the value to convert to the given target type
+   * @param bindingPath
+   *          the binding path of the sql paramater
+   * @param targetType
+   *          the target type to convert the value to.
+   * @return the converted value, if converted.
+   * @throws TypeConversionException
+   *           the type conversion exception
+   */
+  Object convert(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType) throws TypeConversionException;
 
-	/**
-	 * Checks if a given value is of the same type of class.
-	 * 
-	 * @param value
-	 *          the value
-	 * @param targetType
-	 *          the target type
-	 * @return true, if is same class
-	 */
-	boolean isSameClass(Object value, Class<?> targetType);
+  /**
+   * Checks if a given value is of the same type of class.
+   * 
+   * @param value
+   *          the value
+   * @param targetType
+   *          the target type
+   * @return true, if is same class
+   */
+  boolean isSameClass(Object value, Class<?> targetType);
 }

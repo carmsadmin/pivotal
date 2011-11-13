@@ -14,7 +14,7 @@
  * 
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-*/
+ */
 package com.p5solutions.core.jpa.orm;
 
 import javax.persistence.Inheritance;
@@ -23,7 +23,8 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * AbstractEntity: abstraction layer for all entities to extend from. This gives
- * finer grained control over common entity components. e.g. entity scanner in {@link EntityUtility#initialize()}?
+ * finer grained control over common entity components. e.g. entity scanner in
+ * {@link EntityUtility#initialize()}?
  * 
  * @author Kasra Rasaee
  * @since 2009-01-29
@@ -31,5 +32,5 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractEntity {
- //
+  //
 }
