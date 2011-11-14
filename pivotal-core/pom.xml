@@ -23,7 +23,7 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-core</artifactId>
 	<name>pivotal-core</name>
-	<version>0.1-RELEASE</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -64,6 +64,14 @@
 		</dependency>		
 	</dependencies>
 
+	<distributionManagement>
+	  <repository>
+	    <id>internal-repo</id>
+	    <name>Internal Snapshot Repository</name>
+	    <url>http://maven-repo:8080/artifactory/ext-snapshots-local</url>
+	  </repository>
+	</distributionManagement>
+  
 	<build>
 		<outputDirectory>target/classes</outputDirectory>
 		<resources>
@@ -75,6 +83,7 @@
 				<directory>buildenv/${build_env}</directory>
 			</resource>
 		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
