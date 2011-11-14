@@ -21,7 +21,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.p5solutions</groupId>
-	<artifactId>core</artifactId>
+	<artifactId>pivotal-core</artifactId>
 	<name>pivotal-core</name>
 	<version>0.1-RELEASE</version>
 	<packaging>jar</packaging>
