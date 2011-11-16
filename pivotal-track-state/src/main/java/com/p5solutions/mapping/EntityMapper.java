@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  */
-package com.p5solutions.trackstate;
+package com.p5solutions.mapping;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.List;
 import com.p5solutions.core.jpa.orm.entity.aop.EntityProxy;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
-import com.p5solutions.trackstate.MapClassTracker.PlaceHolder;
+import com.p5solutions.mapping.MapClassTracker.PlaceHolder;
 import com.p5solutions.trackstate.annotation.MapClass;
 import com.p5solutions.trackstate.annotation.MapClasses;
 import com.p5solutions.trackstate.annotation.MapExpand;
