@@ -78,11 +78,11 @@ public class EntityMapperTest extends TestCase {
     me.setSomeBoolean(true);
     me.setSomeText("Hello World!");
     me.setSomeLong(5555L);
-    me.setAddressLine1("445 Laurier Ave W");
+    me.setAddressLine1("123 Smith Rd.");
     me.setAddressLine2("Unit 505");
     me.setCity("Ottawa");
-    me.setPostalCode("K1R 0A2");
-    me.setExtraAddressLine("Back Door");
+    me.setPostalCode("M2N 1P2");
+    me.setExtraAddressLine("Extra Something");
     
     ValueObjectComplex complex = new ValueObjectComplex();
     complex.setSomeDate(new Date());
