@@ -23,6 +23,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.persistence.Transient;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.p5solutions.core.jpa.orm.ConversionUtility;
 import com.p5solutions.core.jpa.orm.entity.aop.EntityProxy;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -58,6 +64,9 @@ import com.p5solutions.trackstate.aop.TrackStateProxy;
  */
 public class EntityMapper {
 
+  /** The LOGGER. */
+  protected static Log logger = LogFactory.getLog(EntityMapper.class);
+  
   /**
    * The Interface Invoker.
    */
@@ -517,7 +526,14 @@ public class EntityMapper {
    */
   @SuppressWarnings("unchecked")
   protected static final boolean ignore(Method method) {
-    return ReflectionUtility.hasAnyAnnotation(method, MapTransient.class);
+    boolean trans = ReflectionUtility.hasAnyAnnotation(method, MapTransient.class);
+    if (!trans) {
+      if ((trans = ReflectionUtility.hasAnyAnnotation(method, Transient.class))) {
+        logger.warn("Should not be using " + Transient.class + " annotation on method " + method + ", instead, you should use the "
+            + MapTransient.class + " annotation");
+      }
+    }
+    return trans;
   }
 
   /**
