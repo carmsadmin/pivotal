@@ -32,14 +32,6 @@
 			<version>1.0.0.GA</version>
 		</dependency>
 
-<!-- TODO: SHOULD DEFINTELY NOT BE DEPENDENT ON ORACLE, SHOULD BE COMPLETELY ABSTRACTED -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.1.0.7.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 <!-- SPRING FRAMEWORK -->
 		<dependency>
 			<groupId>org.springframework</groupId>

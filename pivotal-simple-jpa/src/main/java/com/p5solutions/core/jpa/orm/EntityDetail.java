@@ -28,16 +28,23 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 
-import com.p5solutions.core.jpa.orm.transaction.EntityKey;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class EntityDetail.
+ * The Class EntityDetail. This class defines information for a given entity, a cache of these details is created
+ * by invoking the method {@link EntityUtility#initialize()}. 
  * 
  * @param <T>
- *          the generic type
+ *          the generic type, usually an entity class defined with {@link Entity} annotation
+ *          
+ * @author Kasra Rasaee
+ * @since 2010
+ *
+ * @see EntityUtility#initialize()
+ * @see ParameterBinder
+ * @see javax.persistence.Entity
+ * @see javax.persistence.Table
  */
 public class EntityDetail<T> {
 
@@ -145,7 +152,6 @@ public class EntityDetail<T> {
     // entityKey.setBindingValues(bindingValues);
 
     StringBuilder key = new StringBuilder();
-    int i = 0;
     key.append(getEntityClass());
     key.append('>');
     for (ParameterBinder binder : pks) {
@@ -301,13 +307,20 @@ public class EntityDetail<T> {
   }
 
   /**
-   * Gets the parameter binder by the type (Join(J) or Column(C)) filtering out
+   * Gets the parameter binder by the type (Join(J) or Column(C)) or BindingName(BN) filtering out
    * by columnName
    * 
    * @param type
-   *          the type
+   *          	C_ for column
+   *            J_ for join-column
+   *            BN_ for binding-name
+   *            
    * @param name
    *          the column name
+   *          
+   * @param ignoreCase
+   * 	ignore the case sensitivity when matching column names
+   * 
    * @return the parameter binder
    */
   protected ParameterBinder getParameterBinder(String type, String name, boolean ignoreCase) {
@@ -339,10 +352,31 @@ public class EntityDetail<T> {
    *          the column name
    * @return the parameter binder
    */
-  public ParameterBinder getParameterBinder(String columnName) {
+  public ParameterBinder getParameterBinderByColumn(String columnName) {
     return getParameterBinder("C_", columnName);
   }
 
+  
+  /**
+   * Gets the parameter binder regardless of whether its a join-column or a column annotation.
+   * 
+   * @param columnName
+   * 
+   * @return
+   * 	<code>null</code> if no parameter binder was found otherwise a Parameter 
+   */
+  public ParameterBinder getParameterBinderByAny(String columnName) {
+	  ParameterBinder pb = getParameterBinderByColumn(columnName);
+	  
+	  if (pb == null) {
+		  return getParameterBinderByJoinColumn(columnName);
+	  }
+	  
+	  // TODO any other cases?
+	  
+	  return pb;
+  }
+  
   /**
    * Gets the join column parameter binder for a given {@link JoinColumn}.
    * 
@@ -350,7 +384,7 @@ public class EntityDetail<T> {
    *          the column name
    * @return the join column parameter binder
    */
-  public ParameterBinder getJoinColumnParameterBinder(String columnName) {
+  public ParameterBinder getParameterBinderByJoinColumn(String columnName) {
     return getParameterBinder("J_", columnName);
   }
 

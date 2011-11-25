@@ -89,6 +89,21 @@ public interface ConversionUtility {
   Object convert(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType) throws TypeConversionException;
 
   /**
+   * Convert an object to the {@link ParameterBinder}'s column sql-type defined
+   * by the {@link ParameterBinder#getColumnMetaData()}
+   * 
+   * @param pb
+   *          the binder for a given column within an entity, also identifies
+   *          the sql-type
+   * 
+   * @param value
+   *          to convert to the sql-type
+   * 
+   * @return an instance of the value converted to the appropriate sql-type
+   */
+  Object convertToSqlType(ParameterBinder pb, Object value);
+
+  /**
    * Checks if a given value is of the same type of class.
    * 
    * @param value

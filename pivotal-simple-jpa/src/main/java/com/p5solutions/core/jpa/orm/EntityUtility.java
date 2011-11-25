@@ -18,6 +18,12 @@
 package com.p5solutions.core.jpa.orm;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -34,14 +40,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import com.p5solutions.core.jpa.orm.DMLOperation.OperationType;
 import com.p5solutions.core.jpa.orm.annotations.EntityAnnotationScanner;
 import com.p5solutions.core.jpa.orm.entity.aop.EntityProxy;
 import com.p5solutions.core.jpa.orm.exceptions.AnnotationNotDefinedException;
+import com.p5solutions.core.jpa.orm.exceptions.NoColumnDefinedException;
 import com.p5solutions.core.jpa.orm.transaction.TransactionTemplate;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -77,6 +86,9 @@ public class EntityUtility {
   /** List of entity packages to scan for entities. */
   private List<String> entityPackages;
 
+  /** DataSource to retrieve meta data for given table entities, for example column data type, size, ?null, so forth **/
+  private DataSource dataSource;
+  
   @SuppressWarnings("unchecked")
   public static <T> Class<T> getTargetEntityClass(T entity) {
     Class<T> entityClass = (Class<T>) entity.getClass();
@@ -105,15 +117,21 @@ public class EntityUtility {
       for (String entityPackage : entityPackages) {
         String typeName = null;
         try {
+        	
           for (Class<? extends AbstractEntity> type : scanner.getComponentClasses(entityPackage)) {
             typeName = type.getSimpleName();
-            getEntityDetail(type);
+            EntityDetail<?> detail = getEntityDetail(type);
             // only generate dml operations for table annotations.
-            if (ReflectionUtility.hasAnyAnnotation(type, Table.class)) {
+            Table table = ReflectionUtility.findAnnotation(type, Table.class);
+            if (table != null) {
               // build the basic dml operations for persistence.
               getEntityPersistUtility().build(type);
             }
           }
+          
+          // build the meta data for all the entity tables.
+          buildColumnMetaDataAll();
+          
         } catch (ClassNotFoundException e) {
           String msg = "Cannot initialize entity binders for given class name " + typeName
               + " because it does not exist within the provided classpath. "
@@ -128,6 +146,22 @@ public class EntityUtility {
     }
   }
 
+  /**
+   * Set the datasource for this entity utility
+   * @param dataSource
+   */
+  public void setDataSource(DataSource dataSource) {
+	this.dataSource = dataSource;
+  }
+  
+  /**
+   * Get the datasource for this entity utility.
+   * @return
+   */
+  protected DataSource getDataSource() {
+	  return this.dataSource;
+  }
+  
   /**
    * Throw entity class null.
    * 
@@ -414,6 +448,97 @@ public class EntityUtility {
   }
 
   /**
+   * Build the database-meta-data for all table entities.
+   */
+  protected void buildColumnMetaDataAll() {
+	  Connection connection = null;
+
+	  try {
+		  connection = DataSourceUtils.getConnection(dataSource);
+		  for (EntityDetail<?> detail : this.cacheEntityDetails.values()) {
+			  Table table = detail.getTableAnnotation();
+			  if (table != null) {
+				  buildColumnMetaData(table, detail, connection);
+			  }
+		  }
+	  } catch (Exception e) {
+		  logger.error(e.toString());
+	  } finally { 
+		if (connection != null) {
+		  try { connection.close(); } catch (SQLException e) { ; }
+		  connection = null;
+		}
+	  }
+  }
+  
+  /**
+   * Build the database-meta-dta for a given table entity, using an existing connection.
+   * @param table annotation
+   * @param detail {@link EntityDetail} probably provided by the {@link #cacheEntityDetails}
+   * @param connection an existing mock or real, database connection.
+   */
+  protected void buildColumnMetaData(Table table, EntityDetail<?> detail, Connection connection) {
+
+	  Statement stmt = null;
+	  ResultSet rs = null;
+	  
+	  try { 
+		  String sql = "SELECT * FROM " + table.name() + " WHERE 1=0";
+		  
+		  stmt = connection.createStatement();
+		  
+		  // set the maximum result set to zero, just in-case!?
+		  stmt.setMaxRows(0);
+		  
+		  rs = stmt.executeQuery(sql);
+		  ResultSetMetaData rsMeta = rs.getMetaData();
+		  
+		  logger.info("** Building Database MetaData for Table " + table.name());
+		  
+		  for (int ic = 1; ic <= rsMeta.getColumnCount(); ic++) {
+			  String columnName = rsMeta.getColumnName(ic);
+			  ParameterBinder binder = detail.getParameterBinderByAny(columnName);
+			  if (binder == null) {
+				  if (logger.isErrorEnabled()) {
+					  String error = " -- Column " + columnName + " as defined by the table meta-data, cannot be found within the scope of " + detail.getEntityClass();
+				  	logger.error(error);
+				  }
+				  
+				 // TODO ?? throw new RuntimeException(new NoColumnDefinedException(error));
+			  } else {
+				  ParameterBinderColumnMetaData columnMetaData = new ParameterBinderColumnMetaData();
+				  //columnMetaData.setColumnIndex(ic); // USELESS, EVERY UNIQUE QUERY STRING WOULD RESULT IN A DIFFERENT INDEX. EASIER TO CACHE IT BASED ON UNIQUE QUERY STRINGS.
+				  //columnMetaData.setColumnLabel(rsMeta.getColumnLabel(ic));
+				  columnMetaData.setColumnName(columnName);
+				  columnMetaData.setLength(rsMeta.getColumnDisplaySize(ic));
+				  columnMetaData.setPrecision(rsMeta.getPrecision(ic));
+				  columnMetaData.setScale(rsMeta.getScale(ic));
+				  columnMetaData.setColumnType(rsMeta.getColumnType(ic));
+				  columnMetaData.setColumnTypeName(rsMeta.getColumnTypeName(ic));
+				  binder.setColumnMetaData(columnMetaData);
+				  
+				  if (logger.isDebugEnabled()) {
+					  logger.debug(" -- [" + columnMetaData.toString() + "]");
+				  }
+			  }
+		  }
+		  
+	  } catch (SQLException e) {
+		logger.error(">> *UNABLE* to retrieve meta data for table " + table.name() + ", doesn't exist?");
+	  } finally {
+		if (rs != null) {
+		  try { rs.close(); } catch (SQLException e) { ; }
+		  rs = null;
+		}
+		if (stmt != null) {
+		  try { stmt.close(); } catch (SQLException e) { ; }
+		  stmt = null;
+		}
+
+	  }
+  }
+  
+  /**
    * Builds the the Parameter Binder list starting from a class, not necessarily
    * the root class.
    * 
@@ -695,7 +820,7 @@ public class EntityUtility {
     // simply ignore it (probably filtered by recursionFilterList)
     if (joinEntityDetail != null) {
       // find the inverse join on the inverse entity
-      ParameterBinder pbJoinColumn = joinEntityDetail.getJoinColumnParameterBinder(columnName);
+      ParameterBinder pbJoinColumn = joinEntityDetail.getParameterBinderByJoinColumn(columnName);
 
       boolean isDebug = logger.isDebugEnabled();
 
@@ -863,6 +988,8 @@ public class EntityUtility {
     binder.setEntityClass(entityClass);
 
     if (doColumn(binder, recursionFilterList)) {
+    	
+    	
       // TODO ??
     } else if (doJoinColumn(binder, recursionFilterList)) {
       // TODO ??

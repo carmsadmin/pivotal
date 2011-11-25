@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -89,6 +90,9 @@ public class ParameterBinder extends AbstractParameterBinder {
   /** The binding path. */
   private String bindingPath;
 
+  /** The sql column meta-data for this column, if any **/
+  private ParameterBinderColumnMetaData columnMetaData;
+  
   /** The dependency join. */
   /*
    * TODO probably needs to be some sort of list, or perhaps within the
@@ -703,6 +707,16 @@ public class ParameterBinder extends AbstractParameterBinder {
     return ReflectionUtility.hasAnyAnnotation(getterMethod, Transient.class);
   }
 
+  /**
+   * Checks whether the column is targetting a lob type column
+   * 
+   * @return
+   */
+  @SuppressWarnings("unchecked")
+  public boolean isLob() {
+	 return ReflectionUtility.hasAnyAnnotation(getterMethod, Lob.class);
+  }
+  
   /*
    * (non-Javadoc)
    * 
@@ -748,6 +762,23 @@ public class ParameterBinder extends AbstractParameterBinder {
     return overrideColumn;
   }
 
+  /**
+   * Gets the database table's column meta data, comprised of sql type and other set of information.
+   * @return
+   */
+  public ParameterBinderColumnMetaData getColumnMetaData() {
+	return columnMetaData;
+  }
+  
+  /**
+   * Sets the database table's column meta data information.
+   * 
+   * @param columnMetaData
+   */
+  public void setColumnMetaData(ParameterBinderColumnMetaData columnMetaData) {
+	this.columnMetaData = columnMetaData;
+  }
+  
   /**
    * Sets the dependency join.
    * 

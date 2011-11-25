@@ -20,6 +20,7 @@ package com.p5solutions.core.jpa.orm;
 import java.lang.reflect.Method;
 
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
+import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 
 /**
@@ -46,7 +47,8 @@ public class MapUtilityImpl implements MapUtility {
     Class<?> targetClazz = target.getClass();
     String[] p = bindingPath.split("\\.", 2);
 
-    Method[] methods = doo(targetClazz, p);
+    // get the getter and setter methods using the first part of the path, for example address.line1 : p[0] = address.
+    Method[] methods = getMethodsGetterAndSetter(targetClazz, p[0]);
     if (methods != null) {
       Method get = methods[0];
       Method set = methods[1];
@@ -59,7 +61,7 @@ public class MapUtilityImpl implements MapUtility {
       if (p.length == 1) {
         // convert the parameter type
         try {
-          value = convertValue(pb, value, bindingPath, targetType);
+          value = convertValueForEntityFromSQL(pb, value, bindingPath, targetType);
         } catch (TypeConversionException e) {
           throw new RuntimeException("Unable map data due to conversion problem, please check target class " + targetClazz
               + " for the problem when binding path " + bindingPath, e);
@@ -123,17 +125,17 @@ public class MapUtilityImpl implements MapUtility {
      */
   }
 
-  protected Method[] doo(Class<?> targetClazz, String[] p) {
+  protected Method[] getMethodsGetterAndSetter(Class<?> targetClazz, String fieldName) {
     // String[] p = path.split("\\.", 2);
 
-    // if the length of p is > 0 then the path is valid.
-    if (p.length > 0) {
+    // if the field name is not null or empty, then its probably valid.
+    if (Comparison.isNotEmpty(fieldName)) {
 
       Method[] methods = new Method[2];
 
       // get the field name from index 0, since we only splice by a
       // maximum of 2
-      String fieldName = p[0];
+     // String fieldName = p[0];
 
       // find the getter method, make sure it exists
       Method getterMethod = ReflectionUtility.findGetterMethod(targetClazz, fieldName);
@@ -167,14 +169,16 @@ public class MapUtilityImpl implements MapUtility {
     Class<?> targetClazz = target.getClass();
     String[] p = bindingPath.split("\\.", 2);
 
-    Method[] methods = doo(targetClazz, p);
+    // p[0] is the first part for example. address.line1 : p[0] = address p[1] = line1
+    Method[] methods = getMethodsGetterAndSetter(targetClazz, p[0]);
     if (methods != null) {
+    	
+      // getter method in first part of array
       Method get = methods[0];
 
       if (p.length == 1) {
-        // GET THE FINAL VALUE AND RETURN
-        Object next = ReflectionUtility.getValue(get, target);
-        return next;
+        // Get the final value and return it, but first, pass it throw a conversion method (just-in-case)
+        return convertValueForSQLFromEntity(pb, ReflectionUtility.getValue(get, target));
       } else {
         // if p length == to 2 the, continue to recursively walk the graph.
         Object next = ReflectionUtility.getValue(get, target);
@@ -185,7 +189,19 @@ public class MapUtilityImpl implements MapUtility {
   }
 
   /**
-   * Convert value.
+   * Should be overwritten if there are special cases, for example handling of Blob to oid in postgresql scenario,
+   * or converting strings to dates or numbers or whatever else to another type before passing it onto the PreparedStatement
+   * 
+   * @param pb
+   * @param value
+   * @return
+   */
+  protected Object convertValueForSQLFromEntity(ParameterBinder pb, Object value) {
+	  return value;
+  }
+  
+  /**
+   * Convert a value returned from a query resultset back to the entity's property.
    * 
    * @param value
    *          the value
@@ -193,7 +209,7 @@ public class MapUtilityImpl implements MapUtility {
    *          the target type
    * @return the object
    */
-  protected Object convertValue(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType) throws TypeConversionException {
+  protected Object convertValueForEntityFromSQL(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType) throws TypeConversionException {
     // if value is not null, then check the target type against
     // the value type
     if (value != null) {

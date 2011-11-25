@@ -17,6 +17,42 @@
  */
 package com.p5solutions.core.jpa.orm.exceptions;
 
+import javax.persistence.Transient;
+
+/**
+ * NoColumnDefinedException: Thrown when a column cannot be mapped, either when generating the metadata from the resultset, or 
+ * when there is no column definition on a property that requires it, e.g. a column that hasn't been defined with {@link Transient}.
+ * 
+ * @author Kasra Rasaee
+ * @since 2011
+ *
+ */
 public class NoColumnDefinedException extends Exception {
 
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Default Constructor : Empty
+	 */
+	public NoColumnDefinedException() {
+		super();
+	}
+	
+	/**
+	 * Constructor : Message
+	 * @param message
+	 */
+	public NoColumnDefinedException(String message) {
+		super(message);
+	}
+	
+	/**
+	 * Constructor : for column name and entity class
+	 *  
+	 * @param columnName
+	 * @param entityClazz
+	 */
+	public NoColumnDefinedException(String columnName, Class<?> entityClazz) {
+		this("No column by the name " + columnName + " defined within " + entityClazz);
+	}
 }

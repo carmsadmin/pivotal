@@ -126,9 +126,10 @@ public class EntityRowBinder<T> implements RowMapper<T> {
    *          the column name
    * @return the parameter binder
    */
-  protected ParameterBinder getParameterBinder(String columnName) {
+  @Deprecated // use entityDetail.getParameterBinder(columnName) directly?
+  protected ParameterBinder getParameterBinder_deprecated(String columnName) {
     // get the parameter binder by the column name
-    ParameterBinder pb = entityDetail.getParameterBinder(columnName);
+    ParameterBinder pb = entityDetail.getParameterBinderByColumn(columnName);
 
     // if no parameter binder was found, then the entity does not
     // have a column mapping for the selected column
@@ -189,8 +190,11 @@ public class EntityRowBinder<T> implements RowMapper<T> {
       }
 
       // find the column index based on column name, case insensitive
+      // TODO deprecated as per change to adding meta-data code generation to EntityUtility# 
       int columnIndex = findColumnIndex(metaData, columnName);
-
+       
+      //int columnIndex = pb.getColumnMetaData().getColumnIndex();
+      
       if (columnIndex == -1) {
         NoColumnFoundInResultSetException e = new NoColumnFoundInResultSetException(entityDetail.getEntityClass(), columnName);
         logger.debug(e.toString());
@@ -203,7 +207,7 @@ public class EntityRowBinder<T> implements RowMapper<T> {
       if (doColumn(pb, entity, resultValue)) {
 
         if (isDebug) {
-          logger.debug(" -> Column [" + metaData.getColumnName(columnIndex) + "] with value [" + (resultValue == null ? " NULL " : resultValue)
+          logger.debug(" -> Column [" + pb.getColumnMetaData().getColumnName() + "] with value [" + (resultValue == null ? " NULL " : resultValue)
               + "] to path " + pb.getBindingPath());
         }
       } else if (doJoinColumn(pb, entity, resultValue)) {
