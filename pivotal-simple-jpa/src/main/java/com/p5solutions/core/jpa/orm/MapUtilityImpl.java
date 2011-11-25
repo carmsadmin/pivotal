@@ -18,6 +18,7 @@
 package com.p5solutions.core.jpa.orm;
 
 import java.lang.reflect.Method;
+import java.sql.Blob;
 
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
 import com.p5solutions.core.utils.Comparison;
@@ -197,7 +198,12 @@ public class MapUtilityImpl implements MapUtility {
    * @return
    */
   protected Object convertValueForSQLFromEntity(ParameterBinder pb, Object value) {
-	  return value;
+    
+    if (value instanceof Blob || pb.isLob()) {
+      return getConversionUtility().convertToSqlType(pb, value);
+    }
+    
+    return value;
   }
   
   /**
