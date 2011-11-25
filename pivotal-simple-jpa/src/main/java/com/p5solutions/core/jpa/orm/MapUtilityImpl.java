@@ -199,7 +199,8 @@ public class MapUtilityImpl implements MapUtility {
    */
   protected Object convertValueForSQLFromEntity(ParameterBinder pb, Object value) {
     
-    if (value instanceof Blob || pb.isLob()) {
+    // if instance of any of these or is flagged with @Lob annotation
+    if (value instanceof Blob || pb.isLob() || value instanceof byte[]) {
       return getConversionUtility().convertToSqlType(pb, value);
     }
     
