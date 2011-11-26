@@ -5,30 +5,26 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-simple-jpa-oracle</artifactId>
 	<name>pivotal-simple-jpa-oracle</name>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-core</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-simple-jpa</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
+			<version>0.1.2-SNAPSHOT</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjlib</artifactId>
-			<version>1.6.2</version>
-		</dependency>
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- JSR 303 - Used mainly for JSON Ajax binding -->
@@ -36,6 +32,7 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
