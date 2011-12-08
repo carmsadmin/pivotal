@@ -1349,7 +1349,7 @@ public class ReflectionUtility {
    */
   @SuppressWarnings("unchecked")
   public static <O, I> O invoke(I object, Method method, Object... args) {
-    return (O) invoke(object, method, false, args);
+    return (O) invokeWithAccessWithArguments(object, method, false, args);
   }
 
   /**
@@ -1368,8 +1368,8 @@ public class ReflectionUtility {
    * @return the o
    */
   @SuppressWarnings("unchecked")
-  public static <O, I> O invoke(I object, Method method, boolean ignoreAccess) {
-    return (O) invoke(object, method, ignoreAccess, (Object[]) null);
+  public static <O, I> O invokeWithAccess(I object, Method method, boolean ignoreAccess) {
+    return (O) invokeWithAccessWithArguments(object, method, ignoreAccess, (Object[]) null);
   }
 
   /**
@@ -1390,7 +1390,7 @@ public class ReflectionUtility {
    * @return the object
    */
   @SuppressWarnings("unchecked")
-  public static <O, I> O invoke(I object, Method method, boolean ignoreAccess, Object... args) {
+  public static <O, I> O invokeWithAccessWithArguments(I object, Method method, boolean ignoreAccess, Object... args) {
     if (object == null) {
       throw new RuntimeException("Object cannot be null when invoking its methods");
     }
