@@ -20,6 +20,9 @@ package com.p5solutions.core.jpa.orm;
 import java.lang.reflect.Method;
 import java.sql.Blob;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -39,6 +42,9 @@ public class MapUtilityImpl implements MapUtility {
   /** The conversion utility. */
   protected ConversionUtility conversionUtility;
 
+  /** The logger. */
+  private static Log logger = LogFactory.getLog(MapUtilityImpl.class);
+
   /**
    * @see com.p5solutions.core.jpa.orm.MapUtility#map(com.p5solutions.core.jpa.orm.ParameterBinder,
    *      java.lang.Object, java.lang.Object, java.lang.String)
@@ -51,11 +57,13 @@ public class MapUtilityImpl implements MapUtility {
     // get the getter and setter methods using the first part of the path, for example address.line1 : p[0] = address.
     Method[] methods = getMethodsGetterAndSetter(targetClazz, p[0]);
     if (methods != null) {
+      
       Method get = methods[0];
       Method set = methods[1];
 
       // whats the return type of the getter method?
       Class<?> targetType = get.getReturnType();
+// NOT, SINCE IT COULD BE RECURSIVE e.g. @Embedded      Class<?> targetType = pb.getTargetValueType();
 
       // if the length of p is equal == to 1, then we've hit the end
       // of the path
@@ -68,6 +76,15 @@ public class MapUtilityImpl implements MapUtility {
               + " for the problem when binding path " + bindingPath, e);
         }
 
+        // only map the object to the target entity property if the 
+        // value is assignable to the target type, otherwise reject it.    
+        if (value != null && !targetType.isAssignableFrom(value.getClass())) {
+          // value is not assignable to target property.
+          logger.error("The value [" + value + "] of type [" + value.getClass() + "] is not assignable to target type [" + targetType
+              + "] on " + pb.getEntityClass() + "->" + pb.getBindingName());
+          value = null;
+        }
+          
         // finally set the value at the last path
         ReflectionUtility.setValue(set, target, value);
 
