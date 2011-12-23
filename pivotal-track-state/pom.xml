@@ -5,7 +5,7 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-track-state</artifactId>
 	<name>pivotal-track-state</name>
-	<version>0.1.2-SNAPSHOT</version>
+	<version>0.1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -13,13 +13,13 @@
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-core</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
+			<version>0.1.2.1-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-simple-jpa</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
+			<version>0.1.2.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
