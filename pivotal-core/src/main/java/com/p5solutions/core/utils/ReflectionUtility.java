@@ -19,6 +19,8 @@ package com.p5solutions.core.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -255,7 +257,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if a method is transient either by specifying the transient modifier
+   * Checks if a method is {@link Transient} either by specifying the transient modifier
    * or the {@link Transient} annotation.
    * 
    * @param method
@@ -275,7 +277,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is a boolean class.
+   * Checks if is a {@link Boolean} class.
    * 
    * @param clazz
    *          the clazz
@@ -286,7 +288,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is clob.
+   * Checks if is {@link Clob}.
    * 
    * @param clazz
    *          the clazz
@@ -297,7 +299,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is timestamp.
+   * Checks if is {@link Timestamp}.
    * 
    * @param clazz
    *          the clazz
@@ -308,7 +310,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is blob.
+   * Checks if is {@link Blob}.
    * 
    * @param clazz
    *          the clazz
@@ -319,7 +321,29 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is number class.
+   * Checks if is an {@link InputStream}.
+   * 
+   * @param clazz
+   *          the clazz
+   * @return the boolean
+   */
+  public static Boolean isInputStream(Class<?> clazz) {
+    return InputStream.class.isAssignableFrom(clazz);
+  }
+  
+  /**
+   * Checks if is an {@link OutputStream}.
+   * 
+   * @param clazz
+   *          the clazz
+   * @return the boolean
+   */
+  public static Boolean isOutputStream(Class<?> clazz) {
+    return OutputStream.class.isAssignableFrom(clazz);
+  }
+
+  /**
+   * Checks if is {@link Number} .
    * 
    * @param clazz
    *          the clazz
@@ -330,7 +354,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is serializable class.
+   * Checks if is {@link Serializable}.
    * 
    * @param clazz
    *          the clazz
@@ -341,7 +365,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is date.
+   * Checks if is {@link Date}.
    * 
    * @param clazz
    *          the clazz
@@ -352,7 +376,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is byte class.
+   * Checks if is {@link Byte} class.
    * 
    * @param clazz
    *          the clazz
@@ -363,7 +387,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is short class.
+   * Checks if is {@link Short} class.
    * 
    * @param clazz
    *          the clazz
@@ -374,7 +398,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is integer class.
+   * Checks if is {@link Integer} class.
    * 
    * @param clazz
    *          the clazz
@@ -385,7 +409,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is big integer class.
+   * Checks if is {@link BigInteger} class.
    * 
    * @param clazz
    *          the clazz
@@ -396,7 +420,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is long class.
+   * Checks if is {@link Long} class.
    * 
    * @param clazz
    *          the clazz
@@ -407,7 +431,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is float class.
+   * Checks if is {@link Float} class.
    * 
    * @param clazz
    *          the clazz
@@ -418,7 +442,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is double class.
+   * Checks if is {@link Double} class.
    * 
    * @param clazz
    *          the clazz
@@ -429,7 +453,7 @@ public class ReflectionUtility {
   }
 
   /**
-   * Checks if is big decimal class.
+   * Checks if is {@link BigDecimal} class.
    * 
    * @param clazz
    *          the clazz
