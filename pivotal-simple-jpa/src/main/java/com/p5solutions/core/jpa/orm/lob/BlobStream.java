@@ -32,9 +32,19 @@ public class BlobStream implements Blob {
   public BlobStream(FileInputStream input) {
     this.input = input;
     try {
-      long skip = input.skip(Long.MAX_VALUE);
-      this._length = skip;
-      input.reset();
+      
+      // TODO check performance issues?? doubtful, perhaps in 1.4 JDK
+      
+      _length = input.getChannel().size();
+      
+      // FILE CHANNEL MAY BE SLOW..
+      // http://stackoverflow.com/questions/116574/java-get-file-size-efficiently
+      
+      
+      
+      //long skip = input.skip(Long.MAX_VALUE);
+      //this._length = skip;
+      //input.reset();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
