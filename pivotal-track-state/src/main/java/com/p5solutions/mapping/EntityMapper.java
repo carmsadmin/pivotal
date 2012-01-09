@@ -66,7 +66,7 @@ public class EntityMapper {
 
   /** The LOGGER. */
   protected static Log logger = LogFactory.getLog(EntityMapper.class);
-  
+
   /**
    * The Interface Invoker.
    */
@@ -526,12 +526,16 @@ public class EntityMapper {
    */
   @SuppressWarnings("unchecked")
   protected static final boolean ignore(Method method) {
-    boolean trans = ReflectionUtility.hasAnyAnnotation(method, MapTransient.class);
-    if (!trans) {
-      if ((trans = ReflectionUtility.hasAnyAnnotation(method, Transient.class))) {
-        logger.warn("Should not be using " + Transient.class + " annotation on method " + method + ", instead, you should use the "
-            + MapTransient.class + " annotation");
-      }
+    MapTransient mapTransient = ReflectionUtility.findAnnotation(method, MapTransient.class);
+    if (mapTransient != null) {
+      return mapTransient.ignored();
+    }
+
+    boolean trans = ReflectionUtility.hasAnyAnnotation(method, Transient.class);
+    if (trans) {
+      logger.warn("Should not be using ONLY " + Transient.class + " on method " + method + ", instead, you should use the "
+          + MapTransient.class + " annotation; if you wish to not persist the entity but still map it the value, use the "
+          + MapTransient.class + " with the ignored set to false.");
     }
     return trans;
   }
