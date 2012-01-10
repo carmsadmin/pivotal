@@ -17,12 +17,13 @@
  */
 package com.p5solutions.trackstate.annotation;
 
-import java.beans.Transient;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import javax.persistence.Transient;
 
 /**
  * MapClass:
@@ -38,11 +39,12 @@ public @interface MapTransient {
   String reason() default "no reason";
 
   /**
-   * Default is <code>true</code>, sometimes we may want to use {@link Transient} annotation
-   * such that we do not persist the data, but also do not want to get warning
-   * messages about not using {@link MapTransient}, because we DO WANT to map
-   * the data to the value object; in this scenario, you should set the
-   * {@link MapTransient} annotation and set the {@link #ignored()} to <code>false</code>
+   * Default is <code>true</code>, sometimes we may want to use
+   * {@link Transient} annotation such that we do not persist the data, but also
+   * do not want to get warning messages about not using {@link MapTransient},
+   * because we DO WANT to map the data to the value object; in this scenario,
+   * you should set the {@link MapTransient} annotation and set the
+   * {@link #ignored()} to <code>false</code>
    * 
    * @return true, if successful
    */
