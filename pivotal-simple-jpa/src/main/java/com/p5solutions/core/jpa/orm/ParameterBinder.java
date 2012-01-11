@@ -41,28 +41,21 @@ import com.p5solutions.core.jpa.orm.transaction.TransactionTemplate;
 import com.p5solutions.core.utils.ReflectionUtility;
 
 /**
- * ParameterBinderExtended: Holds information about a single entity property.
- * This class will return various information about how the property should
- * behave.
+ * ParameterBinderExtended: Holds information about a single entity property. This class will return various information
+ * about how the property should behave.
  * 
- * As an example, a parameter may be an Id parameter, which may also contain an
- * {@link Column} annotation, or it may be a {@link ManyToOne} relationship with
- * a {@link JoinColumn} or {@link JoinColumns} annotation, or it may very well
- * be a {@link Transient} property.
+ * As an example, a parameter may be an Id parameter, which may also contain an {@link Column} annotation, or it may be
+ * a {@link ManyToOne} relationship with a {@link JoinColumn} or {@link JoinColumns} annotation, or it may very well be
+ * a {@link Transient} property.
  * 
  * @author Kasra Rasaee
  * @since 2010-10-30
  * 
- * @see EntityUtility for details on how to process and generate a
- *      {@link ParameterBinder}
- * @see EntityDetail for details on where a single instance of the
- *      {@link ParameterBinder} is stored.
- * @see EntityParser for details on evaluating queries and how a
- *      {@link ParameterBinder} is used.
- * @see EntityPersister for details on evaluating dml operations such as insert,
- *      delete, update, merge, etc.
- * @see TransactionTemplate the template which inevitably calls the persister or
- *      parser utilities.
+ * @see EntityUtility for details on how to process and generate a {@link ParameterBinder}
+ * @see EntityDetail for details on where a single instance of the {@link ParameterBinder} is stored.
+ * @see EntityParser for details on evaluating queries and how a {@link ParameterBinder} is used.
+ * @see EntityPersister for details on evaluating dml operations such as insert, delete, update, merge, etc.
+ * @see TransactionTemplate the template which inevitably calls the persister or parser utilities.
  */
 public class ParameterBinder extends AbstractParameterBinder {
 
@@ -92,11 +85,11 @@ public class ParameterBinder extends AbstractParameterBinder {
 
   /** The sql column meta-data for this column, if any **/
   private ParameterBinderColumnMetaData columnMetaData;
-  
+
   /** The dependency join. */
   /*
-   * TODO probably needs to be some sort of list, or perhaps within the
-   * DependencyJoin class define a list such that JoinColumns (plural) will work
+   * TODO probably needs to be some sort of list, or perhaps within the DependencyJoin class define a list such that
+   * JoinColumns (plural) will work
    */
   private DependencyJoin dependencyJoin;
 
@@ -117,9 +110,19 @@ public class ParameterBinder extends AbstractParameterBinder {
    * 
    * @return the sequence generator
    */
-  public SequenceGenerator getSequenceGenerator() {
+  public SequenceGenerator getSequenceGenerator(GeneratedValue generatedValue) {
     if (getGetterMethod() != null) {
-      return ReflectionUtility.findAnnotation(getGetterMethod(), SequenceGenerator.class);
+      String sequenceReferenceName = generatedValue.generator();
+      // lookup the method annotation first (sequence-generator can exist on methods)
+      SequenceGenerator generator = ReflectionUtility.findAnnotation(getGetterMethod(), SequenceGenerator.class);
+      if (generator == null) {
+        // then lookup the declaring class (sequence-generator is a global object)
+        generator = ReflectionUtility.findAnnotation(getGetterMethod().getDeclaringClass(), SequenceGenerator.class);
+        // match the sequence generator name and the reference from the generated value annotation
+        if (sequenceReferenceName.equals(generator.name())) {
+          return generator;
+        }
+      }
     }
     return null;
   }
@@ -183,9 +186,9 @@ public class ParameterBinder extends AbstractParameterBinder {
    * @return the sequence name
    */
   public String getSequenceName() {
-    SequenceGenerator sg = getSequenceGenerator();
-    if (sg != null) {
-      return sg.sequenceName();
+    SequenceGenerator generator = getSequenceGenerator(getGeneratedValue());
+    if (generator != null) {
+      return generator.sequenceName();
     }
     return null;
   }
@@ -328,8 +331,8 @@ public class ParameterBinder extends AbstractParameterBinder {
    * 
    * @return true, if is sequence generator
    */
-  public boolean isSequenceGenerator() {
-    return getSequenceGenerator() != null;
+  public boolean isGeneratedValue() {
+    return getGeneratedValue() != null;
   }
 
   /**
@@ -591,7 +594,8 @@ public class ParameterBinder extends AbstractParameterBinder {
     Column column = getColumn();
     if (column == null) {
       // TODO logger
-      System.out.println("Column definition is null for binding path " + getBindingPath() + " on entity class of type " + entityClass);
+      System.out.println("Column definition is null for binding path " + getBindingPath() + " on entity class of type "
+          + entityClass);
     }
     return column.name();
   }
@@ -714,9 +718,9 @@ public class ParameterBinder extends AbstractParameterBinder {
    */
   @SuppressWarnings("unchecked")
   public boolean isLob() {
-	 return ReflectionUtility.hasAnyAnnotation(getterMethod, Lob.class);
+    return ReflectionUtility.hasAnyAnnotation(getterMethod, Lob.class);
   }
-  
+
   /*
    * (non-Javadoc)
    * 
@@ -764,21 +768,22 @@ public class ParameterBinder extends AbstractParameterBinder {
 
   /**
    * Gets the database table's column meta data, comprised of sql type and other set of information.
+   * 
    * @return
    */
   public ParameterBinderColumnMetaData getColumnMetaData() {
-	return columnMetaData;
+    return columnMetaData;
   }
-  
+
   /**
    * Sets the database table's column meta data information.
    * 
    * @param columnMetaData
    */
   public void setColumnMetaData(ParameterBinderColumnMetaData columnMetaData) {
-	this.columnMetaData = columnMetaData;
+    this.columnMetaData = columnMetaData;
   }
-  
+
   /**
    * Sets the dependency join.
    * 

@@ -3,7 +3,6 @@ package com.p5solutions.core.jpa.orm.lob;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,25 +31,23 @@ public class BlobStream implements Blob {
   public BlobStream(FileInputStream input) {
     this.input = input;
     try {
-      
+
       // TODO check performance issues?? doubtful, perhaps in 1.4 JDK
-      
+
       _length = input.getChannel().size();
-      
+
       // FILE CHANNEL MAY BE SLOW..
       // http://stackoverflow.com/questions/116574/java-get-file-size-efficiently
-      
-      
-      
-      //long skip = input.skip(Long.MAX_VALUE);
-      //this._length = skip;
-      //input.reset();
+
+      // long skip = input.skip(Long.MAX_VALUE);
+      // this._length = skip;
+      // input.reset();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-    
+
   }
-  
+
   public BlobStream(InputStream input) {
     this.input = input;
     if (input instanceof ByteArrayInputStream) {
@@ -158,6 +155,17 @@ public class BlobStream implements Blob {
 
   @Override
   public InputStream getBinaryStream() throws SQLException {
+    if (file != null) {
+      try {
+        FileInputStream input = new FileInputStream(file);
+        this.input = input;
+        this._length = file.length();
+        return this.input;
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     if (output == null) {
       return this.input;
     }
@@ -176,17 +184,6 @@ public class BlobStream implements Blob {
         this._length = buffer.length;
       } catch (IOException e) {
         // TODO log??
-        throw new RuntimeException(e);
-      }
-    }
-
-    if (file != null) {
-      try {
-        FileInputStream input = new FileInputStream(file);
-        this.input = input;
-        this._length = file.length();
-        return this.input;
-      } catch (IOException e) {
         throw new RuntimeException(e);
       }
     }
@@ -233,7 +230,8 @@ public class BlobStream implements Blob {
   @Override
   public OutputStream setBinaryStream(long pos) throws SQLException {
     if (pos > 0) {
-      throw new RuntimeException("position must be zero, since its returning an instance of FileOutputStream, as a temporary staging area");
+      throw new RuntimeException(
+          "position must be zero, since its returning an instance of FileOutputStream, as a temporary staging area");
     }
     return setBinaryStream();
   }
