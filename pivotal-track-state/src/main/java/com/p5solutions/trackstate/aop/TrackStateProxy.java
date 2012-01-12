@@ -21,85 +21,82 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.p5solutions.core.jpa.orm.entity.aop.Targetable;
+import com.p5solutions.core.aop.Targetable;
 
 /**
- * TrackStateProxy: Interface defined as part of the enhanced proxy class. All
- * instances of {@link TrackStateProxyFactoryImpl} will implement this
- * interface, which can be type casted such that state of the proxy can be
- * monitored or changed.
+ * TrackStateProxy: Interface defined as part of the enhanced proxy class. All instances of
+ * {@link TrackStateProxyFactoryImpl} will implement this interface, which can be type casted such that state of the
+ * proxy can be monitored or changed.
  * 
  * @author Kasra Rasaee
  * @since 2009-02-10
  * @see Track annotation for method level tracking
- * @see TrackStateProxyAspect for an automatic proxying of value objects
- *      returned via a service method call, e.g: an implementation of
- *      {@link ActionService}.
+ * @see TrackStateProxyAspect for an automatic proxying of value objects returned via a service method call, e.g: an
+ *      implementation of {@link ActionService}.
  * @see TrackState annotation for details on how to wrap an object for tracking
  * @see TrackStateProxyMethodHandler interface for implementation definition.
  * @see TrackStateProxyMethodHandlerImpl for actual implementation details.
  */
 public interface TrackStateProxy extends Targetable {
 
-	public Object writeReplace();
+  public Object writeReplace();
 
-	/**
-	 * Checks if is initialized.
-	 * 
-	 * @return true, if is initialized
-	 */
-	boolean isInitialized();
+  /**
+   * Checks if is initialized.
+   * 
+   * @return true, if is initialized
+   */
+  boolean isInitialized();
 
-	/**
-	 * Sets the initialized.
-	 * 
-	 * @param initialized
-	 *          the new initialized
-	 */
-	void setInitialized(boolean initialized);
+  /**
+   * Sets the initialized.
+   * 
+   * @param initialized
+   *          the new initialized
+   */
+  void setInitialized(boolean initialized);
 
-	/**
-	 * Set the laundry flags. <note>Restrict from calling this method directly, or
-	 * look at {@link TrackStateProxyWrapper}</note>
-	 * 
-	 * @param trackStateLaundryMap
-	 */
-	void setTrackStateLaundryMap(
-	    Map<String, TrackStateLaundry> trackStateLaundryMap);
+  /**
+   * Set the laundry flags. <note>Restrict from calling this method directly, or look at {@link TrackStateProxyWrapper}
+   * </note>
+   * 
+   * @param trackStateLaundryMap
+   */
+  void setTrackStateLaundryMap(Map<String, TrackStateLaundry> trackStateLaundryMap);
 
-	/**
-	 * Reset the laundry list.
-	 */
-	void reset();
+  /**
+   * Reset the laundry list.
+   */
+  void reset();
 
-	/**
-	 * Gets the track state laundry map defined for this proxy instance.
-	 * 
-	 * @return the laundry list
-	 */
-	Map<String, TrackStateLaundry> getTrackStateLaundryMap();
+  /**
+   * Gets the track state laundry map defined for this proxy instance.
+   * 
+   * @return the laundry list
+   */
+  Map<String, TrackStateLaundry> getTrackStateLaundryMap();
 
-	/**
-	 * Gets the track state laundry list defined for this proxy instance.
-	 * 
-	 * @see TrackStateProxy#getTrackStateLaundryMap()
-	 * @return the track state laundry list
-	 */
-	Collection<TrackStateLaundry> getTrackStateLaundryList();
+  /**
+   * Gets the track state laundry list defined for this proxy instance.
+   * 
+   * @see TrackStateProxy#getTrackStateLaundryMap()
+   * @return the track state laundry list
+   */
+  Collection<TrackStateLaundry> getTrackStateLaundryList();
 
-	/**
-	 * Gets the affected classes.
-	 * 
-	 * @return the affected classes
-	 */
-	List<Class<?>> getAffectedClasses();
+  /**
+   * Gets the affected classes.
+   * 
+   * @return the affected classes
+   */
+  List<Class<?>> getAffectedClasses();
 
-	/**
-	 * Gets the track state laundry list searched for a specific class type.
-	 * 
-	 * @param forClazz
-	 *          the for clazz
-	 * @return the track state laundry list
-	 */
-	List<TrackStateLaundry> getTrackStateLaundryListForClass(Class<?> forClazz);
+  /**
+   * Gets the track state laundry list searched for a specific class type.
+   * 
+   * @param forClazz
+   *          the for clazz
+   * @return the track state laundry list
+   */
+  List<TrackStateLaundry> getTrackStateLaundryListForClass(Class<?> forClazz);
 }

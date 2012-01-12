@@ -28,8 +28,7 @@ import javax.persistence.Transient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.p5solutions.core.jpa.orm.ConversionUtility;
-import com.p5solutions.core.jpa.orm.entity.aop.EntityProxy;
+import com.p5solutions.core.aop.Targetable;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 import com.p5solutions.mapping.MapClassTracker.PlaceHolder;
@@ -43,24 +42,19 @@ import com.p5solutions.trackstate.annotation.MapTransient;
 import com.p5solutions.trackstate.aop.TrackStateProxy;
 
 /**
- * EntityMapper: Utility designed specifically to map entities to value objects
- * and value objects to multiple entities. This mapping tool will automatically
- * instantiate entities or value objects when used in conjunction with the
+ * EntityMapper: Utility designed specifically to map entities to value objects and value objects to multiple entities.
+ * This mapping tool will automatically instantiate entities or value objects when used in conjunction with the
  * {@link MapClass} and {@link MapClasses} type annotations.
  * 
  * @author Kasra Rasaee
  * @since 2009-05-08
  * @see MapClass to define the class type to map the source object to
  * @see MapClasses to define multiple class types to map the source object to.
- * @see MapProperty to define a specific the path a specific field should be
- *      mapped to.
- * @see MapProperties to define distinct paths for specific fields within the
- *      map to.
- * @note You may specify {@link MapProperty#to()} as part of a hierarchy such as
- *       `address.addressLine1` within the target classes defined as part of
- *       {@link MapClass} and {@link MapClasses}
- * @see 'EntityMapperTest' for example on embedded path and reversing of paths
- *      using the {@link MapExpand} annotation.
+ * @see MapProperty to define a specific the path a specific field should be mapped to.
+ * @see MapProperties to define distinct paths for specific fields within the map to.
+ * @note You may specify {@link MapProperty#to()} as part of a hierarchy such as `address.addressLine1` within the
+ *       target classes defined as part of {@link MapClass} and {@link MapClasses}
+ * @see 'EntityMapperTest' for example on embedded path and reversing of paths using the {@link MapExpand} annotation.
  */
 public class EntityMapper {
 
@@ -80,10 +74,9 @@ public class EntityMapper {
    * @param method
    *          The method in question to search against
    * 
-   * @return A list of {@link MapProperty} annotations defined on the property
-   *         as part of the {@link MapProperties} annotations. Note that if only
-   *         {@link MapProperty} is defined then a list with a single annotation
-   *         will be returned.
+   * @return A list of {@link MapProperty} annotations defined on the property as part of the {@link MapProperties}
+   *         annotations. Note that if only {@link MapProperty} is defined then a list with a single annotation will be
+   *         returned.
    */
   protected static final MapProperty[] properties(Method method) {
     MapProperties properties = ReflectionUtility.findAnnotation(method, MapProperties.class);
@@ -105,16 +98,14 @@ public class EntityMapper {
   }
 
   /**
-   * Get a list of {@link MapClass} annotations defined on a specific class
-   * type.
+   * Get a list of {@link MapClass} annotations defined on a specific class type.
    * 
    * @param clazz
    *          The clazz in question to search against
    * 
-   * @return A list of {@link MapClass} annotations defined on the property as
-   *         part of the {@link MapClasses} annotations. Note that if only
-   *         {@link MapClass} is defined then a list with a single annotation
-   *         will be returned.
+   * @return A list of {@link MapClass} annotations defined on the property as part of the {@link MapClasses}
+   *         annotations. Note that if only {@link MapClass} is defined then a list with a single annotation will be
+   *         returned.
    */
   protected static final MapClass[] classes(Class<?> clazz) {
     MapClasses classes = ReflectionUtility.findAnnotation(clazz, MapClasses.class);
@@ -187,12 +178,10 @@ public class EntityMapper {
 
   /**
    * Iterate each propety and invoke the anonymous method callback. Use the
-   * {@link EntityMapper#iterateProperties(Method, Object, MapClassTracker)}
-   * method to invoke this method.
+   * {@link EntityMapper#iterateProperties(Method, Object, MapClassTracker)} method to invoke this method.
    * 
    * @param method
-   *          The source method with the {@link MapProperties} and or
-   *          {@link MapProperty}
+   *          The source method with the {@link MapProperties} and or {@link MapProperty}
    * @param value
    *          The value instance invoke the callback with.
    * @param invoker
@@ -221,9 +210,8 @@ public class EntityMapper {
   }
 
   /**
-   * Gather all the {@link MapProperty} annotations from the method and iterate
-   * each of them, selectively map to instances within the tracker the classes
-   * that have been defined as part of the {@link MapProperties}
+   * Gather all the {@link MapProperty} annotations from the method and iterate each of them, selectively map to
+   * instances within the tracker the classes that have been defined as part of the {@link MapProperties}
    * 
    * @param method
    *          The source method, used to get the actual annotations
@@ -231,10 +219,8 @@ public class EntityMapper {
    *          The source value.
    * 
    * @param tracker
-   *          An instance of the tracker for the selective hierarchy within the
-   *          source object.
-   * @return <code>true</code> if there were properties and the iteration was
-   *         successful, otherwise <code>false</code>
+   *          An instance of the tracker for the selective hierarchy within the source object.
+   * @return <code>true</code> if there were properties and the iteration was successful, otherwise <code>false</code>
    */
   protected static final boolean iterateProperties(Method method, final Object value, final MapClassTracker tracker) {
 
@@ -293,18 +279,16 @@ public class EntityMapper {
   }
 
   /**
-   * Attempt to directly map the value defined by invoking the method on the
-   * source object against all fields within all instances within the tracker
-   * instance.
+   * Attempt to directly map the value defined by invoking the method on the source object against all fields within all
+   * instances within the tracker instance.
    * 
    * @param tracker
-   *          the tracker which holds all instances defined as part of the
-   *          {@link MapClass} and {@link MapClasses} annotation.
+   *          the tracker which holds all instances defined as part of the {@link MapClass} and {@link MapClasses}
+   *          annotation.
    * @param source
    *          the source object which is being mapped from
    * @param method
-   *          the method which holds will be invoked to get the physical object
-   *          being mapped
+   *          the method which holds will be invoked to get the physical object being mapped
    */
   protected static final void attemptDirectMap(MapClassTracker tracker, Object source, Method method) {
     // build the field name from method name
@@ -318,14 +302,12 @@ public class EntityMapper {
   }
 
   /**
-   * Does the class type have any of the following annotations {@link MapClass}
-   * or {@link MapClasses}
+   * Does the class type have any of the following annotations {@link MapClass} or {@link MapClasses}
    * 
    * @param clazz
    *          the clazz to search against
    * 
-   * @return <code>true</code> , if successfully found annotations otherwise
-   *         <code>false</code>
+   * @return <code>true</code> , if successfully found annotations otherwise <code>false</code>
    */
   @SuppressWarnings("unchecked")
   protected static final boolean mappable(Method method) {
@@ -340,10 +322,9 @@ public class EntityMapper {
   }
 
   /**
-   * Builds the map class tracker either as a new instance defined by the
-   * {@link MapClass} annotations defined on the clazz type and targets
-   * argument, or uses a pre-existing {@link MapClassTracker} defined as part of
-   * the first index of the targets argument.
+   * Builds the map class tracker either as a new instance defined by the {@link MapClass} annotations defined on the
+   * clazz type and targets argument, or uses a pre-existing {@link MapClassTracker} defined as part of the first index
+   * of the targets argument.
    * 
    * @param clazz
    *          the clazz
@@ -384,13 +365,11 @@ public class EntityMapper {
   }
 
   /**
-   * Does the method have any {@link MapProperty} or {@link MapProperties}
-   * annotations.
+   * Does the method have any {@link MapProperty} or {@link MapProperties} annotations.
    * 
    * @param method
    *          The method to search against
-   * @return <code>true</code> if method contains the annotations, otherwise
-   *         <code>false</code>
+   * @return <code>true</code> if method contains the annotations, otherwise <code>false</code>
    */
   @SuppressWarnings("unchecked")
   protected static final boolean iteratable(Method method) {
@@ -398,27 +377,22 @@ public class EntityMapper {
   }
 
   /**
-   * Recursively walk an object and call the {@link #map(Object, Object...)}
-   * method using the source->value as the starting point. The value returned as
-   * part of the next recursive call to map should result in an end result which
-   * will map back to the target object defined as part of the {@link MapClass}
-   * or {@link MapClasses} attribute.
+   * Recursively walk an object and call the {@link #map(Object, Object...)} method using the source->value as the
+   * starting point. The value returned as part of the next recursive call to map should result in an end result which
+   * will map back to the target object defined as part of the {@link MapClass} or {@link MapClasses} attribute.
    * 
    * @param value
-   *          The source value, most likely a complex object and not a primitive
-   *          like typed object such as an Integer or String. In most cases,
-   *          objects defined with the {@link MapClass} and or
-   *          {@link MapClasses} annotation are expanded or walked recursively.
+   *          The source value, most likely a complex object and not a primitive like typed object such as an Integer or
+   *          String. In most cases, objects defined with the {@link MapClass} and or {@link MapClasses} annotation are
+   *          expanded or walked recursively.
    * @param method
-   *          The source method in question, usually where the source value is
-   *          going to be walked against.
+   *          The source method in question, usually where the source value is going to be walked against.
    * @param tracker
-   *          The tracker which holds all instances related to the current
-   *          recursion, unless source method is specified with
-   *          {@link MapExpand}, which in that case the previous tracker will be
-   *          used against the next recursion call.
-   * @return An instance of a complex object defined by the return type defined
-   *         as part of the target classes method return.
+   *          The tracker which holds all instances related to the current recursion, unless source method is specified
+   *          with {@link MapExpand}, which in that case the previous tracker will be used against the next recursion
+   *          call.
+   * @return An instance of a complex object defined by the return type defined as part of the target classes method
+   *         return.
    */
   protected static final Object walkexpand(Object value, Method method, MapClassTracker tracker) {
     // Does the source method have a MapExpand annotation?
@@ -461,8 +435,8 @@ public class EntityMapper {
   }
 
   /**
-   * Use the method name and build a field name from it, using that field name
-   * map the value against all instances defined within the tracker#instances.
+   * Use the method name and build a field name from it, using that field name map the value against all instances
+   * defined within the tracker#instances.
    * 
    * @param method
    * @param value
@@ -533,8 +507,9 @@ public class EntityMapper {
 
     boolean trans = ReflectionUtility.hasAnyAnnotation(method, Transient.class);
     if (trans) {
-      logger.warn("Should not be using ONLY " + Transient.class + " on method " + method + ", instead, you should use the "
-          + MapTransient.class + " annotation; if you wish to not persist the entity but still map it the value, use the "
+      logger.warn("Should not be using ONLY " + Transient.class + " on method " + method
+          + ", instead, you should use the " + MapTransient.class
+          + " annotation; if you wish to not persist the entity but still map it the value, use the "
           + MapTransient.class + " with the ignored set to false.");
     }
     return trans;
@@ -606,8 +581,7 @@ public class EntityMapper {
   };
 
   /**
-   * Map a source object to the destination object, the objects are usually of
-   * the same type.
+   * Map a source object to the destination object, the objects are usually of the same type.
    * 
    * @param <T>
    *          the generic type
@@ -622,10 +596,9 @@ public class EntityMapper {
   }
 
   /**
-   * Map a source object to the destination object, the objects are usually of
-   * the same type. Note that this one-to-one mapping DOES NOT recursively copy
-   * values from the source to destination, but simply iterates through the
-   * source object and sets values within the destination object.
+   * Map a source object to the destination object, the objects are usually of the same type. Note that this one-to-one
+   * mapping DOES NOT recursively copy values from the source to destination, but simply iterates through the source
+   * object and sets values within the destination object.
    * 
    * @param <T>
    *          the generic type
@@ -634,8 +607,7 @@ public class EntityMapper {
    * @param dst
    *          the dst
    * @param ignoreMethodNotFound
-   *          if <code>true</code> throws a RuntimeException of the method is
-   *          not found
+   *          if <code>true</code> throws a RuntimeException of the method is not found
    * @return the destination object of type T
    */
   public static final <T> T mapOneToOne(T src, T dst, boolean ignoreMethodNotFound) {
@@ -647,12 +619,14 @@ public class EntityMapper {
       throw new NullPointerException("Destination object cannot be null when mapping source to target of same type.");
     }
 
-    Class<?> srcClazz = src.getClass();
+    // do this to get to source proxy's target annotations
+    Class<?> srcClazz = src instanceof Targetable ? ((Targetable) src).getTarget().getClass() : src.getClass();
+    // destination class' annotation don't matter
     Class<?> dstClazz = dst.getClass();
+
     /*
-     * if (!Comparison.isEqual(srcClazz, dstClazz)) { throw new
-     * RuntimeException("Class type for source type " + srcClazz +
-     * " and destination type " + dstClazz + "do not match"); }
+     * if (!Comparison.isEqual(srcClazz, dstClazz)) { throw new RuntimeException("Class type for source type " +
+     * srcClazz + " and destination type " + dstClazz + "do not match"); }
      */
     List<Method> methods = ReflectionUtility.findGetMethodsWithNoParams(srcClazz);
     for (Method method : methods) {
@@ -664,7 +638,8 @@ public class EntityMapper {
 
       if (setter == null) {
         if (!ignoreMethodNotFound) {
-          throw new RuntimeException("No setter method found for getter method " + method.getName() + " defined in class type " + dstClazz);
+          throw new RuntimeException("No setter method found for getter method " + method.getName()
+              + " defined in class type " + dstClazz);
         }
         continue;
       }
@@ -677,26 +652,31 @@ public class EntityMapper {
   }
 
   /**
-   * Map a source object to target classes defined as part of the source type
-   * defined by {@link MapClass} and {@link MapClasses}.
+   * Map a source object to target classes defined as part of the source type defined by {@link MapClass} and
+   * {@link MapClasses}.
    * 
    * @param source
    *          physical instance of the object being mapped from
    * @param targets
    *          pre-existing target objects to use to map to if any.
    * 
-   * @return An instance of the object being mapped to, or a list of objects
-   *         mapped to based on what was defined as part of the annotation
-   *         {@link MapClasses} defined on the source type.
+   * @return An instance of the object being mapped to, or a list of objects mapped to based on what was defined as part
+   *         of the annotation {@link MapClasses} defined on the source type.
    */
   @SuppressWarnings("unchecked")
   public static final <T> T map(Object source, Object... targets) {
 
-    // extract the target object from
-    // the proxy if it is proxied.
-    if (source instanceof EntityProxy) {
+    // EXTRACT the target object from the proxy if it is instance of targetable.
+    //
+    // However, since this EntityMapper also handles @TrackState
+    // classes and maps only changed values to the target object,
+    // we cannot extract the target value from the proxy IF it is
+    // of type TrackStateProxy - check the PlaceHolder and buildMapClassTracker,
+    // this method uses the proxy to determine changes made to the values within
+    // a given object.
+    if (source instanceof Targetable && !(source instanceof TrackStateProxy)) {
       // the persistence layer is the simple-jpa implementation
-      source = ((EntityProxy) source).getTarget();
+      source = ((Targetable) source).getTarget();
     } // check if proxied at all ??? there is no hib.
 
     // if the source object is null then there
