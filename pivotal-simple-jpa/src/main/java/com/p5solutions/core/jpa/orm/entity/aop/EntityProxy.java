@@ -17,6 +17,8 @@
  */
 package com.p5solutions.core.jpa.orm.entity.aop;
 
+import com.p5solutions.core.aop.Targetable;
+
 public interface EntityProxy extends Targetable {
 
   public Object writeReplace();
@@ -32,6 +34,7 @@ public interface EntityProxy extends Targetable {
    * @param target
    *          the new target
    */
+  @Override
   void setTarget(Object target);
 
   /**
@@ -39,6 +42,7 @@ public interface EntityProxy extends Targetable {
    * 
    * @return the target
    */
+  @Override
   Object getTarget();
 
 }

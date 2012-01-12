@@ -19,6 +19,8 @@ package com.p5solutions.core.jpa.orm.entity.aop;
 
 import javassist.util.proxy.MethodHandler;
 
+import com.p5solutions.core.aop.Targetable;
+
 /**
  * @author Kasra Rasaee
  */
