@@ -198,13 +198,14 @@ public class NumberUtils extends org.springframework.util.NumberUtils {
    *          the value
    * @return the long
    */
-  public static Long trimInt(String value) {
+  public static Integer trimInt(String value) {
     String trimmed = trim(value, false);
     if (trimmed.length() > 0) {
       return Integer.valueOf(trimmed);
     }
     return null;
   }
+  
   /**
    * Trim out everything but numbers.
    * 
