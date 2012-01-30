@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.persistence.Transient;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -491,28 +489,17 @@ public class EntityMapper {
   }
 
   /**
-   * Ignore.
+   * Ignore the field if MapTransient is found and its "ignored" property is false.<br/>
+   * Otherwise (annotation not found or "ignored" is true) it will return true.
    * 
    * @param method
    *          the method
    * 
    * @return true, if successful
    */
-  @SuppressWarnings("unchecked")
   protected static final boolean ignore(Method method) {
     MapTransient mapTransient = ReflectionUtility.findAnnotation(method, MapTransient.class);
-    if (mapTransient != null) {
-      return mapTransient.ignored();
-    }
-
-    boolean trans = ReflectionUtility.hasAnyAnnotation(method, Transient.class);
-    if (trans) {
-      logger.warn("Should not be using ONLY " + Transient.class + " on method " + method
-          + ", instead, you should use the " + MapTransient.class
-          + " annotation; if you wish to not persist the entity but still map it the value, use the "
-          + MapTransient.class + " with the ignored set to false.");
-    }
-    return trans;
+    return mapTransient != null;
   }
 
   /**

@@ -23,30 +23,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.persistence.Transient;
-
 /**
  * MapClass:
  * 
  * @author Kasra Rasaee
  * @since 2009-02-24
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Inherited
 public @interface MapTransient {
+
   String reason() default "no reason";
 
-  /**
-   * Default is <code>true</code>, sometimes we may want to use
-   * {@link Transient} annotation such that we do not persist the data, but also
-   * do not want to get warning messages about not using {@link MapTransient},
-   * because we DO WANT to map the data to the value object; in this scenario,
-   * you should set the {@link MapTransient} annotation and set the
-   * {@link #ignored()} to <code>false</code>
-   * 
-   * @return true, if successful
-   */
-  boolean ignored() default true;
 }
