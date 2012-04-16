@@ -35,6 +35,7 @@ import javax.transaction.InvalidTransactionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.p5solutions.core.aop.Targetable;
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
 import com.p5solutions.core.utils.NumberUtils;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -62,8 +63,7 @@ public class ConversionUtilityImpl implements ConversionUtility {
    * @return the object
    * @throws TypeConversionException
    *           the type conversion exception
-   * @see com.p5solutions.core.jpa.orm.ConversionUtility#convertNumber(java.lang.Number,
-   *      java.lang.Class)
+   * @see com.p5solutions.core.jpa.orm.ConversionUtility#convertNumber(java.lang.Number, java.lang.Class)
    */
   @Override
   public Object convertNumber(ParameterBinder pb, Number value, Class<?> targetType) throws TypeConversionException {
@@ -212,9 +212,8 @@ public class ConversionUtilityImpl implements ConversionUtility {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * com.p5solutions.core.jpa.orm.ConversionUtility#convert(com.p5solutions.
-   * core.jpa.orm.ParameterBinder , java.lang.Object, java.lang.Class)
+   * @see com.p5solutions.core.jpa.orm.ConversionUtility#convert(com.p5solutions. core.jpa.orm.ParameterBinder ,
+   * java.lang.Object, java.lang.Class)
    */
   @Override
   public Object convert(ParameterBinder pb, Object value, Class<?> targetType) throws TypeConversionException {
@@ -238,11 +237,10 @@ public class ConversionUtilityImpl implements ConversionUtility {
    * @throws TypeConversionException
    *           the type conversion exception
    */
-  protected Object convertSimpleValue(ParameterBinder pb, Object value, String bindingPath, Class<?> sourceType, Class<?> targetType)
-      throws TypeConversionException {
+  protected Object convertSimpleValue(ParameterBinder pb, Object value, String bindingPath, Class<?> sourceType,
+      Class<?> targetType) throws TypeConversionException {
 
-	
-	if (ReflectionUtility.isClob(sourceType)) {
+    if (ReflectionUtility.isClob(sourceType)) {
       value = convertCLOB((Clob) value, targetType);
     } else if (ReflectionUtility.isBlob(sourceType)) {
       value = convertBLOB((Blob) value, targetType);
@@ -278,7 +276,8 @@ public class ConversionUtilityImpl implements ConversionUtility {
    * @throws TypeConversionException
    *           the type conversion exception
    */
-  protected Object convertComplexValue(ParameterBinder pb, Object value, Class<?> sourceType, Class<?> targetType) throws TypeConversionException {
+  protected Object convertComplexValue(ParameterBinder pb, Object value, Class<?> sourceType, Class<?> targetType)
+      throws TypeConversionException {
     EntityDetail<?> entityDetail = getEntityUtility().getEntityDetail(sourceType);
     List<ParameterBinder> pkpbs = entityDetail.getPrimaryKeyParameterBinders();
     if (pkpbs == null) {
@@ -286,8 +285,8 @@ public class ConversionUtilityImpl implements ConversionUtility {
     }
 
     if (pkpbs.size() > 1) {
-      throw new RuntimeException(new InvalidTransactionException("Only surogate keys " + "supported when arguments by reference, and not value. "
-          + "Entity type " + sourceType));
+      throw new RuntimeException(new InvalidTransactionException("Only surogate keys "
+          + "supported when arguments by reference, and not value. " + "Entity type " + sourceType));
     }
 
     ParameterBinder pkpb = pkpbs.get(0);
@@ -306,30 +305,34 @@ public class ConversionUtilityImpl implements ConversionUtility {
   /*
    * (non-Javadoc)
    * 
-   * @see
-   * com.p5solutions.core.jpa.orm.ConversionUtility#convert(com.p5solutions.
-   * core.jpa.orm.ParameterBinder , java.lang.Object, java.lang.String,
-   * java.lang.Class)
+   * @see com.p5solutions.core.jpa.orm.ConversionUtility#convert(com.p5solutions. core.jpa.orm.ParameterBinder ,
+   * java.lang.Object, java.lang.String, java.lang.Class)
    */
   @Override
-  public Object convert(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType) throws TypeConversionException {
+  public Object convert(ParameterBinder pb, Object value, String bindingPath, Class<?> targetType)
+      throws TypeConversionException {
+    // null values are null values
     if (value == null) {
       return value;
     }
-
+    // in case proxied object was passed in get the target class (e.g. proxied eagerly loaded type code object)
+    if (value instanceof Targetable) {
+      // the persistence layer is the simple-jpa implementation
+      value = ((Targetable) value).getTarget();
+    }
+    // get the source type and do the conversion
     Class<?> sourceType = value.getClass();
     if (!isSameClass(value, targetType)) {
       value = convertSimpleValue(pb, value, bindingPath, sourceType, targetType);
     } else if (!ReflectionUtility.isBasicClass(sourceType)) {
       value = convertComplexValue(pb, value, sourceType, targetType);
     }
-
+    // return converted value
     return value;
   }
 
   /**
-   * Get the sql-type for this column, usually generated by the
-   * {@link EntityUtility#buildColumnMetaDataAll()}
+   * Get the sql-type for this column, usually generated by the {@link EntityUtility#buildColumnMetaDataAll()}
    * 
    * @param pb
    *          the {@link ParameterBinder} used to extract the sql-type
@@ -345,7 +348,7 @@ public class ConversionUtilityImpl implements ConversionUtility {
     // to string, or string to date, or whatever.
     return value;
   }
-  
+
   /**
    * Checks if is same class.
    * 
@@ -354,8 +357,7 @@ public class ConversionUtilityImpl implements ConversionUtility {
    * @param targetType
    *          the target type
    * @return true, if is same class
-   * @see com.p5solutions.core.jpa.orm.ConversionUtility#isSameClass(java.lang.Object,
-   *      java.lang.Class)
+   * @see com.p5solutions.core.jpa.orm.ConversionUtility#isSameClass(java.lang.Object, java.lang.Class)
    */
   @Override
   public boolean isSameClass(Object value, Class<?> targetType) {
