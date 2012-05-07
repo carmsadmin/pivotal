@@ -1,17 +1,17 @@
 /* Pivotal 5 Solutions Inc. - Core Java library for all other Pivotal Java Modules.
- * 
+ *
  * Copyright (C) 2011  KASRA RASAEE
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -53,10 +53,10 @@ import com.p5solutions.core.utils.ReflectionUtility;
  * The Class JsonDeserializer: Standard JSON deserializer. Does not need to be
  * prototype based, this class is completely thread-safe and can be used in a
  * singleton fashion.
- * 
+ *
  * @author Kasra Rasaee
  * @since 2010-04-10
- * 
+ *
  * @see JsonConverterConfigurer
  * @see JsonHttpMessageConverter
  * @see JsonSerializer
@@ -100,7 +100,7 @@ public class JsonDeserializer {
 
   /**
    * Copy.
-   * 
+   *
    * @param source
    *            the source
    * @param destination
@@ -113,7 +113,7 @@ public class JsonDeserializer {
   /**
    * Copy array from source to destination, starting from index zero, up to
    * the maximum length of destination array.
-   * 
+   *
    * @param source
    *            the source
    * @param destination
@@ -134,7 +134,7 @@ public class JsonDeserializer {
 
   /**
    * Copy.
-   * 
+   *
    * @param a
    *            the a
    * @param pos
@@ -155,7 +155,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is start array tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is start array tag
@@ -166,7 +166,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is end array tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is end array tag
@@ -177,7 +177,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is start tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is start tag
@@ -188,7 +188,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is colon tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is colon tag
@@ -199,7 +199,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is end tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is end tag
@@ -210,7 +210,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is comma tag.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is comma tag
@@ -221,7 +221,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is quotes.
-   * 
+   *
    * @param c
    *            the c
    * @return true, if is quotes
@@ -244,7 +244,7 @@ public class JsonDeserializer {
 
   /**
    * Read.
-   * 
+   *
    * @param previous
    *            the previous
    * @return the read
@@ -323,7 +323,7 @@ public class JsonDeserializer {
 
   /**
    * Attempt list mapping.
-   * 
+   *
    * @param fieldName
    *            the field name
    * @param target
@@ -394,7 +394,7 @@ public class JsonDeserializer {
 
   /**
    * Attempt simple mapping.
-   * 
+   *
    * @param fieldName
    *            the field name
    * @param target
@@ -428,7 +428,7 @@ public class JsonDeserializer {
   /**
    * Sets the value. May also use the {@link ConversionService} to convert
    * types, such as {@link Date} using the {@link DateTimeFormat}. @see
-   * 
+   *
    * @param method
    *            the method
    * @param fieldName
@@ -524,7 +524,7 @@ public class JsonDeserializer {
 
       //unescape the sting character.
       sv = unescape(sv);
-      
+
       ReflectionUtility.setValue(fieldName, target, sv);
     } else if (!attemptListMapping(fieldName, target, value, returnType,
         jpt, webRequest, binder)) {
@@ -571,17 +571,21 @@ public class JsonDeserializer {
       }
     }
   }
-  
+
   /**
    * Escaping new lines and quotes for json.
-   * 
+   *
    * @param value
    * @return
    */
   protected String unescape(String value) {
+    if (value == null){
+      return null;
+    }
+
     String result = value.replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"");
     return result;
-    
+
   }
 
   @SuppressWarnings("unchecked")
@@ -607,7 +611,7 @@ public class JsonDeserializer {
    * {address:{city: "Toronto"}} should match target object
    * target.address.city. It will also map values via dot path notation, such
    * as json {"address.city": "Toronto"}
-   * 
+   *
    * @param target
    *            the object
    * @param pairs
@@ -671,7 +675,7 @@ public class JsonDeserializer {
   /**
    * Map value to target via path, usually a nested object, such as
    * target.address.city instead of using the standard JSON nesting.
-   * 
+   *
    * @param value
    *            the value to set against the target object
    * @param lastIndexer
@@ -796,7 +800,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is name value list.
-   * 
+   *
    * @param value
    *            the value
    * @return true, if is name value list
@@ -814,7 +818,7 @@ public class JsonDeserializer {
 
   /**
    * Checks if is list within list.
-   * 
+   *
    * @param value
    *            the value
    * @return true, if is list within list
@@ -833,7 +837,7 @@ public class JsonDeserializer {
   /**
    * Deserialize the JSON data and return a populated POJO, however use UTF-8
    * as the default reader encoding.
-   * 
+   *
    * @param <T>
    *            the generic type
    * @param clazz
@@ -851,7 +855,7 @@ public class JsonDeserializer {
 
   /**
    * Deserialize.
-   * 
+   *
    * @param <T>
    *            the generic type
    * @param clazz
@@ -878,7 +882,7 @@ public class JsonDeserializer {
 
   /**
    * Deserialize the JSON data and return a populated POJO.
-   * 
+   *
    * @param <T>
    *            the generic type
    * @param clazz
@@ -899,7 +903,7 @@ public class JsonDeserializer {
 
   /**
    * Deserialize the JSON data and return a populated POJO.
-   * 
+   *
    * @param <T>
    *            the generic type
    * @param clazz
@@ -1005,7 +1009,7 @@ public class JsonDeserializer {
 
   /**
    * Name value pair.
-   * 
+   *
    * @param name
    *            the name
    * @param vbp
@@ -1025,7 +1029,7 @@ public class JsonDeserializer {
 
   /**
    * Creates the value buffer.
-   * 
+   *
    * @param value
    *            the value
    * @return the value buffer pair
@@ -1037,7 +1041,7 @@ public class JsonDeserializer {
 
   /**
    * Creates the value buffer.
-   * 
+   *
    * @param value
    *            the value
    * @param buffer
@@ -1052,7 +1056,7 @@ public class JsonDeserializer {
 
   /**
    * Creates the value buffer.
-   * 
+   *
    * @param value
    *            the value
    * @param buffer
@@ -1106,7 +1110,7 @@ public class JsonDeserializer {
 
   /**
    * Strip quotes.
-   * 
+   *
    * @param value
    *            the value
    * @return the string
@@ -1131,7 +1135,7 @@ public class JsonDeserializer {
   /**
    * Adjust buffer size, if the amount of read bytes is equal to the size of
    * the buffer, then double the buffer, otherwise shrink it.
-   * 
+   *
    * @param read
    *            the read
    * @param size
@@ -1156,7 +1160,7 @@ public class JsonDeserializer {
 
   /**
    * Cut the buffer from the cut position, and return the remainder.
-   * 
+   *
    * @param buffer
    *            the buffer
    * @param cut
@@ -1176,7 +1180,7 @@ public class JsonDeserializer {
 
   /**
    * Walk names.
-   * 
+   *
    * @param previous
    *            the previous
    * @return the value buffer pair
@@ -1277,7 +1281,7 @@ public class JsonDeserializer {
 
   /**
    * Walk array.
-   * 
+   *
    * @param previous
    *            the previous
    * @return the object
@@ -1341,7 +1345,7 @@ public class JsonDeserializer {
 
   /**
    * Walk value.
-   * 
+   *
    * @param previous
    *            the previous
    * @return the value buffer pair
@@ -1440,7 +1444,7 @@ public class JsonDeserializer {
 
   /**
    * Append.
-   * 
+   *
    * @param appendTo
    *            the append to
    * @param buffer
@@ -1453,7 +1457,7 @@ public class JsonDeserializer {
 
   /**
    * Append.
-   * 
+   *
    * @param appendTo
    *            the append to
    * @param buffer
@@ -1475,7 +1479,7 @@ public class JsonDeserializer {
 
   /**
    * Sets the conversion service.
-   * 
+   *
    * @param conversionService
    *            the new conversion service
    */
