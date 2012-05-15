@@ -18,6 +18,7 @@
 package com.p5solutions.core.jpa.orm;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 
 import com.p5solutions.core.utils.Comparison;
@@ -40,6 +43,7 @@ import com.p5solutions.core.utils.ReflectionUtility;
  *          
  * @author Kasra Rasaee
  * @since 2010
+ * @updated 2012 added cached named queries, to be used in global named query searches.
  *
  * @see EntityUtility#initialize()
  * @see ParameterBinder
@@ -53,6 +57,9 @@ public class EntityDetail<T> {
 
   /** The parameters. */
   private List<ParameterBinder> parameters;
+  
+  /** The named native queries. */
+  private Map<String, NamedNativeQuery> namedNativeQueries;
 
   /** The cache column name to parameter index. */
   private Map<String, Integer> columnNameToIndex;
@@ -134,6 +141,12 @@ public class EntityDetail<T> {
     return cacheParameterID;
   }
 
+  /**
+   * Gets the entity key, should be unique.
+   *
+   * @param entity the entity
+   * @return the entity key
+   */
   public String getEntityKey(T entity) {
 
     // TODO part of build entity key
@@ -165,6 +178,38 @@ public class EntityDetail<T> {
 
     return key.toString();
     // return entityKey;
+  }
+  
+  /**
+   * Gets the named native queries.
+   *
+   * @return the named queries
+   */
+  public Map<String, NamedNativeQuery> getNamedNativeQueries() {
+    if (namedNativeQueries == null) {
+
+      NamedNativeQuery query = ReflectionUtility.findAnnotation(getEntityClass(), NamedNativeQuery.class);
+      NamedNativeQueries queries = ReflectionUtility.findAnnotation(getEntityClass(), NamedNativeQueries.class);
+      
+      // append the named native query, test for a single named query annotated
+      if (query != null) {
+        namedNativeQueries = new HashMap<String, NamedNativeQuery>();
+        namedNativeQueries.put(query.name(), query);
+      }
+
+      // append all the named native queries, test for a list of named queries
+      if (queries != null) {
+        if (namedNativeQueries == null) {
+          namedNativeQueries = new HashMap<String, NamedNativeQuery>();
+        }
+        
+        for (NamedNativeQuery q : queries.value()) {
+          namedNativeQueries.put(q.name(), q);
+        }
+      }
+    }
+    
+    return namedNativeQueries;
   }
 
   /**

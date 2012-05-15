@@ -259,6 +259,27 @@ public interface TransactionTemplate {
   <T> List<T> findResultsByNamedNativeQuery(Class<T> clazz, String queryName, Map<String, Object> keyValue);
 
   /**
+   * Find results by named native query from the global named query cache.
+   * 
+   * Note that queries will be overwritten in sequential order of the entity
+   * scanner, a warning message will be logged for duplicate named queries.
+   * 
+   * If you need to access a specific query within an entity, use the
+   * {@link #findResultsByNamedNativeQuery(Class, String, Map)}
+   * 
+   * @param <T>
+   *          the generic type
+   * @param mapClazz
+   *          the map clazz
+   * @param queryName
+   *          the query name
+   * @param keyValue
+   *          the key value
+   * @return the list
+   */
+  <T> List<T> findResultsByGlobalNamedNativeQuery(Class<T> mapClazz, String queryName, Map<String, Object> keyValue);
+
+  /**
    * Find results by criteria.
    * 
    * @param <T>

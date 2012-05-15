@@ -43,6 +43,7 @@ import com.p5solutions.core.jpa.orm.exceptions.TooManyResultsException;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TransactionTemplateImpl.
  */
@@ -263,6 +264,11 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   /**
    * e com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#
    * findSingleResultByQuery (java.lang.Class, java.lang.String)
+   *
+   * @param <T> the generic type
+   * @param clazz the clazz
+   * @param query the query
+   * @return the t
    */
   @Override
   public <T> T findSingleResultByQuery(Class<T> clazz, String query) {
@@ -272,8 +278,15 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find single result by query.
+   *
+   * @param <T> the generic type
+   * @param clazz the clazz
+   * @param query the query
+   * @param parameters the parameters
+   * @return the t
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findSingleResultByQuery
-   *      (java.lang.Class, java.lang.String, java.lang.Object[])
+   * (java.lang.Class, java.lang.String, java.lang.Object[])
    */
   @Override
   public <T> T findSingleResultByQuery(Class<T> clazz, String query, Object[] parameters) {
@@ -284,6 +297,11 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find single result by query.
+   *
+   * @param <T> the generic type
+   * @param query the query
+   * @return the t
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findSingleResultByQuery(com.p5solutions.core.jpa.orm.Query)
    */
   @Override
@@ -354,6 +372,10 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find raw results by query.
+   *
+   * @param query the query
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findRawResultsByQuery(java.lang.String)
    */
   @Override
@@ -364,8 +386,13 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find raw results by query.
+   *
+   * @param query the query
+   * @param parameters the parameters
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findRawResultsByQuery(java.lang.String,
-   *      java.lang.Object[])
+   * java.lang.Object[])
    */
   @Override
   public List<?> findRawResultsByQuery(String query, Object[] parameters) {
@@ -376,8 +403,13 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find raw results by query.
+   *
+   * @param query the query
+   * @param keyValue the key value
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findRawResultsByQuery
-   *      (java.lang.String, java.util.Map)
+   * (java.lang.String, java.util.Map)
    */
   @Override
   public List<?> findRawResultsByQuery(String query, Map<String, Object> keyValue) {
@@ -388,8 +420,13 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find results by named native query.
+   *
+   * @param queryName the query name
+   * @param keyValue the key value
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsByNamedNativeQuery(java.lang.String,
-   *      java.util.Map)
+   * java.util.Map)
    */
   @Override
   public List<?> findResultsByNamedNativeQuery(String queryName, Map<String, Object> keyValue) {
@@ -403,24 +440,69 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Find results by named native query.
+   *
+   * @param <T> the generic type
+   * @param clazz the clazz
+   * @param queryName the query name
+   * @param keyValue the key value
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsByNamedNativeQuery(java.lang.Class,
-   *      java.lang.String, java.util.Map)
+   * java.lang.String, java.util.Map)
    */
   @Override
   public <T> List<T> findResultsByNamedNativeQuery(Class<T> clazz, String queryName, Map<String, Object> keyValue) {
     Query query = new Query(clazz);
-    query.setQuery(extractSqlFromNamedQuery(clazz, queryName));
+    String sql = extractSqlFromNamedQuery(clazz, queryName);
+
+    // if the named query was not found within the 
+    if (Comparison.isEmpty(sql)) {
+      return findResultsByGlobalNamedNativeQuery(clazz, queryName, keyValue);
+    }
+    
+    query.setQuery(sql);
     buildQueryParameters(keyValue, query);
     return parser.findResultsByQuery(clazz, query);
   }
 
   /**
+   * Find results by named native query from the global named query cache.
+   * 
+   * Note that queries will be overwritten in sequential order of the entity
+   * scanner, a warning message will be logged for duplicate named queries.
+   * 
+   * If you need to access a specific query within an entity, use the
+   * {@link #findResultsByNamedNativeQuery(Class, String, Map)}
+   * 
+   * @param <T>
+   *          the generic type
+   * @param mapClazz
+   *          the map clazz
+   * @param queryName
+   *          the query name
+   * @param keyValue
+   *          the key value
+   * @return the list
+   */
+  public <T> List<T> findResultsByGlobalNamedNativeQuery(Class<T> mapClazz, String queryName, Map<String, Object> keyValue) {
+    NamedNativeQuery nnq = entityUtility.findGlobalNamedNativeQuery(queryName);
+    if (nnq == null) {
+      throw new RuntimeException("No named native query found using " + queryName + " name in global native named query cache.");
+    }
+
+    Query query = new Query(mapClazz);
+    query.setQuery(nnq.query());
+    buildQueryParameters(keyValue, query);
+    return parser.findResultsByQuery(mapClazz, query);
+  }
+
+  /**
    * Extracts the named query from a specified class. Throws runtime exception
    * if it doesn't find the query.
-   * 
-   * @param clazz
-   * @param queryName
-   * @return
+   *
+   * @param clazz the clazz
+   * @param queryName the query name
+   * @return the string
    */
   private String extractSqlFromNamedQuery(Class<?> clazz, String queryName) {
     // test for a single named query annotated
@@ -430,19 +512,27 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     }
     // otherwise test for a list of named queries
     NamedNativeQueries queries = ReflectionUtility.findAnnotation(clazz, NamedNativeQueries.class);
-    if (queries != null) {
-      for (NamedNativeQuery q : queries.value()) {
-        if (queryName.equals(q.name())) {
-          return q.query();
-        }
+    if (queries == null) {
+      return null;
+    }
+    
+    for (NamedNativeQuery q : queries.value()) {
+      if (queryName.equals(q.name())) {
+        return q.query();
       }
     }
-    throw new RuntimeException("No query has been found under " + queryName + " name.");
+    
+    return null;
   }
 
   /**
+   * Find results by criteria.
+   *
+   * @param <T> the generic type
+   * @param criteria the criteria
+   * @return the list
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsByCriteria
-   *      (com.p5solutions.core.jpa.orm.criteria.restrictions.Criteria)
+   * (com.p5solutions.core.jpa.orm.criteria.restrictions.Criteria)
    */
   @Override
   public <T> List<T> findResultsByCriteria(Criteria<T> criteria) {
@@ -456,6 +546,9 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     return proxyList(tableClass, list);
   }
 
+  /* (non-Javadoc)
+   * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsByQuery(com.p5solutions.core.jpa.orm.Query)
+   */
   @Override
   @SuppressWarnings("unchecked")
   public <T> List<T> findResultsByQuery(Query query) {
@@ -470,8 +563,12 @@ public class TransactionTemplateImpl implements TransactionTemplate {
   }
 
   /**
+   * Gets the sequence value.
+   *
+   * @param sequenceName the sequence name
+   * @return the sequence value
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#getSequenceValue(java
-   *      .lang.String)
+   * .lang.String)
    */
   @Override
   public Object getSequenceValue(String sequenceName) {

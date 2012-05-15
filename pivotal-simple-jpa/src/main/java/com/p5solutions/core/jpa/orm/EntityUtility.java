@@ -19,14 +19,15 @@ package com.p5solutions.core.jpa.orm;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -37,6 +38,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -50,7 +52,6 @@ import com.p5solutions.core.jpa.orm.DMLOperation.OperationType;
 import com.p5solutions.core.jpa.orm.annotations.EntityAnnotationScanner;
 import com.p5solutions.core.jpa.orm.entity.aop.EntityProxy;
 import com.p5solutions.core.jpa.orm.exceptions.AnnotationNotDefinedException;
-import com.p5solutions.core.jpa.orm.exceptions.NoColumnDefinedException;
 import com.p5solutions.core.jpa.orm.transaction.TransactionTemplate;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -80,15 +81,21 @@ public class EntityUtility {
   /** The cache entity details. */
   private Hashtable<Class<?>, EntityDetail<?>> cacheEntityDetails;
 
+  /** The cached global named native queries. */
+  private Map<String, NamedNativeQuery> cachedGlobalNamedNativeQuery = new HashMap<String, NamedNativeQuery>();
+
   /** The entity persist utility. */
   private EntityPersistUtility entityPersistUtility;
 
   /** List of entity packages to scan for entities. */
   private List<String> entityPackages;
 
-  /** DataSource to retrieve meta data for given table entities, for example column data type, size, ?null, so forth **/
+  /**
+   * DataSource to retrieve meta data for given table entities, for example
+   * column data type, size, ?null, so forth
+   **/
   private DataSource dataSource;
-  
+
   @SuppressWarnings("unchecked")
   public static <T> Class<T> getTargetEntityClass(T entity) {
     Class<T> entityClass = (Class<T>) entity.getClass();
@@ -110,17 +117,17 @@ public class EntityUtility {
   /**
    * Initialize. Initialize all entities using Entity class scanner.
    */
-  @SuppressWarnings("unchecked")
   public void initialize() {
     if (entityPackages != null) {
       EntityAnnotationScanner scanner = new EntityAnnotationScanner();
       for (String entityPackage : entityPackages) {
         String typeName = null;
         try {
-        	
+
           for (Class<? extends AbstractEntity> type : scanner.getComponentClasses(entityPackage)) {
             typeName = type.getSimpleName();
             EntityDetail<?> detail = getEntityDetail(type);
+
             // only generate dml operations for table annotations.
             Table table = ReflectionUtility.findAnnotation(type, Table.class);
             if (table != null) {
@@ -128,13 +135,12 @@ public class EntityUtility {
               getEntityPersistUtility().build(type);
             }
           }
-          
+
           // build the meta data for all the entity tables.
           buildColumnMetaDataAll();
-          
+
         } catch (ClassNotFoundException e) {
-          String msg = "Cannot initialize entity binders for given class name " + typeName
-              + " because it does not exist within the provided classpath. "
+          String msg = "Cannot initialize entity binders for given class name " + typeName + " because it does not exist within the provided classpath. "
               + "Please make sure the class exists, and there are no errors in the path and name.";
           logger.fatal(msg);
           throw new RuntimeException(msg);
@@ -148,20 +154,22 @@ public class EntityUtility {
 
   /**
    * Set the datasource for this entity utility
+   * 
    * @param dataSource
    */
   public void setDataSource(DataSource dataSource) {
-	this.dataSource = dataSource;
+    this.dataSource = dataSource;
   }
-  
+
   /**
    * Get the datasource for this entity utility.
+   * 
    * @return
    */
   protected DataSource getDataSource() {
-	  return this.dataSource;
+    return this.dataSource;
   }
-  
+
   /**
    * Throw entity class null.
    * 
@@ -187,8 +195,7 @@ public class EntityUtility {
     // recursive loop, which will blow the stack!
     if (recursionFilterList == null) {
       throw new NullPointerException("Recursion Filter List cannot be null, it is needed to "
-          + "prevent recursive loops when building the object graph - e.g. via @" + JoinColumn.class
-          + " annotations defined via an inverse annotation!");
+          + "prevent recursive loops when building the object graph - e.g. via @" + JoinColumn.class + " annotations defined via an inverse annotation!");
     }
   }
 
@@ -345,14 +352,64 @@ public class EntityUtility {
     // of another parent class
     build(entityClass, pbs, recursionFilterList);
 
-    //
+    // setup attribute overrides, if any on the entity class
     setupAttributeOverrides(entityClass, pbs);
 
     // set all the parameters
     entityDetail.setParameters(pbs);
 
+    // get all named native queries and append them to the global named native query list.
+    buildGlobalNamedNativeQueries(entityDetail);
+
     // return the entity detail
     return entityDetail;
+  }
+
+  /**
+   * Builds the global named native queries cache, in sequential order of
+   * scanned entity.
+   * 
+   * If duplicate keys are found, the last entities query name will take
+   * precedence.
+   * 
+   * @param <T>
+   *          the generic type
+   * @param entityDetail
+   *          the entity detail
+   */
+  protected <T> void buildGlobalNamedNativeQueries(EntityDetail<T> entityDetail) {
+    Map<String, NamedNativeQuery> nativeQueries = entityDetail.getNamedNativeQueries();
+    if (nativeQueries != null) {
+      logger.info("Populating named native queries in global cache for " + entityDetail.getEntityClass());
+      for (String key : nativeQueries.keySet()) {
+        NamedNativeQuery newNativeQuery = nativeQueries.get(key);
+        logger.debug(" -- query name: " + key);
+        logger.debug(" --> query sql:  [" + newNativeQuery + "]");
+
+        if (this.cachedGlobalNamedNativeQuery.containsKey(key)) {
+          String warning = " -->> Warning, [" + key + "] already exists in global cache, check entity " + entityDetail.getEntityClass();
+          logger.warn(warning);
+        }
+
+        this.cachedGlobalNamedNativeQuery.put(key, newNativeQuery);
+      }
+    }
+  }
+
+  /**
+   * Find named native query in the global cache, and not specific to a given
+   * entity.
+   * 
+   * @param name
+   *          the name
+   * @return the named native query
+   */
+  public NamedNativeQuery findGlobalNamedNativeQuery(String name) {
+    if (this.cachedGlobalNamedNativeQuery == null) {
+      return null;
+    }
+
+    return this.cachedGlobalNamedNativeQuery.get(name);
   }
 
   /**
@@ -451,93 +508,114 @@ public class EntityUtility {
    * Build the database-meta-data for all table entities.
    */
   protected void buildColumnMetaDataAll() {
-	  Connection connection = null;
+    Connection connection = null;
 
-	  try {
-		  connection = DataSourceUtils.getConnection(dataSource);
-		  for (EntityDetail<?> detail : this.cacheEntityDetails.values()) {
-			  Table table = detail.getTableAnnotation();
-			  if (table != null) {
-				  buildColumnMetaData(table, detail, connection);
-			  }
-		  }
-	  } catch (Exception e) {
-		  logger.error(e.toString());
-	  } finally { 
-		if (connection != null) {
-		  try { connection.close(); } catch (SQLException e) { ; }
-		  connection = null;
-		}
-	  }
+    try {
+      connection = DataSourceUtils.getConnection(dataSource);
+      for (EntityDetail<?> detail : this.cacheEntityDetails.values()) {
+        Table table = detail.getTableAnnotation();
+        if (table != null) {
+          buildColumnMetaData(table, detail, connection);
+        }
+      }
+    } catch (Exception e) {
+      logger.error(e.toString());
+    } finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          ;
+        }
+        connection = null;
+      }
+    }
   }
-  
+
   /**
-   * Build the database-meta-dta for a given table entity, using an existing connection.
-   * @param table annotation
-   * @param detail {@link EntityDetail} probably provided by the {@link #cacheEntityDetails}
-   * @param connection an existing mock or real, database connection.
+   * Build the database-meta-dta for a given table entity, using an existing
+   * connection.
+   * 
+   * @param table
+   *          annotation
+   * @param detail
+   *          {@link EntityDetail} probably provided by the
+   *          {@link #cacheEntityDetails}
+   * @param connection
+   *          an existing mock or real, database connection.
    */
   protected void buildColumnMetaData(Table table, EntityDetail<?> detail, Connection connection) {
 
-	  Statement stmt = null;
-	  ResultSet rs = null;
-	  
-	  try { 
-		  String sql = "SELECT * FROM " + table.name() + " WHERE 1=0";
-		  
-		  stmt = connection.createStatement();
-		  
-		  // set the maximum result set to zero, just in-case!?
-		  stmt.setMaxRows(0);
-		  
-		  rs = stmt.executeQuery(sql);
-		  ResultSetMetaData rsMeta = rs.getMetaData();
-		  
-		  logger.info("** Building Database MetaData for Table " + table.name());
-		  
-		  for (int ic = 1; ic <= rsMeta.getColumnCount(); ic++) {
-			  String columnName = rsMeta.getColumnName(ic);
-			  ParameterBinder binder = detail.getParameterBinderByAny(columnName);
-			  if (binder == null) {
-				  if (logger.isErrorEnabled()) {
-					  String error = " -- Column " + columnName + " as defined by the table meta-data, cannot be found within the scope of " + detail.getEntityClass();
-				  	logger.error(error);
-				  }
-				  
-				 // TODO ?? throw new RuntimeException(new NoColumnDefinedException(error));
-			  } else {
-				  ParameterBinderColumnMetaData columnMetaData = new ParameterBinderColumnMetaData();
-				  //columnMetaData.setColumnIndex(ic); // USELESS, EVERY UNIQUE QUERY STRING WOULD RESULT IN A DIFFERENT INDEX. EASIER TO CACHE IT BASED ON UNIQUE QUERY STRINGS.
-				  //columnMetaData.setColumnLabel(rsMeta.getColumnLabel(ic));
-				  columnMetaData.setColumnName(columnName);
-				  columnMetaData.setLength(rsMeta.getColumnDisplaySize(ic));
-				  columnMetaData.setPrecision(rsMeta.getPrecision(ic));
-				  columnMetaData.setScale(rsMeta.getScale(ic));
-				  columnMetaData.setColumnType(rsMeta.getColumnType(ic));
-				  columnMetaData.setColumnTypeName(rsMeta.getColumnTypeName(ic));
-				  binder.setColumnMetaData(columnMetaData);
-				  
-				  if (logger.isDebugEnabled()) {
-					  logger.debug(" -- [" + columnMetaData.toString() + "]");
-				  }
-			  }
-		  }
-		  
-	  } catch (SQLException e) {
-		logger.error(">> *UNABLE* to retrieve meta data for table " + table.name() + ", doesn't exist?");
-	  } finally {
-		if (rs != null) {
-		  try { rs.close(); } catch (SQLException e) { ; }
-		  rs = null;
-		}
-		if (stmt != null) {
-		  try { stmt.close(); } catch (SQLException e) { ; }
-		  stmt = null;
-		}
+    Statement stmt = null;
+    ResultSet rs = null;
 
-	  }
+    try {
+      String sql = "SELECT * FROM " + table.name() + " WHERE 1=0";
+
+      stmt = connection.createStatement();
+
+      // set the maximum result set to zero, just in-case!?
+      stmt.setMaxRows(0);
+
+      rs = stmt.executeQuery(sql);
+      ResultSetMetaData rsMeta = rs.getMetaData();
+
+      logger.info("** Building Database MetaData for Table " + table.name());
+
+      for (int ic = 1; ic <= rsMeta.getColumnCount(); ic++) {
+        String columnName = rsMeta.getColumnName(ic);
+        ParameterBinder binder = detail.getParameterBinderByAny(columnName);
+        if (binder == null) {
+          if (logger.isErrorEnabled()) {
+            String error = " -- Column " + columnName + " as defined by the table meta-data, cannot be found within the scope of " + detail.getEntityClass();
+            logger.error(error);
+          }
+
+          // TODO ?? throw new RuntimeException(new
+          // NoColumnDefinedException(error));
+        } else {
+          ParameterBinderColumnMetaData columnMetaData = new ParameterBinderColumnMetaData();
+          // columnMetaData.setColumnIndex(ic); // USELESS, EVERY UNIQUE QUERY
+          // STRING WOULD RESULT IN A DIFFERENT INDEX. EASIER TO CACHE IT BASED
+          // ON UNIQUE QUERY STRINGS.
+          // columnMetaData.setColumnLabel(rsMeta.getColumnLabel(ic));
+          columnMetaData.setColumnName(columnName);
+          columnMetaData.setLength(rsMeta.getColumnDisplaySize(ic));
+          columnMetaData.setPrecision(rsMeta.getPrecision(ic));
+          columnMetaData.setScale(rsMeta.getScale(ic));
+          columnMetaData.setColumnType(rsMeta.getColumnType(ic));
+          columnMetaData.setColumnTypeName(rsMeta.getColumnTypeName(ic));
+          binder.setColumnMetaData(columnMetaData);
+
+          if (logger.isDebugEnabled()) {
+            logger.debug(" -- [" + columnMetaData.toString() + "]");
+          }
+        }
+      }
+
+    } catch (SQLException e) {
+      logger.error(">> *UNABLE* to retrieve meta data for table " + table.name() + ", doesn't exist?");
+    } finally {
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch (SQLException e) {
+          ;
+        }
+        rs = null;
+      }
+      if (stmt != null) {
+        try {
+          stmt.close();
+        } catch (SQLException e) {
+          ;
+        }
+        stmt = null;
+      }
+
+    }
   }
-  
+
   /**
    * Builds the the Parameter Binder list starting from a class, not necessarily
    * the root class.
@@ -594,8 +672,8 @@ public class EntityUtility {
       if (!buildEmbeddable(entityClass, bindingPath, getterMethod, setterMethod, pbs, recursionFilterList)) {
 
         // default non embedded params
-        ParameterBinder pb = buildParameterBinder(entityClass, bindingPath, getterMethod, setterMethod, parentGetterMethod, parentSetterMethod,
-            index++, recursionFilterList);
+        ParameterBinder pb = buildParameterBinder(entityClass, bindingPath, getterMethod, setterMethod, parentGetterMethod, parentSetterMethod, index++,
+            recursionFilterList);
 
         // MOVED TO buildParamaterBinder
         // // set the binding path if any.
@@ -664,8 +742,7 @@ public class EntityUtility {
       // [Java GENERICS] - Parameterized annotation class type "..." is
       // unchecked, probably should create Annotation[] { } ?
       if (!ReflectionUtility.hasAnyAnnotation(embeddableClazz, Embeddable.class)) {
-        String error = "Class type " + embeddableClazz + " not marked with @" + Embeddable.class + " but used as an embedded parameter within "
-            + parentClazz;
+        String error = "Class type " + embeddableClazz + " not marked with @" + Embeddable.class + " but used as an embedded parameter within " + parentClazz;
         logger.error(error);
         throw new RuntimeException(error);
       }
@@ -884,8 +961,8 @@ public class EntityUtility {
       // if the collection is marked with many to one,
       // this is incorrect!! TODO double check this behavour!
       if (pb.isManyToOne() || pb.isOneToOne()) {
-        String error = "Trying to use a collection of entities bounded against " + pb.getColumnNameAnyJoinOrColumn() + " within entity "
-            + entityClass + " with @" + JoinColumn.class + " and when the inversed join needs to be 1-n";
+        String error = "Trying to use a collection of entities bounded against " + pb.getColumnNameAnyJoinOrColumn() + " within entity " + entityClass
+            + " with @" + JoinColumn.class + " and when the inversed join needs to be 1-n";
         logger.error(error);
         throw new RuntimeException(error);
       }
@@ -988,8 +1065,7 @@ public class EntityUtility {
     binder.setEntityClass(entityClass);
 
     if (doColumn(binder, recursionFilterList)) {
-    	
-    	
+
       // TODO ??
     } else if (doJoinColumn(binder, recursionFilterList)) {
       // TODO ??
@@ -1032,8 +1108,8 @@ public class EntityUtility {
    */
   public <T> DMLOperation getDMLOperation(Class<T> tableClass, OperationType operationType) {
     if (getEntityPersistUtility() == null) {
-      String error = "The data munipalation persist utility is not defined by any context. " + "Please make sure that when defining a "
-          + EntityUtility.class + " you also define an implementation or sub-type of " + EntityPersistUtility.class;
+      String error = "The data munipalation persist utility is not defined by any context. " + "Please make sure that when defining a " + EntityUtility.class
+          + " you also define an implementation or sub-type of " + EntityPersistUtility.class;
       logger.error(error);
       throw new NullPointerException();
     }
