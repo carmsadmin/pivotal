@@ -167,7 +167,7 @@ public class JsonSerializer {
    * @return
    */
   protected String escape(String value) {
-    return value.replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"");
+    return value.replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\\","\\\\");
   }
 
   /**
