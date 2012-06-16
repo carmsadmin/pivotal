@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.ConversionService;
 
@@ -167,7 +168,7 @@ public class JsonSerializer {
    * @return
    */
   protected String escape(String value) {
-    return value.replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\\","\\\\");
+	  return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"");
   }
 
   /**

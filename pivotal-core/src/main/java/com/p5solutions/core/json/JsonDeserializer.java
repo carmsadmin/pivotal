@@ -582,10 +582,9 @@ public class JsonDeserializer {
     if (value == null){
       return null;
     }
-
-    String result = value.replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"").replace("\\\\", "\\");
+    
+    String result = value.replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"");
     return result;
-
   }
 
   @SuppressWarnings("unchecked")
