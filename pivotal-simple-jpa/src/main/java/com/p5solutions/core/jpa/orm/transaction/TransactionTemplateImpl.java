@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.p5solutions.core.jpa.orm.transaction;
 
@@ -323,7 +323,7 @@ public class TransactionTemplateImpl implements TransactionTemplate {
    * value. Each key should be the binding path of the field,
    * 
    * <pre>
-   * 	Example:	 
+   * 	Example:
    * 
    * 	parameters[0] = "address.city"
    *  parameters[1] = "Ottawa"
@@ -455,11 +455,11 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     Query query = new Query(clazz);
     String sql = extractSqlFromNamedQuery(clazz, queryName);
 
-    // if the named query was not found within the 
+    // if the named query was not found within the
     if (Comparison.isEmpty(sql)) {
       return findResultsByGlobalNamedNativeQuery(clazz, queryName, keyValue);
     }
-    
+
     query.setQuery(sql);
     buildQueryParameters(keyValue, query);
     return parser.findResultsByQuery(clazz, query);
@@ -484,6 +484,7 @@ public class TransactionTemplateImpl implements TransactionTemplate {
    *          the key value
    * @return the list
    */
+  @Override
   public <T> List<T> findResultsByGlobalNamedNativeQuery(Class<T> mapClazz, String queryName, Map<String, Object> keyValue) {
     NamedNativeQuery nnq = entityUtility.findGlobalNamedNativeQuery(queryName);
     if (nnq == null) {
@@ -515,13 +516,13 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     if (queries == null) {
       return null;
     }
-    
+
     for (NamedNativeQuery q : queries.value()) {
       if (queryName.equals(q.name())) {
         return q.query();
       }
     }
-    
+
     return null;
   }
 
@@ -560,6 +561,36 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     Class<T> clazz = (Class<T>) query.getEntityClass();
     List<T> list = parser.findResultsByQuery(clazz, query);
     return list;
+  }
+
+  /*
+   * TODO: Take a look at RowBinder and try to make it work with multiple column and not just a single column result set.
+   * 
+   * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsAsListByQuery(java.lang.String, java.util.Map)
+   */
+  @Override
+  public List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, ?> keyValue) {
+    if (query == null) {
+      throw new NullPointerException("Query cannot be null when requesting data.");
+    }
+    return parser.getJdbcTemplate().queryForList(query, keyValue);
+  }
+
+  /*
+   * TODO: Take a look at RowBinder and try to make it work with multiple column and not just a single column result set.
+   * 
+   * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsAsListByNamedNativeQuery(java.lang.String, java.util.Map)
+   */
+  @Override
+  public List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, ?> keyValue) {
+    if (queryName == null) {
+      throw new NullPointerException("Query name cannot be null when requesting data.");
+    }
+    NamedNativeQuery nnq = entityUtility.findGlobalNamedNativeQuery(queryName);
+    if (nnq == null) {
+      throw new NullPointerException("Query cannot be resolved by the name of " + queryName);
+    }
+    return findResultsAsListByQuery(nnq.query(), keyValue);
   }
 
   /**

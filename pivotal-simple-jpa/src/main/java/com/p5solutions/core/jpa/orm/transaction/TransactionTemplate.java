@@ -13,12 +13,14 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.p5solutions.core.jpa.orm.transaction;
 
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.p5solutions.core.jpa.orm.InterceptorUtility;
 import com.p5solutions.core.jpa.orm.Query;
@@ -173,7 +175,7 @@ public interface TransactionTemplate {
    * Find single result by query, with a list of key value pairings.
    * 
    * <pre>
-   * 	Example:	 
+   * 	Example:
    * 
    * 	parameters[0] = "address.city"
    *  parameters[1] = "Ottawa"
@@ -300,6 +302,27 @@ public interface TransactionTemplate {
    * @return the list
    */
   <T> List<T> findResultsByQuery(Query query);
+
+  /**
+   * Query given SQL to create a prepared statement from SQL and a list of arguments to bind to the query, expecting a result list.
+   * The results will be mapped to a List (one entry for each row) of Maps (one entry for each column, using the column name as the key).
+   * Relies on the {@link NamedParameterJdbcTemplate #queryForList}.
+   *
+   * @param query
+   * @param keyValue
+   * @return list of map represented rows
+   */
+  List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, ?> keyValue);
+
+  /**
+   * Similar to {@link #findResultsAsListByQuery} it will return results as a list of mapped rows. But<br/>
+   * first it will resolve the query from the global cache.
+   * 
+   * @param query
+   * @param keyValue
+   * @return
+   */
+  List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, ?> keyValue);
 
   // MISC METHODS
   /**
