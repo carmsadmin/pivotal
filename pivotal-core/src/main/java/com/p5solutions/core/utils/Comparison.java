@@ -31,6 +31,32 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Comparison {
 
+
+  /**
+   * Checks if is equal case insentive trim.
+   *
+   * @param a the a
+   * @param b the b
+   * @return true, if is equal case insentive trim
+   */
+  public static boolean isEqualCaseInsentiveTrim(String a, String b) {
+    if (a != null && b != null) {
+      return a.toLowerCase().trim().equals(b.toLowerCase().trim());
+    }
+    return false;
+  }
+  
+  /**
+   * Checks if is not equal case insentive trim.
+   *
+   * @param a the a
+   * @param b the b
+   * @return true, if is not equal case insentive trim
+   */
+  public static boolean isNotEqualCaseInsentiveTrim(String a, String b) {
+    return !isEqualCaseInsentiveTrim(a, b);
+  }
+  
   /**
    * Compare to.
    * 
@@ -81,6 +107,17 @@ public class Comparison {
     }
 
     return false;
+  }
+
+  /**
+   * Checks if is not equal.
+   *
+   * @param a the a
+   * @param b the b
+   * @return true, if is not equal
+   */
+  public static boolean isNotEqual(Object a, Object b) {
+    return !isEqual(a, b);
   }
 
   /**
@@ -145,6 +182,23 @@ public class Comparison {
    */
   public static boolean isTrue(Boolean val) {
     return Boolean.TRUE.equals(val);
+  }
+
+
+  /**
+   * Checks if is not empty or null string, trimmed.
+   *
+   * @param value the value
+   * @return true, if is not empty or null trim
+   */
+  public static boolean isNotEmptyOrNullTrim(String value) {
+    if (value == null) {
+      return true;
+    }
+    
+    value = value.trim();
+    
+    return isNotEmpty(value);
   }
 
   /**

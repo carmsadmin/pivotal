@@ -37,7 +37,6 @@ import java.util.Map.Entry;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.ConversionService;
 
@@ -52,6 +51,9 @@ public class JsonSerializer {
 
   /** The Constant DATE_FORMAT_STRING. */
   public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+  
+  /** The trim texts. */
+  public Boolean trimTexts = false;
   
   /**
    * Date format based on the {@link #DATE_FORMAT_STRING}. Its reference Calendar is set with a UTC timezone so don't
@@ -168,7 +170,12 @@ public class JsonSerializer {
    * @return
    */
   protected String escape(String value) {
-	  return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"");
+    // remove line feed
+    // remove carriage return
+    // remove tabs
+    // escape change quotations 
+    // escape backslash
+	  return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\t", "");
   }
 
   /**
@@ -538,5 +545,13 @@ public class JsonSerializer {
   @Resource
   public void setConversionService(ConversionService conversionService) {
     this.conversionService = conversionService;
+  }
+  
+  public Boolean getTrimTexts() {
+    return trimTexts;
+  }
+  
+  public void setTrimTexts(Boolean trimTexts) {
+    this.trimTexts = trimTexts;
   }
 }
