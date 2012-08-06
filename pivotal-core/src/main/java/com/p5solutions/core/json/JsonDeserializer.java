@@ -582,9 +582,18 @@ public class JsonDeserializer {
     if (value == null){
       return null;
     }
-    
-    String result = value.replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"");
-    return result;
+
+    // TODO should we really be stripping these out? depends on the format we are trying to save the content?
+    // HTML doesn't support these types anyway, for example, what is a \t even represented as? spaces <div> spacing. what?
+    // since Json is usually used in web applications, this probably makes some sort of sense...
+    value = value.replace("\\\\", "\\");
+    value = value.replace("\\t", "\t");
+    value = value.replace("\\n", "\n");
+    value = value.replace("\\r", "\r");
+    value = value.replace("\\\"", "\"");
+        
+    //String result = value.replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"").replace("\t", "");
+    return value;
   }
 
   @SuppressWarnings("unchecked")

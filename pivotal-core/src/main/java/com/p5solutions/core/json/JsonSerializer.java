@@ -175,7 +175,15 @@ public class JsonSerializer {
     // remove tabs
     // escape change quotations 
     // escape backslash
-	  return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\t", "");
+	  //return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\\t", "");
+    
+    value = value.replace("\\", "\\\\");
+    value = value.replace("\t", "\\t");
+    value = value.replace("\n", "\\n");
+    value = value.replace("\r", "\\r");
+    value = value.replace("\"", "\\\"");
+    
+    return value;
   }
 
   /**
