@@ -14,6 +14,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.springframework.web.multipart.MultipartFile;
 
 // TODO NOT COMPLETED, BUT IT WORKS FOR INPUTSTREAMS GOING INTO THE DATABASE.
 
@@ -53,6 +54,15 @@ public class BlobStream implements Blob {
     if (input instanceof ByteArrayInputStream) {
       convertByteArrayInputStream();
     }
+  }
+  
+  public BlobStream(InputStream input, long length) {
+    this(input);
+    _length = length;
+  }
+  
+  public BlobStream(MultipartFile file) throws IOException {
+    this(file.getInputStream(), file.getSize());
   }
 
   protected void convertByteArrayInputStream() {

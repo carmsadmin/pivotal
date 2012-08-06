@@ -268,10 +268,9 @@ public class EntityUtility {
    *          the recursion filter list
    * @return the entity detail
    */
-  @SuppressWarnings("unchecked")
   public <T> EntityDetail<T> getEntityDetail(Class<T> entityClass, List<Class<?>> recursionFilterList) {
     if (EntityProxy.class.isAssignableFrom(entityClass)) {
-      System.out.println("entity " + entityClass);
+      logger.debug("retreiving entity details for class " + entityClass);
     }
 
     if (cacheEntityDetails == null) {
@@ -319,7 +318,6 @@ public class EntityUtility {
    * @return the entity detail
    */
   protected <T> EntityDetail<T> buildEntityDetail(Class<T> entityClass, List<Class<?>> recursionFilterList) {
-
     // check for nulls
     throwEntityClassNull(entityClass);
     throwRecursionFilterListNull(recursionFilterList);
@@ -327,10 +325,15 @@ public class EntityUtility {
     // return null if this is part of the recursion list, meaning already
     // hit this
     // entity before.
+    
+    // if the join is not null, and the class of the parameter matches the class that we are trying to build the details for, then
+    // we have a recursion entity which references itself, this means, that we cannot simply ignore the join-column, but rather
+    // need to embrace it and build its dependency join column.
+
     if (recursionFilterList.contains(entityClass)) {
       return null;
     }
-
+  
     // add this entity to the recursion filter list, so we can prevent
     // recursive loops!
     // *** NOTE
@@ -342,7 +345,7 @@ public class EntityUtility {
     // as such, the inverse join column is used to determine the dependency
     // of the entities (aka. tables)
     recursionFilterList.add(entityClass);
-
+  
     EntityDetail<T> entityDetail = new EntityDetail<T>(entityClass);
     List<ParameterBinder> pbs = new ArrayList<ParameterBinder>();
 
@@ -838,7 +841,7 @@ public class EntityUtility {
   protected void doOneToManyDependencyJoinColumn(ParameterBinder pb, ParameterBinder pbJoinColumn) {
     Class<?> entityClass = pb.getEntityClass();
     Class<?> joinTargetClass = pb.getTargetValueType();
-
+    
     // for example.
     // ParentEntity->List<Child> (joinColumn="PARENT_ID")
     // ChildEntity->Parent (joinColumn="PARENT_ID")
@@ -866,6 +869,49 @@ public class EntityUtility {
 
   }
 
+  protected void doSelfDependencyJoinByJoinColumn(ParameterBinder pbJoinColumn) {
+    return;
+    /*
+    Class<?> entityClass = pbJoinColumn.getEntityClass();
+    
+    if (Comparison.isNotEmpty(pbJoinColumn.getJoinColumn().referencedColumnName())) {
+      throw new IllegalArgumentException("Cannot have an entity with a column that has a dependency on the same entity (itself) and use the referenced-column-name attribute. " +
+      		"technically you can, if the parameter is referenced column is unique, however, this jpa implementation only supports joining against the primary key. - for now. " +
+      		"I wouldn't know why the heck you would want to do that anyway!");
+      
+      // TODO investigate into building a proper graph, this is a half ass job at building the dependency graph..
+    }
+    
+    EntityDetail<?> details = new EntityDetail<>(entityClass);
+  
+    // the dependency parameter should be the primary key at this point
+    List<ParameterBinder> pbPrimaryKeys = details.getPrimaryKeyParameterBinders();
+    
+    if (Comparison.isEmptyOrNull(pbPrimaryKeys)) {
+      
+      // this should probably never happen..
+      String error = "No primary keys found for entity type " + entityClass;
+      logger.error(error);
+      throw new NullPointerException(error);
+      
+    } else if (pbPrimaryKeys.size() != 1) {
+      String error = "Implementation does not currently support composite key join columns, please check entity type " + entityClass + " on column " + pbJoinColumn.getColumnNameAnyJoinOrColumn() + " and its associated inverse join.";
+      logger.error(error);
+      
+      throw new RuntimeException(error);
+    }
+    
+    ParameterBinder pbpk = pbPrimaryKeys.get(0);
+
+    DependencyJoin dj = new DependencyJoin();
+    dj.setDependencyClass(entityClass);
+    dj.setDependencyParameterBinder(pbpk);
+    dj.setInverseJoin(false);
+
+    // the dependency goes against the current param binder
+    pbJoinColumn.setDependencyJoin(dj);*/
+  }
+  
   protected void doDepedencyByJoinColumn(ParameterBinder pb, ParameterBinder pbJoinColumn) {
     // Then we want to bind by the join column name on the inverse entity.
     if (pbJoinColumn.isOneToMany()) {
@@ -887,11 +933,21 @@ public class EntityUtility {
 
     // Get the column name of the join column
     String columnName = pb.getJoinColumnName();
-
+  
     // Get the entity details for the given join column class type, for
     // example Parent.class
-    EntityDetail<?> joinEntityDetail = getEntityDetail(joinTargetClass, recursionFilterList);
+    EntityDetail<?> joinEntityDetail = null;
+    
+    // if the entity class is the same as the join target class, meaning its a recursive join to itself, probably by a parent id column,
+    // then we need to get the entities values, otherwise the recursion, NOTE, this may cause an infinit loop, we should probably create
+    // a graph of the entities, and check the loaded entities such that it does not continue to load data, incase the relationships are
+    // setup such as e.g: a->b->c->b->c and so forth.
+    
+    // TODO check this logic very carefully. perhaps use a combination of target class and parameter binder as the join filter identifier, rather than just entity class type.
+     joinEntityDetail = getEntityDetail(joinTargetClass, recursionFilterList);
+    
 
+    
     // If this returns, then we are good to process the join column,
     // otherwise
     // simply ignore it (probably filtered by recursionFilterList)
@@ -917,6 +973,11 @@ public class EntityUtility {
               + joinEntityDetail.getTableName() + " on parameter " + pbJoinColumn.getBindingPath());
         }
       }
+    } else if (joinTargetClass.equals(pb.getEntityClass())) {
+      // continue to build the dependency graph since the target class is actually the same as the entity class,
+      // basically what this means is that, the entity refers to itself, and since we cannot continue to build
+      // the entity details over-and-over again, we need to refer the parameter to itself.
+      doSelfDependencyJoinByJoinColumn(pb);
     }
 
   }
@@ -1065,10 +1126,13 @@ public class EntityUtility {
     binder.setEntityClass(entityClass);
 
     if (doColumn(binder, recursionFilterList)) {
-
       // TODO ??
     } else if (doJoinColumn(binder, recursionFilterList)) {
       // TODO ??
+      
+      //if (entityClass.equals(binder.getEntityClass())) {
+        
+      //}
     }
 
     /*
