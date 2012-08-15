@@ -53,10 +53,10 @@ import com.p5solutions.core.utils.ReflectionUtility;
  * The Class JsonDeserializer: Standard JSON deserializer. Does not need to be
  * prototype based, this class is completely thread-safe and can be used in a
  * singleton fashion.
- *
+ * 
  * @author Kasra Rasaee
  * @since 2010-04-10
- *
+ * 
  * @see JsonConverterConfigurer
  * @see JsonHttpMessageConverter
  * @see JsonSerializer
@@ -79,47 +79,41 @@ public class JsonDeserializer {
    */
   protected void throwInputStreamReaderException(Reader reader) {
     if (reader == null) {
-      throw new NullPointerException(getClass()
-          + " cannot deserialize a null input stream. "
-          + "You must instantiate with a vaild JSON input stream.");
+      throw new NullPointerException(getClass() + " cannot deserialize a null input stream. " + "You must instantiate with a vaild JSON input stream.");
     }
 
     try {
       if (!reader.ready()) {
-        logger.error("Input stream reader is not ready to be read. Check instance of "
-            + getClass());
+        logger.error("Input stream reader is not ready to be read. Check instance of " + getClass());
       }
     } catch (Exception e) {
-      logger.error(e
-          + " : "
-          + "Input stream reader is not ready to be read. Check instance of "
-          + getClass());
+      logger.error(e + " : " + "Input stream reader is not ready to be read. Check instance of " + getClass());
     }
 
   }
 
   /**
    * Copy.
-   *
+   * 
    * @param source
-   *            the source
+   *          the source
    * @param destination
-   *            the destination
+   *          the destination
    */
   protected void copy(char[] source, char[] destination) {
     copy(source, destination, 0);
   }
 
   /**
-   * Copy array from source to destination, starting from index zero, up to
-   * the maximum length of destination array.
-   *
+   * Copy array from source to destination, starting from index zero, up to the
+   * maximum length of destination array.
+   * 
    * @param source
-   *            the source
+   *          the source
    * @param destination
-   *            the destination
+   *          the destination
    * @param start
-   *            the start
+   *          the start
    */
   protected void copy(char[] source, char[] destination, int start) {
     // if (source.length >= destination.length) {
@@ -134,11 +128,11 @@ public class JsonDeserializer {
 
   /**
    * Copy.
-   *
+   * 
    * @param a
-   *            the a
+   *          the a
    * @param pos
-   *            the pos
+   *          the pos
    * @return the char[]
    */
   public static char[] copy(char[] a, int pos) {
@@ -155,9 +149,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is start array tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is start array tag
    */
   protected boolean isStartArrayTag(char c) {
@@ -166,9 +160,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is end array tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is end array tag
    */
   protected boolean isEndArrayTag(char c) {
@@ -177,9 +171,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is start tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is start tag
    */
   protected boolean isStartTag(char c) {
@@ -188,9 +182,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is colon tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is colon tag
    */
   protected boolean isColonTag(char c) {
@@ -199,9 +193,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is end tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is end tag
    */
   protected boolean isEndTag(char c) {
@@ -210,9 +204,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is comma tag.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is comma tag
    */
   protected boolean isCommaTag(char c) {
@@ -221,9 +215,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is quotes.
-   *
+   * 
    * @param c
-   *            the c
+   *          the c
    * @return true, if is quotes
    */
   protected boolean isQuotes(char c) {
@@ -244,15 +238,14 @@ public class JsonDeserializer {
 
   /**
    * Read.
-   *
+   * 
    * @param previous
-   *            the previous
+   *          the previous
    * @return the read
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  protected Read read(Reader reader, char[] previous, int bufferSize)
-      throws IOException {
+  protected Read read(Reader reader, char[] previous, int bufferSize) throws IOException {
     Read read = new Read();
     if (previous != null && previous.length > 0) {
       read.buffer = previous;
@@ -265,9 +258,8 @@ public class JsonDeserializer {
   }
 
   // TODO comments.
-  protected boolean attemptMapMapping(String fieldName, Object target,
-      Object nvpValue, Class<?> returnType, JsonProperty jdt,
-      WebRequest webRequest, WebDataBinder binder) {
+  protected boolean attemptMapMapping(String fieldName, Object target, Object nvpValue, Class<?> returnType, JsonProperty jdt, WebRequest webRequest,
+      WebDataBinder binder) {
 
     // quick return if the target field "method" is not of type List<?>
     // e.g. public List<?> pojo.getNames<String>() then continue
@@ -290,8 +282,7 @@ public class JsonDeserializer {
 
             // recurisvely walk each list element
             List<NameValuePair> nvl = (List<NameValuePair>) list;
-            Object next = ReflectionUtility
-                .newInstance(jdt.value());
+            Object next = ReflectionUtility.newInstance(jdt.value());
             mapJsonDataToPOJO(next, nvl, webRequest, binder);
             // add the walked element to the arraylist
             // put.put(next);
@@ -305,8 +296,7 @@ public class JsonDeserializer {
       Map<Object, Object> putMap = new HashMap<Object, Object>();
       if (listOfObjects.size() > 0) {
         for (NameValuePair nvp : listOfObjects) {
-          if (jdt != null
-              && ReflectionUtility.isBasicClass(jdt.value())) {
+          if (jdt != null && ReflectionUtility.isBasicClass(jdt.value())) {
             putMap.put(nvp.name, nvp.value);
           } else {
             // TODO
@@ -323,23 +313,22 @@ public class JsonDeserializer {
 
   /**
    * Attempt list mapping.
-   *
+   * 
    * @param fieldName
-   *            the field name
+   *          the field name
    * @param target
-   *            the target
+   *          the target
    * @param nvpValue
-   *            the nvp value
+   *          the nvp value
    * @param returnType
-   *            the return type
+   *          the return type
    * @param jdt
-   *            the jdt
+   *          the jdt
    * @return true, if successful
    */
   @SuppressWarnings("unchecked")
-  protected boolean attemptListMapping(String fieldName, Object target,
-      Object nvpValue, Class<?> returnType, JsonProperty jdt,
-      WebRequest webRequest, WebDataBinder binder) {
+  protected boolean attemptListMapping(String fieldName, Object target, Object nvpValue, Class<?> returnType, JsonProperty jdt, WebRequest webRequest,
+      WebDataBinder binder) {
 
     // quick return if the target field "method" is not of type List<?>
     // e.g. public List<?> pojo.getNames<String>() then continue
@@ -361,8 +350,7 @@ public class JsonDeserializer {
 
             // recurisvely walk each list element
             List<NameValuePair> nvl = (List<NameValuePair>) list;
-            Object next = ReflectionUtility
-                .newInstance(jdt.value());
+            Object next = ReflectionUtility.newInstance(jdt.value());
             mapJsonDataToPOJO(next, nvl, webRequest, binder);
 
             // add the walked element to the arraylist
@@ -394,25 +382,23 @@ public class JsonDeserializer {
 
   /**
    * Attempt simple mapping.
-   *
+   * 
    * @param fieldName
-   *            the field name
+   *          the field name
    * @param target
-   *            the target
+   *          the target
    * @param nvpValue
-   *            the nvp value
+   *          the nvp value
    * @param returnType
-   *            the return type
+   *          the return type
    * @param webRequest
-   *            the web request
+   *          the web request
    * @param binder
-   *            the binder
+   *          the binder
    * @return true, if successful
    */
   @SuppressWarnings("unchecked")
-  protected boolean attemptSimpleMapping(String fieldName, Object target,
-      Object nvpValue, Class<?> returnType, WebRequest webRequest,
-      WebDataBinder binder) {
+  protected boolean attemptSimpleMapping(String fieldName, Object target, Object nvpValue, Class<?> returnType, WebRequest webRequest, WebDataBinder binder) {
     // recursively walk the next elements and set their properties
     if (nvpValue instanceof List<?>) {
       List<NameValuePair> list = (List<NameValuePair>) nvpValue;
@@ -428,22 +414,21 @@ public class JsonDeserializer {
   /**
    * Sets the value. May also use the {@link ConversionService} to convert
    * types, such as {@link Date} using the {@link DateTimeFormat}. @see
-   *
+   * 
    * @param method
-   *            the method
+   *          the method
    * @param fieldName
-   *            the field name
+   *          the field name
    * @param target
-   *            the target
+   *          the target
    * @param value
-   *            the value
+   *          the value
    * @param binder
-   *            the binder {@link ConversionService} and implementation of
-   *            custom converters by implementing {@link GenericConverter}
+   *          the binder {@link ConversionService} and implementation of custom
+   *          converters by implementing {@link GenericConverter}
    * @throws Exception
    */
-  protected void setValue(Method method, String fieldName, Object target,
-      Object value, WebRequest webRequest, WebDataBinder binder) {
+  protected void setValue(Method method, String fieldName, Object target, Object value, WebRequest webRequest, WebDataBinder binder) {
 
     // Expose the real method, if proxied, since annotations need to be found.
     Method realMethod = method;
@@ -454,60 +439,44 @@ public class JsonDeserializer {
       realMethod = ReflectionUtility.findMethod(clazz, realMethod.getName());
     }
     // TODO expose TrackStateUtility as part of Core??
-    //  Method realMethod = TrackStateUtility.exposeRealMethod(method, target);
+    // Method realMethod = TrackStateUtility.exposeRealMethod(method, target);
 
     if (realMethod == null && method == null) {
       // if there are any binding, or formatting issues, put an error
       // in the model state.
 
-      Object tempState = webRequest.getAttribute(ModelState.MODEL_STATE,
-          WebRequest.SCOPE_REQUEST);
+      Object tempState = webRequest.getAttribute(ModelState.MODEL_STATE, WebRequest.SCOPE_REQUEST);
       if (tempState == null) {
         tempState = new ModelState();
       }
       ModelState modelState = (ModelState) tempState;
-      modelState.add(fieldName,
-          "Cannot bind value " + value + " to target object "
-              + (target != null ? target.getClass() : "<null>"),
-              new RuntimeException("Field " + fieldName
-                  + " does not exist for "
-                  + target.getClass().getName()));
-      webRequest.setAttribute(ModelState.MODEL_STATE, modelState,
-          WebRequest.SCOPE_REQUEST);
+      modelState.add(fieldName, "Cannot bind value " + value + " to target object " + (target != null ? target.getClass() : "<null>"), new RuntimeException(
+          "Field " + fieldName + " does not exist for " + target.getClass().getName()));
+      webRequest.setAttribute(ModelState.MODEL_STATE, modelState, WebRequest.SCOPE_REQUEST);
     }
     // get the nullable property annotation, if any
-    JsonNotNullProperty jnullpt = ReflectionUtility.findAnnotation(
-        realMethod, JsonNotNullProperty.class);
+    JsonNotNullProperty jnullpt = ReflectionUtility.findAnnotation(realMethod, JsonNotNullProperty.class);
 
     // get the json property, if any
-    JsonProperty jpt = ReflectionUtility.findAnnotation(realMethod,
-        JsonProperty.class);
+    JsonProperty jpt = ReflectionUtility.findAnnotation(realMethod, JsonProperty.class);
 
     Class<?> returnType = method.getReturnType();
     if (ReflectionUtility.isNumberClass(returnType)) {
 
       try {
-        Object numeric = NumberUtils.valueOf(value.toString(),
-            returnType);
+        Object numeric = NumberUtils.valueOf(value.toString(), returnType);
         ReflectionUtility.setValue(fieldName, target, numeric);
       } catch (NumberFormatException nfe) {
         // if there are any binding, or formatting issues, put an error
         // in the model state.
 
-        Object tempState = webRequest.getAttribute(
-            ModelState.MODEL_STATE, WebRequest.SCOPE_REQUEST);
+        Object tempState = webRequest.getAttribute(ModelState.MODEL_STATE, WebRequest.SCOPE_REQUEST);
         if (tempState == null) {
           tempState = new ModelState();
         }
         ModelState modelState = (ModelState) tempState;
-        modelState.add(fieldName,
-            "Cannot bind value "
-                + value
-                + " to target object "
-                + (target != null ? target.getClass()
-                    : "<null>"), nfe);
-        webRequest.setAttribute(ModelState.MODEL_STATE, modelState,
-            WebRequest.SCOPE_REQUEST);
+        modelState.add(fieldName, "Cannot bind value " + value + " to target object " + (target != null ? target.getClass() : "<null>"), nfe);
+        webRequest.setAttribute(ModelState.MODEL_STATE, modelState, WebRequest.SCOPE_REQUEST);
       }
 
     } else if (ReflectionUtility.isStringClass(returnType)) {
@@ -522,20 +491,18 @@ public class JsonDeserializer {
         sv = (String) value;
       }
 
-      //unescape the sting character.
+      // unescape the sting character.
       sv = unescape(sv);
+      sv = unnull(sv);
 
       ReflectionUtility.setValue(fieldName, target, sv);
-    } else if (!attemptListMapping(fieldName, target, value, returnType,
-        jpt, webRequest, binder)) {
+    } else if (!attemptListMapping(fieldName, target, value, returnType, jpt, webRequest, binder)) {
 
       // / attempt to map of Map<?,?>
-      if (!attemptMapMapping(fieldName, target, value, returnType, jpt,
-          webRequest, binder)) {
+      if (!attemptMapMapping(fieldName, target, value, returnType, jpt, webRequest, binder)) {
 
         // attempt to simple map the object
-        if (!attemptSimpleMapping(fieldName, target, value, returnType,
-            webRequest, binder)) {
+        if (!attemptSimpleMapping(fieldName, target, value, returnType, webRequest, binder)) {
 
           // Use the Spring Conversion service and try to map the
           // values
@@ -561,8 +528,7 @@ public class JsonDeserializer {
             converted = editor.getValue();
           } else if (conversionService != null) {
             // use the conversion service to translate the value
-            converted = this.conversionService.convert(value,
-                sourceType, targetType);
+            converted = this.conversionService.convert(value, sourceType, targetType);
           }
 
           // set the converted value, if any
@@ -574,28 +540,59 @@ public class JsonDeserializer {
 
   /**
    * Escaping new lines and quotes for json.
-   *
+   * 
    * @param value
    * @return
    */
   protected String unescape(String value) {
-    if (value == null){
+    if (value == null) {
       return null;
     }
 
-    // TODO should we really be stripping these out? depends on the format we are trying to save the content?
-    // HTML doesn't support these types anyway, for example, what is a \t even represented as? spaces <div> spacing. what?
-    // since Json is usually used in web applications, this probably makes some sort of sense...
+    // TODO should we really be stripping these out? depends on the format we
+    // are trying to save the content?
+    // HTML doesn't support these types anyway, for example, what is a \t even
+    // represented as? spaces <div> spacing. what?
+    // since Json is usually used in web applications, this probably makes some
+    // sort of sense...
     value = value.replace("\\\\", "\\");
     value = value.replace("\\t", "\t");
     value = value.replace("\\n", "\n");
     value = value.replace("\\r", "\r");
     value = value.replace("\\\"", "\"");
-        
-    //String result = value.replace("\\\\", "\\").replace("\\n", "\n").replace("\\r", "\r").replace("\\\"", "\"").replace("\t", "");
+
+    // String result = value.replace("\\\\", "\\").replace("\\n",
+    // "\n").replace("\\r", "\r").replace("\\\"", "\"").replace("\t", "");
     return value;
   }
 
+  /**
+   * Unnull.
+   * 
+   * @param value
+   *          the value
+   * @return the string
+   */
+  protected String unnull(String value) {
+    if (value == null) {
+      return null;
+    }
+
+    if (Comparison.isEqualCaseInsentiveTrim("null", value)) {
+      return null;
+    }
+
+    return value;
+  }
+
+  /**
+   * Builds the map.
+   * 
+   * @param target
+   *          the target
+   * @param pairs
+   *          the pairs
+   */
   @SuppressWarnings("unchecked")
   private void buildMap(Object target, List<NameValuePair> pairs) {
     if (pairs != null) {
@@ -616,19 +613,18 @@ public class JsonDeserializer {
   /**
    * Map json data to a plain old java object, all relevant data should be
    * mapped, as long as the name matches a getter/setter. For example
-   * {address:{city: "Toronto"}} should match target object
-   * target.address.city. It will also map values via dot path notation, such
-   * as json {"address.city": "Toronto"}
-   *
+   * {address:{city: "Toronto"}} should match target object target.address.city.
+   * It will also map values via dot path notation, such as json
+   * {"address.city": "Toronto"}
+   * 
    * @param target
-   *            the object
+   *          the object
    * @param pairs
-   *            the pairs
+   *          the pairs
    * @param binder
-   *            the binder
+   *          the binder
    */
-  protected void mapJsonDataToPOJO(Object target, List<NameValuePair> pairs,
-      WebRequest webRequest, WebDataBinder binder) {
+  protected void mapJsonDataToPOJO(Object target, List<NameValuePair> pairs, WebRequest webRequest, WebDataBinder binder) {
 
     Class<?> clazz = target.getClass();
     // if the target parameter is of type map.
@@ -650,8 +646,7 @@ public class JsonDeserializer {
           if (name != null && name.indexOf(".") > 0) {
             mapByPath(value, target, name, webRequest, binder);
           } else {
-            logger.error("No method found under clazz: " + clazz
-                + " when searching for field name of " + name);
+            logger.error("No method found under clazz: " + clazz + " when searching for field name of " + name);
           }
         }
       }
@@ -675,35 +670,32 @@ public class JsonDeserializer {
     return null;
   }
 
-  protected void mapByPath(Object value, Object target, String path,
-      WebRequest webRequest, WebDataBinder binder) {
+  protected void mapByPath(Object value, Object target, String path, WebRequest webRequest, WebDataBinder binder) {
     mapByPath(value, null, target, null, path, webRequest, binder);
   }
 
   /**
    * Map value to target via path, usually a nested object, such as
    * target.address.city instead of using the standard JSON nesting.
-   *
+   * 
    * @param value
-   *            the value to set against the target object
+   *          the value to set against the target object
    * @param lastIndexer
-   *            the indexer, null if the value is not part of an Collection,
-   *            Set or Map
+   *          the indexer, null if the value is not part of an Collection, Set
+   *          or Map
    * @param target
-   *            the target object that the value will be set against
+   *          the target object that the value will be set against
    * @param property
-   *            the json property of the given value
+   *          the json property of the given value
    * @param path
-   *            the path, usually a single level path, but this
-   *            JsonDeserializer supports "spring" type bind path variables.
+   *          the path, usually a single level path, but this JsonDeserializer
+   *          supports "spring" type bind path variables.
    * @param webRequest
-   *            the web request
+   *          the web request
    * @param binder
-   *            the binder
+   *          the binder
    */
-  protected void mapByPath(Object value, Object lastIndexer, Object target,
-      JsonProperty property, String path, WebRequest webRequest,
-      WebDataBinder binder) {
+  protected void mapByPath(Object value, Object lastIndexer, Object target, JsonProperty property, String path, WebRequest webRequest, WebDataBinder binder) {
 
     int pos = path.indexOf('.', 1);
     Class<?> clazz = target.getClass();
@@ -737,28 +729,22 @@ public class JsonDeserializer {
           }
         }
         // is there a json property attribute?
-        JsonProperty jsonProperty = ReflectionUtility.findAnnotation(
-            method, JsonProperty.class);
+        JsonProperty jsonProperty = ReflectionUtility.findAnnotation(method, JsonProperty.class);
 
         // recursion until we set the appropriate value
-        mapByPath(value, currentIndexer, pushInstance, jsonProperty,
-            next, webRequest, binder);
+        mapByPath(value, currentIndexer, pushInstance, jsonProperty, next, webRequest, binder);
 
         // set teh instance to the current target
         ReflectionUtility.setValue(field, target, pushInstance);
       }
     } else {
       if (ReflectionUtility.isCollectionClass(clazz)) {
-        if (Comparison.isNotNull(property)
-            && Comparison.isNotNull(property.value())) {
-          Object addTarget = ReflectionUtility.newInstance(property
-              .value());
+        if (Comparison.isNotNull(property) && Comparison.isNotNull(property.value())) {
+          Object addTarget = ReflectionUtility.newInstance(property.value());
           if (Comparison.isNotNull(addTarget)) {
-            Method method = ReflectionUtility.findGetterMethod(
-                property.value(), field);
+            Method method = ReflectionUtility.findGetterMethod(property.value(), field);
 
-            setValue(method, field, addTarget, value, webRequest,
-                binder);
+            setValue(method, field, addTarget, value, webRequest, binder);
 
             ((Collection<Object>) target).add(addTarget);
           }
@@ -777,30 +763,24 @@ public class JsonDeserializer {
           if (mapValue == null) {
             // TODO need to create an object, but the JsonProperty
             // must be set??
-            throw new NotImplementedException(
-                "Cannot create a new instance of object type ? please define "
-                    + JsonProperty.class);
+            throw new NotImplementedException("Cannot create a new instance of object type ? please define " + JsonProperty.class);
           }
 
           Class<?> mapClass = mapValue.getClass();
           // TODO probably should check against real class, not some
           // proxied class
 
-          Method method = ReflectionUtility.findGetterMethod(
-              mapClass, field);
+          Method method = ReflectionUtility.findGetterMethod(mapClass, field);
           if (method == null) {
-            throw new NullPointerException(
-                "Setter must be defined for path " + field
-                + " on class type " + mapClass);
+            throw new NullPointerException("Setter must be defined for path " + field + " on class type " + mapClass);
           }
 
           setValue(method, field, mapValue, value, webRequest, binder);
 
-          //System.out.println("Last Indexer " + lastIndexer);
+          // System.out.println("Last Indexer " + lastIndexer);
         }
       } else {
-        Method method = ReflectionUtility
-            .findGetterMethod(clazz, field);
+        Method method = ReflectionUtility.findGetterMethod(clazz, field);
         setValue(method, field, target, value, webRequest, binder);
       }
     }
@@ -808,9 +788,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is name value list.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @return true, if is name value list
    */
   protected boolean isNameValueList(Object value) {
@@ -826,9 +806,9 @@ public class JsonDeserializer {
 
   /**
    * Checks if is list within list.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @return true, if is list within list
    */
   protected boolean isListWithinList(Object value) {
@@ -843,46 +823,43 @@ public class JsonDeserializer {
   }
 
   /**
-   * Deserialize the JSON data and return a populated POJO, however use UTF-8
-   * as the default reader encoding.
-   *
+   * Deserialize the JSON data and return a populated POJO, however use UTF-8 as
+   * the default reader encoding.
+   * 
    * @param <T>
-   *            the generic type
+   *          the generic type
    * @param clazz
-   *            the clazz
+   *          the clazz
    * @param input
-   *            the input
+   *          the input
    * @return the t
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  public <T> T deserialize(Class<T> clazz, InputStream input)
-      throws IOException {
+  public <T> T deserialize(Class<T> clazz, InputStream input) throws IOException {
     return deserialize(clazz, input, Charset.forName("UTF-8"));
   }
 
   /**
    * Deserialize.
-   *
+   * 
    * @param <T>
-   *            the generic type
+   *          the generic type
    * @param clazz
-   *            the clazz
+   *          the clazz
    * @param target
-   *            the target
+   *          the target
    * @param binder
-   *            the binder
+   *          the binder
    * @param input
-   *            the input
+   *          the input
    * @param charset
-   *            the charset
+   *          the charset
    * @return the t
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  public <T> T deserialize(Class<T> clazz, T target, WebRequest webRequest,
-      WebDataBinder binder, InputStream input, Charset charset)
-          throws IOException {
+  public <T> T deserialize(Class<T> clazz, T target, WebRequest webRequest, WebDataBinder binder, InputStream input, Charset charset) throws IOException {
 
     Reader reader = new InputStreamReader(input, charset);
     return deserialize(clazz, target, webRequest, binder, reader, null);
@@ -890,48 +867,45 @@ public class JsonDeserializer {
 
   /**
    * Deserialize the JSON data and return a populated POJO.
-   *
+   * 
    * @param <T>
-   *            the generic type
+   *          the generic type
    * @param clazz
-   *            the clazz
+   *          the clazz
    * @param input
-   *            the input
+   *          the input
    * @param charset
-   *            the charset
+   *          the charset
    * @return the object
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  public <T> T deserialize(Class<T> clazz, InputStream input, Charset charset)
-      throws IOException {
+  public <T> T deserialize(Class<T> clazz, InputStream input, Charset charset) throws IOException {
     Reader reader = new InputStreamReader(input, charset);
     return deserialize(clazz, null, null, null, reader, null);
   }
 
   /**
    * Deserialize the JSON data and return a populated POJO.
-   *
+   * 
    * @param <T>
-   *            the generic type
+   *          the generic type
    * @param clazz
-   *            the clazz
+   *          the clazz
    * @param target
-   *            the target
+   *          the target
    * @param binder
-   *            the binder
+   *          the binder
    * @param reader
-   *            the reader
+   *          the reader
    * @param previous
-   *            the previous
+   *          the previous
    * @return the object
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
   @SuppressWarnings("unchecked")
-  protected <T> T deserialize(Class<T> clazz, T target,
-      WebRequest webRequest, WebDataBinder binder, Reader reader,
-      char[] previous) throws IOException {
+  protected <T> T deserialize(Class<T> clazz, T target, WebRequest webRequest, WebDataBinder binder, Reader reader, char[] previous) throws IOException {
     char[] buffer;
 
     T root = null;
@@ -963,8 +937,7 @@ public class JsonDeserializer {
           char[] buffernext = cutBuffer(buffer, i);
 
           // walk to the next element
-          ValueBufferPair vbp = walkNames(reader, buffernext,
-              DEFAULT_BUFFER_SIZE);
+          ValueBufferPair vbp = walkNames(reader, buffernext, DEFAULT_BUFFER_SIZE);
           List<NameValuePair> nvps = (List<NameValuePair>) vbp.value;
           mapJsonDataToPOJO(root, nvps, webRequest, binder);
         }
@@ -1009,19 +982,19 @@ public class JsonDeserializer {
     boolean isArray;
 
     /**
-     * The adjusted buffer size. This is different to the above buffer and
-     * its current size.
+     * The adjusted buffer size. This is different to the above buffer and its
+     * current size.
      */
     int adjustedBufferSize;
   }
 
   /**
    * Name value pair.
-   *
+   * 
    * @param name
-   *            the name
+   *          the name
    * @param vbp
-   *            the vbp
+   *          the vbp
    * @return the name value pair
    */
   protected NameValuePair createNameValuePair(String name, ValueBufferPair vbp) {
@@ -1037,48 +1010,44 @@ public class JsonDeserializer {
 
   /**
    * Creates the value buffer.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @return the value buffer pair
    */
-  protected ValueBufferPair createValueBuffer(Object value,
-      int adjustedBufferSize) {
+  protected ValueBufferPair createValueBuffer(Object value, int adjustedBufferSize) {
     return createValueBuffer(value, null, -1, -1, false, adjustedBufferSize);
   }
 
   /**
    * Creates the value buffer.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @param buffer
-   *            the buffer
+   *          the buffer
    * @return the value buffer pair
    */
-  protected ValueBufferPair createValueBuffer(Object value, char[] buffer,
-      int adjustedBufferSize) {
-    return createValueBuffer(value, buffer, -1, -1, false,
-        adjustedBufferSize);
+  protected ValueBufferPair createValueBuffer(Object value, char[] buffer, int adjustedBufferSize) {
+    return createValueBuffer(value, buffer, -1, -1, false, adjustedBufferSize);
   }
 
   /**
    * Creates the value buffer.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @param buffer
-   *            the buffer
+   *          the buffer
    * @param count
-   *            the count
+   *          the count
    * @param index
-   *            the index
+   *          the index
    * @param isEndTag
-   *            the is end tag
+   *          the is end tag
    * @return the value buffer pair
    */
-  protected ValueBufferPair createValueBuffer(Object value, char[] buffer,
-      int count, int index, boolean isEndTag, int adjustedBufferSize) {
+  protected ValueBufferPair createValueBuffer(Object value, char[] buffer, int count, int index, boolean isEndTag, int adjustedBufferSize) {
     ValueBufferPair vbp = new ValueBufferPair();
     vbp.value = value;
     vbp.isEndTag = isEndTag;
@@ -1118,9 +1087,9 @@ public class JsonDeserializer {
 
   /**
    * Strip quotes.
-   *
+   * 
    * @param value
-   *            the value
+   *          the value
    * @return the string
    */
   protected String stripQuotes(String value) {
@@ -1141,13 +1110,13 @@ public class JsonDeserializer {
   }
 
   /**
-   * Adjust buffer size, if the amount of read bytes is equal to the size of
-   * the buffer, then double the buffer, otherwise shrink it.
-   *
+   * Adjust buffer size, if the amount of read bytes is equal to the size of the
+   * buffer, then double the buffer, otherwise shrink it.
+   * 
    * @param read
-   *            the read
+   *          the read
    * @param size
-   *            the size
+   *          the size
    * @return the char[]
    */
   protected int adjustBufferSize(int read, int size) {
@@ -1168,13 +1137,12 @@ public class JsonDeserializer {
 
   /**
    * Cut the buffer from the cut position, and return the remainder.
-   *
+   * 
    * @param buffer
-   *            the buffer
+   *          the buffer
    * @param cut
-   *            the cut
-   * @return the char[], return <code>null</code> if there is nothing
-   *         remaining
+   *          the cut
+   * @return the char[], return <code>null</code> if there is nothing remaining
    */
   protected char[] cutBuffer(char[] buffer, int cut) {
     int nlen = buffer.length - cut - 1;
@@ -1188,15 +1156,14 @@ public class JsonDeserializer {
 
   /**
    * Walk names.
-   *
+   * 
    * @param previous
-   *            the previous
+   *          the previous
    * @return the value buffer pair
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  protected ValueBufferPair walkNames(Reader reader, char[] previous,
-      int bufferSize) throws IOException {
+  protected ValueBufferPair walkNames(Reader reader, char[] previous, int bufferSize) throws IOException {
     char[] buffer = null;
     String name = new String();
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -1230,10 +1197,14 @@ public class JsonDeserializer {
           cut = i;
           break;
         } else if (isEndArrayTag(c)) {
-          // SO, THIS IS THE CATCH, if this method is called from the walkArray, then it expects
-          // an array termination character "]", meaning we cannot move the array forward +1, otherwise
-          // the previous call "walkArray" will think there are more elements to be inserted into the array list.
-          // as such, we need to return the valuebuffer but not move the array forward.
+          // SO, THIS IS THE CATCH, if this method is called from the walkArray,
+          // then it expects
+          // an array termination character "]", meaning we cannot move the
+          // array forward +1, otherwise
+          // the previous call "walkArray" will think there are more elements to
+          // be inserted into the array list.
+          // as such, we need to return the valuebuffer but not move the array
+          // forward.
           return createValueBuffer(nvps, buffer, -2, -2, false, bufferSize);
         } else if (isEndTagFlag || isEndTag(c)) {
           // make sure to return the buffer to the previous call
@@ -1264,9 +1235,7 @@ public class JsonDeserializer {
         // walk the stream, and return its value
         ValueBufferPair vbp = walkValue(reader, buffernext, bufferSize);
         if (vbp == null) {
-          throw new NullPointerException(
-              "Value can back as null on JSON parameter name: "
-                  + name);
+          throw new NullPointerException("Value can back as null on JSON parameter name: " + name);
         }
 
         // add name value pair
@@ -1289,15 +1258,14 @@ public class JsonDeserializer {
 
   /**
    * Walk array.
-   *
+   * 
    * @param previous
-   *            the previous
+   *          the previous
    * @return the object
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  protected Object walkArray(Reader reader, char[] previous, int bufferSize)
-      throws IOException {
+  protected Object walkArray(Reader reader, char[] previous, int bufferSize) throws IOException {
     char[] buffer = null;
     String value = new String();
     boolean inBetweenQuotes = false;
@@ -1324,15 +1292,13 @@ public class JsonDeserializer {
           char[] buffernext = cutBuffer(buffer, i);
 
           // walk to the next element
-          ValueBufferPair vbpReturn = walkNames(reader, buffernext,
-              bufferSize);
+          ValueBufferPair vbpReturn = walkNames(reader, buffernext, bufferSize);
           list.add(vbpReturn.value);
 
           // the buffer probably moved forward, as such,
           // we must use the one passed back from walkNames(..)
           buffernext = vbpReturn.buffer;
-          ValueBufferPair vbpNew = createValueBuffer(vbpReturn.value,
-              buffernext, bufferSize);
+          ValueBufferPair vbpNew = createValueBuffer(vbpReturn.value, buffernext, bufferSize);
           vbpNew.isArray = true;
           previous = buffernext;
           break;
@@ -1343,8 +1309,7 @@ public class JsonDeserializer {
         }
 
         if (!inBetweenQuotes && isEndArrayTag(c)) {
-          return createValueBuffer(list, buffer, count, i, false,
-              bufferSize);
+          return createValueBuffer(list, buffer, count, i, false, bufferSize);
         }
 
       }
@@ -1353,15 +1318,14 @@ public class JsonDeserializer {
 
   /**
    * Walk value.
-   *
+   * 
    * @param previous
-   *            the previous
+   *          the previous
    * @return the value buffer pair
    * @throws IOException
-   *             Signals that an I/O exception has occurred.
+   *           Signals that an I/O exception has occurred.
    */
-  protected ValueBufferPair walkValue(Reader reader, char[] previous,
-      int bufferSize) throws IOException {
+  protected ValueBufferPair walkValue(Reader reader, char[] previous, int bufferSize) throws IOException {
     char[] buffer = null;
     String value = new String();
     boolean inBetweenQuotes = false;
@@ -1410,13 +1374,10 @@ public class JsonDeserializer {
           // cut the buffer before walking recursively the next names
           char[] buffernext = cutBuffer(buffer, i);
 
-
           // walk to the next element
-          ValueBufferPair vbpReturn = walkNames(reader, buffernext,
-              bufferSize);
+          ValueBufferPair vbpReturn = walkNames(reader, buffernext, bufferSize);
           buffernext = vbpReturn.buffer;
-          ValueBufferPair vbpNew = createValueBuffer(vbpReturn.value,
-              buffernext, bufferSize);
+          ValueBufferPair vbpNew = createValueBuffer(vbpReturn.value, buffernext, bufferSize);
           vbpNew.isArray = isArray;
           return vbpNew;
         }
@@ -1425,13 +1386,11 @@ public class JsonDeserializer {
           // append to the value
           value = stripQuotes(append(value, buffer, i));
 
-          return createValueBuffer(value, buffer, count, i, true,
-              bufferSize);
+          return createValueBuffer(value, buffer, count, i, true, bufferSize);
         }
 
         if (!inBetweenQuotes && isEndArrayTag(c)) {
-          return createValueBuffer(value, buffer, count, i, false,
-              bufferSize);
+          return createValueBuffer(value, buffer, count, i, false, bufferSize);
         }
 
       }
@@ -1441,8 +1400,7 @@ public class JsonDeserializer {
         value = stripQuotes(append(value, buffer, cut));
 
         // walk value
-        return createValueBuffer(value, buffer, count, cut, false,
-            bufferSize);
+        return createValueBuffer(value, buffer, count, cut, false, bufferSize);
       } else {
         value = append(value, buffer);
         adjustBufferSize(count, bufferSize);
@@ -1452,11 +1410,11 @@ public class JsonDeserializer {
 
   /**
    * Append.
-   *
+   * 
    * @param appendTo
-   *            the append to
+   *          the append to
    * @param buffer
-   *            the buffer
+   *          the buffer
    * @return the string
    */
   protected String append(String appendTo, char[] buffer) {
@@ -1465,13 +1423,13 @@ public class JsonDeserializer {
 
   /**
    * Append.
-   *
+   * 
    * @param appendTo
-   *            the append to
+   *          the append to
    * @param buffer
-   *            the buffer
+   *          the buffer
    * @param cut
-   *            the cut
+   *          the cut
    * @return the string
    */
   protected String append(String appendTo, char[] buffer, int cut) {
@@ -1487,9 +1445,9 @@ public class JsonDeserializer {
 
   /**
    * Sets the conversion service.
-   *
+   * 
    * @param conversionService
-   *            the new conversion service
+   *          the new conversion service
    */
   @Resource
   public void setConversionService(ConversionService conversionService) {
