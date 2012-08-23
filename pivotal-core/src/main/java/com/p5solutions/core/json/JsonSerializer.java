@@ -37,8 +37,11 @@ import java.util.Map.Entry;
 import javax.annotation.Resource;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.util.JavaScriptUtils;
 
 import com.p5solutions.core.aop.Targetable;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -170,19 +173,19 @@ public class JsonSerializer {
    * @return
    */
   protected String escape(String value) {
-    // remove line feed
-    // remove carriage return
-    // remove tabs
-    // escape change quotations 
-    // escape backslash
-	  //return value.replace("\\","\\\\").replace("\n", "\\n").replace("\r", "\\r").replace("\"", "\\\"").replace("\\t", "");
-    
-    value = value.replace("\\", "\\\\");
-    value = value.replace("\t", "\\t");
-    value = value.replace("\n", "\\n");
-    value = value.replace("\r", "\\r");
-    value = value.replace("\"", "\\\"");
-    
+    if (value == null) {
+        return null;
+    }
+   // value = HtmlUtils.htmlEscape(value);
+   // value = JavaScriptUtils.javaScriptEscape(value) ;
+    value = StringEscapeUtils.escapeHtml(value);
+    value = StringEscapeUtils.escapeJavaScript(value);
+
+//    value = value.replace("\\", "\\\\");
+//    value = value.replace("\t", "\\t");
+//    value = value.replace("\n", "\\n");
+//    value = value.replace("\r", "\\r");
+//    value = value.replace("\"", "\\\"");
     return value;
   }
 

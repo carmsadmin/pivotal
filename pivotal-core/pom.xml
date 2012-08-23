@@ -23,7 +23,7 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-core</artifactId>
 	<name>pivotal-core</name>
-	<version>1.0.5-STABLE</version>
+	<version>1.0.6-STABLE</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
