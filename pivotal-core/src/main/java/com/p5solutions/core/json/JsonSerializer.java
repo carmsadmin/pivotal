@@ -176,10 +176,13 @@ public class JsonSerializer {
     if (value == null) {
         return null;
     }
-   // value = HtmlUtils.htmlEscape(value);
-   // value = JavaScriptUtils.javaScriptEscape(value) ;
+    //value = HtmlUtils.htmlEscape(value);
+    //value = JavaScriptUtils.javaScriptEscape(value) ;
+    
     value = StringEscapeUtils.escapeHtml(value);
     value = StringEscapeUtils.escapeJavaScript(value);
+    value = value.replace("\\'", "&#39;");
+    
 
 //    value = value.replace("\\", "\\\\");
 //    value = value.replace("\t", "\\t");

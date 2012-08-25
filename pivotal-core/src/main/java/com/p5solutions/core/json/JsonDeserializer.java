@@ -429,7 +429,7 @@ public class JsonDeserializer {
    * @throws Exception
    */
   protected void setValue(Method method, String fieldName, Object target, Object value, WebRequest webRequest, WebDataBinder binder) {
-
+    
     // Expose the real method, if proxied, since annotations need to be found.
     Method realMethod = method;
     if (target instanceof Targetable) {
@@ -1250,7 +1250,7 @@ public class JsonDeserializer {
         // setup the end tag from value call
         isEndTagFlag = vbp.isEndTag;
       } else {
-        name += new String(buffer);
+        name += new String(buffer, 0, count);
         bufferSize = adjustBufferSize(count, bufferSize);
       }
     }
@@ -1331,6 +1331,7 @@ public class JsonDeserializer {
     boolean inBetweenQuotes = false;
     boolean isArray = false;
 
+    int pc = '\0';
     for (;;) {
       Read read = read(reader, previous, bufferSize);
       buffer = read.buffer;
@@ -1346,11 +1347,15 @@ public class JsonDeserializer {
       int cut = count;
       for (int i = 0; i < count; i++) {
         char c = buffer[i];
-        if (isQuotes(c)) {
+        
+        if (isQuotes(c) && pc != '\\' ) {
           inBetweenQuotes = !inBetweenQuotes;
+          pc = c;
           continue;
         }
 
+        pc = c;
+        
         if (!inBetweenQuotes && isCommaTag(c)) {
           cut = i;
           break;
