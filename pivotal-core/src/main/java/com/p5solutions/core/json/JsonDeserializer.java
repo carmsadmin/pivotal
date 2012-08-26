@@ -1227,7 +1227,7 @@ public class JsonDeserializer {
       }
 
       if (cut != count) {
-        name = append(name, buffer, cut);
+        name = append(name, buffer, cut, count);
 
         // cut the buffer if necessary
         char[] buffernext = cutBuffer(buffer, cut);
@@ -1389,7 +1389,7 @@ public class JsonDeserializer {
 
         if (!inBetweenQuotes && isEndTag(c)) {
           // append to the value
-          value = stripQuotes(append(value, buffer, i));
+          value = stripQuotes(append(value, buffer, i, count));
 
           return createValueBuffer(value, buffer, count, i, true, bufferSize);
         }
@@ -1402,13 +1402,13 @@ public class JsonDeserializer {
 
       if (cut != count) {
         // append to the value
-        value = stripQuotes(append(value, buffer, cut));
+        value = stripQuotes(append(value, buffer, cut, count));
 
         // walk value
         return createValueBuffer(value, buffer, count, cut, false, bufferSize);
       } else {
-        value = append(value, buffer);
-        adjustBufferSize(count, bufferSize);
+        value = append(value, buffer, -1, count);
+        bufferSize = adjustBufferSize(count, bufferSize);
       }
     }
   }
@@ -1422,9 +1422,10 @@ public class JsonDeserializer {
    *          the buffer
    * @return the string
    */
-  protected String append(String appendTo, char[] buffer) {
-    return append(appendTo, buffer, -1);
-  }
+  // BAD IDEA AS THE BUFFER IS NOT NECESSARILY ALWAYS FILLED
+  //protected String append(String appendTo, char[] buffer) {
+  //  return append(appendTo, buffer, -1);
+  //}
 
   /**
    * Append.
@@ -1437,9 +1438,9 @@ public class JsonDeserializer {
    *          the cut
    * @return the string
    */
-  protected String append(String appendTo, char[] buffer, int cut) {
+  protected String append(String appendTo, char[] buffer, int cut, int read) {
     if (cut == -1) {
-      appendTo += new String(buffer);
+      appendTo += new String(buffer, 0, read);
     } else {
       char[] temp = new char[cut];
       copy(buffer, temp);
