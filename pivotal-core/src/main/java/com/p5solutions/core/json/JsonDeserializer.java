@@ -609,7 +609,24 @@ public class JsonDeserializer {
       }
     }
   }
-
+  
+  private String tempfixandlogger(String value) {
+	  if (Comparison.isNotEmpty(value)) {
+		  StringBuilder sb = new StringBuilder();
+		  byte[] buf = value.getBytes();
+		  for (int i = 0; i < buf.length; i++) {
+			  if (buf[i] == '\0') {
+				  logger.fatal("Found \0 in string buffer, something is not correct in the handling of the message, so far we've received on the buffer: " + sb.toString());
+				  continue;
+			  }
+			  
+			  sb.append(buf[i]);
+		  }
+		  return sb.toString();
+	  }
+	  return value;
+  }
+  
   /**
    * Map json data to a plain old java object, all relevant data should be
    * mapped, as long as the name matches a getter/setter. For example
@@ -636,7 +653,8 @@ public class JsonDeserializer {
     // otherwise not map but some sort of POJO
     if (pairs != null) {
       for (NameValuePair pair : pairs) {
-        String name = pair.name;
+        //String name = tempfixandlogger(pair.name);
+    	String name = pair.name;
         Object value = pair.value;
         Method method = ReflectionUtility.findGetterMethod(clazz, name);
 
@@ -934,7 +952,7 @@ public class JsonDeserializer {
         // either way, it needs to be walked to the next element
         if (isStartTag(c)) {
           // cut the buffer and return remainder
-          char[] buffernext = cutBuffer(buffer, i);
+          char[] buffernext = cutBuffer(buffer, i, count);
 
           // walk to the next element
           ValueBufferPair vbp = walkNames(reader, buffernext, DEFAULT_BUFFER_SIZE);
@@ -1144,12 +1162,15 @@ public class JsonDeserializer {
    *          the cut
    * @return the char[], return <code>null</code> if there is nothing remaining
    */
-  protected char[] cutBuffer(char[] buffer, int cut) {
+  protected char[] cutBuffer(char[] buffer, int cut, int read) {
     int nlen = buffer.length - cut - 1;
     char[] buffernext = null;
     if (nlen > 0) {
-      buffernext = new char[nlen];
-      copy(buffer, buffernext, cut + 1);
+      int actualbufferlen = read - cut - 1;
+      if (actualbufferlen > 0) {
+    	buffernext = new char[actualbufferlen];
+      	copy(buffer, buffernext, cut + 1);
+      }
     }
     return buffernext;
   }
@@ -1230,7 +1251,7 @@ public class JsonDeserializer {
         name = append(name, buffer, cut, count);
 
         // cut the buffer if necessary
-        char[] buffernext = cutBuffer(buffer, cut);
+        char[] buffernext = cutBuffer(buffer, cut, count);
 
         // walk the stream, and return its value
         ValueBufferPair vbp = walkValue(reader, buffernext, bufferSize);
@@ -1289,7 +1310,7 @@ public class JsonDeserializer {
         if (!inBetweenQuotes && isStartTag(c)) {
 
           // cut the buffer
-          char[] buffernext = cutBuffer(buffer, i);
+          char[] buffernext = cutBuffer(buffer, i, count);
 
           // walk to the next element
           ValueBufferPair vbpReturn = walkNames(reader, buffernext, bufferSize);
@@ -1369,7 +1390,7 @@ public class JsonDeserializer {
           isArray = true;
 
           // cut the buffer before walking the array
-          char[] buffernext = cutBuffer(buffer, i);
+          char[] buffernext = cutBuffer(buffer, i, count);
 
           Object array = walkArray(reader, buffernext, bufferSize);
           return (ValueBufferPair) array;
@@ -1377,7 +1398,7 @@ public class JsonDeserializer {
 
         if (!inBetweenQuotes && isStartTag(c)) {
           // cut the buffer before walking recursively the next names
-          char[] buffernext = cutBuffer(buffer, i);
+          char[] buffernext = cutBuffer(buffer, i, count);
 
           // walk to the next element
           ValueBufferPair vbpReturn = walkNames(reader, buffernext, bufferSize);
@@ -1408,7 +1429,7 @@ public class JsonDeserializer {
         return createValueBuffer(value, buffer, count, cut, false, bufferSize);
       } else {
         value = append(value, buffer, -1, count);
-        bufferSize = adjustBufferSize(count, bufferSize);
+         bufferSize = adjustBufferSize(count, bufferSize);
       }
     }
   }
