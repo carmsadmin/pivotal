@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.p5solutions.core.utils;
 
@@ -45,7 +45,7 @@ public class Comparison {
     }
     return false;
   }
-  
+
   /**
    * Checks if is not equal case insentive trim.
    *
@@ -56,7 +56,7 @@ public class Comparison {
   public static boolean isNotEqualCaseInsentiveTrim(String a, String b) {
     return !isEqualCaseInsentiveTrim(a, b);
   }
-  
+
   /**
    * Compare to.
    * 
@@ -193,11 +193,11 @@ public class Comparison {
    */
   public static boolean isNotEmptyOrNullTrim(String value) {
     if (value == null) {
-      return true;
+      return false;
     }
-    
+
     value = value.trim();
-    
+
     return isNotEmpty(value);
   }
 
