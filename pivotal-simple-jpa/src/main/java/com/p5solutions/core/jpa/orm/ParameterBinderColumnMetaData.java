@@ -26,7 +26,7 @@ package com.p5solutions.core.jpa.orm;
  * @see EntityUtility#buildColumnMetaData(javax.persistence.Table, EntityDetail)
  * @see ParameterBinder#getColumnMetaData()
  */
-public class ParameterBinderColumnMetaData {
+public class ParameterBinderColumnMetaData implements BinderMetaData {
 	private String columnLabel;
 	private String columnName;
 	private int columnType;

@@ -304,6 +304,17 @@ public interface TransactionTemplate {
   <T> List<T> findResultsByQuery(Query query);
 
   /**
+   * Find results by query.
+   *
+   * @param <T> the generic type
+   * @param entityClass the entity class
+   * @param query the query
+   * @param keyValue the key value
+   * @return the list
+   */
+  <T> List<T> findResultsByQuery(Class<T> entityClass, String query, Map<String, Object> keyValue);
+  
+  /**
    * Query given SQL to create a prepared statement from SQL and a list of arguments to bind to the query, expecting a result list.
    * The results will be mapped to a List (one entry for each row) of Maps (one entry for each column, using the column name as the key).
    * Relies on the {@link NamedParameterJdbcTemplate #queryForList}.
@@ -312,7 +323,7 @@ public interface TransactionTemplate {
    * @param keyValue
    * @return list of map represented rows
    */
-  List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, ?> keyValue);
+  List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, Object> keyValue);
 
   /**
    * Similar to {@link #findResultsAsListByQuery} it will return results as a list of mapped rows. But<br/>
@@ -322,7 +333,7 @@ public interface TransactionTemplate {
    * @param keyValue
    * @return
    */
-  List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, ?> keyValue);
+  List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, Object> keyValue);
 
   // MISC METHODS
   /**

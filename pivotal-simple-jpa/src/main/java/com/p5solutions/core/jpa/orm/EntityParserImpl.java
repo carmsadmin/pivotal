@@ -18,6 +18,7 @@
 package com.p5solutions.core.jpa.orm;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -195,6 +196,19 @@ public class EntityParserImpl implements EntityParser {
     List<?> instances = getJdbcTemplate().query(query.getQuery(), paramSource, rowMapper);
     return instances;
   }
+  
+  /**
+   * @see com.p5solutions.core.jpa.orm.EntityParser#findRawResultsAsListByQuery(com.p5solutions.core.jpa.orm.Query)
+   */
+  public List<Map<String, Object>> findRawResultsAsListByQuery(Query query) {
+    if (query == null) {
+      throw new NullPointerException("Query cannot be null when requesting data.");
+    }
+
+    SqlParameterSource paramSource = Query.newSQLParameterSource(query, getConversionUtility());
+    return getJdbcTemplate().queryForList(query.getQuery(), paramSource);
+  }
+
 
   /**
    * @see com.p5solutions.core.jpa.orm.EntityParser#find(java.lang.Class,

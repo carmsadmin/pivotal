@@ -10,14 +10,20 @@ import com.p5solutions.core.jpa.orm.ParameterBinder;
 public class TableFilterSourceAccessor extends AbstractFilterSource implements FilterSourceAccessor {
 
   private EntityDetail<?> source;
-  
+ 
   private Map<String, FilterCriteriaColumn> columns;
   
   public TableFilterSourceAccessor(EntityDetail<?> source) {
     this.source = source;
   }
   
+  @Override
+  public String getName() {
+    return source.getTableName();
+  }
+  
   public void setup() {
+    
     columns = new HashMap<String, FilterCriteriaColumn>();
     
     List<ParameterBinder> binders = source.getParameterBinders();
@@ -25,6 +31,7 @@ public class TableFilterSourceAccessor extends AbstractFilterSource implements F
       String columnName = binder.getColumnNameAnyJoinOrColumn();
       FilterCriteriaColumn column = new FilterCriteriaColumn();
       column.setName(columnName);
+      column.setBinder(binder);
       columns.put(columnName, column);
     } 
   }
@@ -40,7 +47,7 @@ public class TableFilterSourceAccessor extends AbstractFilterSource implements F
     for (ParameterBinder binder : binders) {
       FilterCriteria criteria = new FilterCriteria();
       FilterCriteriaColumn column = new FilterCriteriaColumn();
-      
+      column.setBinder(binder);
       criteria.setColumn(column);
     }
   }

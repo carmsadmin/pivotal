@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import javax.sql.DataSource;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import com.p5solutions.core.aop.ProxyFactory;
 import com.p5solutions.core.jpa.orm.EntityParser;
@@ -43,7 +44,6 @@ import com.p5solutions.core.jpa.orm.exceptions.TooManyResultsException;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransactionTemplateImpl.
  */
@@ -547,7 +547,7 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     return proxyList(tableClass, list);
   }
 
-  /* (non-Javadoc)
+  /**
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsByQuery(com.p5solutions.core.jpa.orm.Query)
    */
   @Override
@@ -562,6 +562,13 @@ public class TransactionTemplateImpl implements TransactionTemplate {
     List<T> list = parser.findResultsByQuery(clazz, query);
     return list;
   }
+  
+  public <T> List<T> findResultsByQuery(Class<T> entityClass, String query, Map<String, Object> keyValue) {
+    Query q = new Query(entityClass);
+    q.setQuery(query);
+    buildQueryParameters(keyValue, q);
+    return parser.findResultsByQuery(entityClass, q);
+  }
 
   /*
    * TODO: Take a look at RowBinder and try to make it work with multiple column and not just a single column result set.
@@ -569,11 +576,18 @@ public class TransactionTemplateImpl implements TransactionTemplate {
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsAsListByQuery(java.lang.String, java.util.Map)
    */
   @Override
-  public List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, ?> keyValue) {
+  public List<Map<String, Object>> findResultsAsListByQuery(String query, Map<String, Object> keyValue) {
     if (query == null) {
       throw new NullPointerException("Query cannot be null when requesting data.");
     }
-    return parser.getJdbcTemplate().queryForList(query, keyValue);
+   // return parser.queryForList(query, keyValue);
+    
+    Query q = new Query(null);
+    q.setQuery(query);
+    buildQueryParameters(keyValue, q);
+    return parser.findRawResultsAsListByQuery(q);
+    
+//    return parser.getJdbcTemplate().queryForList(query, keyValue);
   }
 
   /*
@@ -582,7 +596,7 @@ public class TransactionTemplateImpl implements TransactionTemplate {
    * @see com.p5solutions.core.jpa.orm.transaction.TransactionTemplate#findResultsAsListByNamedNativeQuery(java.lang.String, java.util.Map)
    */
   @Override
-  public List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, ?> keyValue) {
+  public List<Map<String, Object>> findResultsAsListByNamedNativeQuery(String queryName, Map<String, Object> keyValue) {
     if (queryName == null) {
       throw new NullPointerException("Query name cannot be null when requesting data.");
     }

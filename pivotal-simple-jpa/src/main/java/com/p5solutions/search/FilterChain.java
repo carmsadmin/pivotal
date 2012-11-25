@@ -5,22 +5,40 @@ import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
 
+import com.p5solutions.core.utils.Comparison;
+import com.p5solutions.search.FilterCriteriaCondition.Condition;
+
 /**
  * The Class FilterChain.
  * 
  * @author Kasra Rasaee (krasaee)
  * 
  */
+
+// TODO reason this filter chain implement Filter is such that filter chains can
+// also be used as part of another filter chains intersect/join/minus, so forth.
 public class FilterChain implements Filter {
 
+  private String[] returnColumns;
+  
   /** The filter utility. */
   private FilterUtility filterUtility;
+
+  /**
+   * Instantiates a new filter chain.
+   *
+   * @param returnColumns the return columns
+   */
+  public FilterChain(String[] returnColumns) {
+    this.returnColumns = returnColumns;
+  }
   
   /**
    * The Enum Operator.
    */
   public enum Operator {
-
+    /** The first is always void **/
+    VOID,
     /** The and. */
     AND,
     /** The or. */
@@ -29,39 +47,82 @@ public class FilterChain implements Filter {
     NOT
   }
 
+  /** The filters. */
+  private List<FilterJunctionComposite> filterJunctions;
+
   /**
-   * The Class FilterJunction.
+   * Gets the return columns.
+   *
+   * @return the return columns
    */
-  protected class FilterJunction {
-
-    /** The filter. */
-    Filter filter;
-
-    /** The op. */
-    Operator op;
+  public String[] getReturnColumns() {
+    return this.returnColumns;
+  }
+  
+  /**
+   * Sets the return columns.
+   *
+   * @param returnColumns the new return columns
+   */
+  public void setReturnColumns(String[] returnColumns) {
+    this.returnColumns = returnColumns;
+  }
+  
+  /**
+   * Gets the return column definitions.
+   *
+   * @return the return column definitions
+   */
+  public String getReturnColumnDefinitions() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < returnColumns.length; i++) {
+      String column = returnColumns[i];
+      if (i > 0) {
+        sb.append(",");
+      }
+      sb.append(column);
+    }
+    return sb.toString();
+  }
+  
+  /**
+   * Gets the filter junctions.
+   * 
+   * @return the filter junctions
+   */
+  public List<FilterJunctionComposite> getFilterJunctions() {
+    return filterJunctions;
   }
 
-  /** The filters. */
-  public List<FilterJunction> filters;
+  /**
+   * Sets the filter junctions.
+   * 
+   * @param filterJunctions
+   *          the new filter junctions
+   */
+  public void setFilterJunctions(List<FilterJunctionComposite> filterJunctions) {
+    this.filterJunctions = filterJunctions;
+  }
 
   /**
-   * Adds the filter.
-   * 
-   * @param filter
-   *          the filter
-   * @param op
-   *          the op
+   * @see com.p5solutions.search.Filter#addFilter(com.p5solutions.search.Filter,
+   *      com.p5solutions.search.FilterChain.Operator)
    */
   public void addFilter(Filter filter, Operator op) {
-    FilterJunction junction = new FilterJunction();
-    junction.filter = filter;
-    junction.op = op;
+    FilterJunctionComposite composite = new FilterJunctionComposite(filter, op);
+    addFilter(composite);
+  }
 
-    if (filters == null) {
-      filters = new ArrayList<FilterJunction>();
+
+  /**
+   * @see com.p5solutions.search.Filter#addFilter(com.p5solutions.search.FilterJunctionComposite)
+   */
+  @Override
+  public void addFilter(FilterJunctionComposite composite) {
+    if (filterJunctions == null) {
+      filterJunctions = new ArrayList<FilterJunctionComposite>();
     }
-
-    filters.add(junction);
+    filterJunctions.add(composite);
   }
 
   /**
@@ -111,9 +172,98 @@ public class FilterChain implements Filter {
   public void setFilterUtility(FilterUtility filterUtility) {
     this.filterUtility = filterUtility;
   }
-  
+
   @Override
   public void initialize() {
     // TODO any initializing??
+  }
+
+  @Override
+  public void setValue(Object value, Condition condition) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setValues(List<Object> values, Condition condition) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public FilterCriteriaCondition getValue() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setValue(FilterCriteriaCondition value) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public FilterSourceAccessor getFilterSourceAccessor() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public FilterCriteriaColumn getColumn() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setColumn(FilterCriteriaColumn column) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public String getColumnName() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setValueBetween(Object value1, Object value2) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public String getSourceAlias() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public FilterCriteriaColumn getJoinColumn() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setJoinColumn(FilterCriteriaColumn joinColumn) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+  }
+
+  @Override
+  public String getFilterSourceAccessorName() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
   }
 }

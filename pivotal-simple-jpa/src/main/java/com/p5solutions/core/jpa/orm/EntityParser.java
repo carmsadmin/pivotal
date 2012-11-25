@@ -18,6 +18,7 @@
 package com.p5solutions.core.jpa.orm;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -78,6 +79,14 @@ public interface EntityParser {
    */
   List<?> findRawResultsByQuery(Query query);
 
+  /**
+   * Find raw results as list by query.
+   *
+   * @param query the query
+   * @return the list
+   */
+  List<Map<String, Object>> findRawResultsAsListByQuery(Query query);
+  
   /**
    * Find a single entity using a single primary key column. Entity class type
    * must only have a single {@link Id}.

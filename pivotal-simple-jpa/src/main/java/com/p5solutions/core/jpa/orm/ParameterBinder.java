@@ -57,7 +57,7 @@ import com.p5solutions.core.utils.ReflectionUtility;
  * @see EntityPersister for details on evaluating dml operations such as insert, delete, update, merge, etc.
  * @see TransactionTemplate the template which inevitably calls the persister or parser utilities.
  */
-public class ParameterBinder extends AbstractParameterBinder {
+public class ParameterBinder extends AbstractParameterBinder implements Binder {
 
   /** The override column. */
   private Column overrideColumn;
@@ -546,6 +546,16 @@ public class ParameterBinder extends AbstractParameterBinder {
     return ParameterBinder.getBindingPathSQL(getBindingPath());
   }
 
+  /**
+   * Gets the binding path for the given statement, in this case, the same as
+   * the SQL binding path.
+   * 
+   * @see com.p5solutions.core.jpa.orm.Binder#getBindingPathForStatement()
+   */
+  public String getBindingPathForStatement() {
+    return getBindingPathSQL();
+  }
+  
   /**
    * Gets the binding path for sql parameterization.
    * 

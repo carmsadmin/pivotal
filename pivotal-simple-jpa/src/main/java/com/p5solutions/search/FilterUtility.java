@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.p5solutions.core.jpa.orm.Binder;
+import com.p5solutions.core.jpa.orm.ConversionUtility;
 import com.p5solutions.core.jpa.orm.EntityDetail;
 import com.p5solutions.core.jpa.orm.EntityUtility;
 import com.p5solutions.core.utils.Comparison;
@@ -29,15 +31,21 @@ public class FilterUtility {
   /** The entity utility. */
   private EntityUtility entityUtility;
 
+  /** The conversion utility. */
+  private ConversionUtility conversionUtility;
+
   // todo should be a list of types, e.g. package scanner, hbase scanner, and so
   // on and so forth.
   /** The packages. */
   private List<String> packages;
 
+  /** The generators. */
+  private Map<Class<? extends FilterGenerator>, FilterGenerator> generators;
+
   public FilterUtility() {
     super();
   }
-  
+
   /**
    * Gets the packages.
    * 
@@ -71,7 +79,7 @@ public class FilterUtility {
     for (String entityPackage : packages) {
       processPackage(scanner, entityPackage);
     }
-    
+
     // initialize all filter criterias
     for (Filter filter : this.filters.values()) {
       filter.initialize();
@@ -81,18 +89,20 @@ public class FilterUtility {
 
   /**
    * Process package.
-   *
-   * @param scanner the scanner
-   * @param entityPackage the entity package
+   * 
+   * @param scanner
+   *          the scanner
+   * @param entityPackage
+   *          the entity package
    */
   protected void processPackage(FilterSourceScanner scanner, String entityPackage) {
     try {
-      
+
       // TODO needs to be non table specific, should be injected?
       for (Class<? extends FilterSource> type : scanner.getComponentClasses(entityPackage)) {
         EntityDetail<?> detail = entityUtility.getEntityDetail(type);
         TableFilterSourceAccessor source = new TableFilterSourceAccessor(detail);
-        
+
         source.setup();
         addFilterSourceAccessor(type.getName(), source);
       }
@@ -160,13 +170,55 @@ public class FilterUtility {
    */
   public void setFilters(List<Filter> filters) {
     // TODO log?
-    if (Comparison.isNotEmptyOrNull(filters)) {
-      this.filters = new HashMap<Class<? extends Filter>, Filter>();
-      for (Filter filter : filters) {
-        filter.setFilterUtility(this);
-        this.filters.put(filter.getClass(), filter);
-      }
+    if (Comparison.isEmptyOrNull(filters)) {
+      return;
     }
+
+    this.filters = new HashMap<Class<? extends Filter>, Filter>();
+    for (Filter filter : filters) {
+      filter.setFilterUtility(this);
+      this.filters.put(filter.getClass(), filter);
+    }
+  }
+
+  /**
+   * Find generator.
+   *
+   * @param <T> the generic type
+   * @param clazz the clazz
+   * @return the filter generator
+   */
+  public <G extends FilterGenerator<T>, T extends FilterGeneratorResult> G findGenerator(Class<? extends FilterGenerator<T>> clazz) {
+    G generator = (G)this.generators.get(clazz);
+    return generator;
+  }
+  
+  /**
+   * Generate filter result to be used at a later point in getting datasets from
+   * the appropriate datasource, whatever that may be, RDBMS, HBASE, PIVOTS, so
+   * forth.
+   * 
+   * 
+   * @param chain
+   *          the chain
+   * @param clazz
+   *          the clazz
+   * @return the filter generator result
+   */
+  public <T extends FilterGeneratorResult> T generateResult(FilterChain chain, Class<? extends FilterGenerator<T>> clazz) {
+    if (Comparison.isEmptyOrNull(generators)) {
+      throw new NullPointerException("No generators defined, cannot access generator of type " + clazz + " when nothing has been defined!");
+    }
+
+    if (!this.generators.containsKey(clazz)) {
+      // TODO dump all generator classes for debugging
+      throw new RuntimeException("No generator of type " + clazz + " found in list of generators with size " + generators.size());
+    }
+
+    FilterGenerator<T> generator = findGenerator(clazz);
+    T result = generator.generateResult(chain);
+
+    return result;
   }
 
   /**
@@ -231,5 +283,46 @@ public class FilterUtility {
    */
   public void setEntityUtility(EntityUtility entityUtility) {
     this.entityUtility = entityUtility;
+  }
+
+  /**
+   * Gets the conversion utility.
+   * 
+   * @return the conversion utility
+   */
+  public ConversionUtility getConversionUtility() {
+    return conversionUtility;
+  }
+
+  /**
+   * Sets the conversion utility.
+   * 
+   * @param conversionUtility
+   *          the new conversion utility
+   */
+  public void setConversionUtility(ConversionUtility conversionUtility) {
+    this.conversionUtility = conversionUtility;
+  }
+
+  /**
+   * Gets the generators.
+   * 
+   * @return the generators
+   */
+  public Map<Class<? extends FilterGenerator>, FilterGenerator> getGeneratorsMap() {
+    return generators;
+  }
+
+  /**
+   * Sets the generators.
+   * 
+   * @param generators
+   *          the generators
+   */
+  public void setGenerators(List<FilterGenerator> generators) {
+    this.generators = new HashMap<Class<? extends FilterGenerator>, FilterGenerator>();
+    for (FilterGenerator generator : generators) {
+      this.generators.put(generator.getClass(), generator);
+    }
   }
 }
