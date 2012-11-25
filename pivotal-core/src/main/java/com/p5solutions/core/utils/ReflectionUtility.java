@@ -1488,6 +1488,24 @@ public class ReflectionUtility {
   }
 
   /**
+   * Gets the static value.
+   *
+   * @param <T> the generic type
+   * @param clazz the clazz
+   * @param memberName the member name
+   * @return the static value
+   */
+  @SuppressWarnings("unchecked")
+  public static <T> T getStaticValue(Class<?> clazz, String memberName) {
+    try {
+      Field field = clazz.getField(memberName);
+      return (T)field.get(null);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+  
+  /**
    * New instance.
    * 
    * @param <T>

@@ -19,6 +19,7 @@ package com.p5solutions.core.utils;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -201,6 +202,24 @@ public class Comparison {
     return isNotEmpty(value);
   }
 
+  /**
+   * Checks if a map is empty or null.
+   *
+   * @param map the map
+   * @return true, if is empty or null
+   */
+  public static boolean isEmptyOrNull(Map<?, ?> map) {
+    if (isNull(map)) {
+      return true;
+    }
+    
+    if (map.size() == 0) {
+      return true;
+    }
+    
+    return false;
+  }
+  
   /**
    * Checks if a list is empty or null.
    * 
