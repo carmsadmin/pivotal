@@ -288,6 +288,20 @@ public class ReflectionUtility {
   }
 
   /**
+   * Checks if is boolean class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isBooleanClass(String className) {
+    try {
+      return isBooleanClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
+  /**
    * Checks if is {@link Clob}.
    * 
    * @param clazz
@@ -297,7 +311,7 @@ public class ReflectionUtility {
   public static Boolean isClob(Class<?> clazz) {
     return Clob.class.isAssignableFrom(clazz);
   }
-
+  
   /**
    * Checks if is {@link Timestamp}.
    * 
@@ -309,6 +323,20 @@ public class ReflectionUtility {
     return Timestamp.class.isAssignableFrom(clazz);
   }
 
+  /**
+   * Checks if is timestamp.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isTimestamp(String className) {
+    try {
+      return isTimestamp(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
   /**
    * Checks if is {@link Blob}.
    * 
@@ -352,7 +380,7 @@ public class ReflectionUtility {
   public static Boolean isNumberClass(Class<?> clazz) {
     return Number.class.isAssignableFrom(clazz);
   }
-
+  
   /**
    * Checks if is {@link Serializable}.
    * 
@@ -363,7 +391,7 @@ public class ReflectionUtility {
   public static Boolean isSerializableClass(Class<?> clazz) {
     return Serializable.class.isAssignableFrom(clazz);
   }
-
+  
   /**
    * Checks if is {@link Date}.
    * 
@@ -375,6 +403,45 @@ public class ReflectionUtility {
     return Date.class.isAssignableFrom(clazz);
   }
 
+  /**
+   * Checks if is date.
+   *
+   * @param className the class name
+   * @return the bolean
+   */
+  public static Boolean isDate(String className) {
+    try {
+      return isDate(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
+  /**
+   * Checks if is date or timestamp.
+   *
+   * @param clazz the clazz
+   * @return the boolean
+   */
+  public static Boolean isDateOrTimestamp(Class<?> clazz) {
+    return isDate(clazz) || isTimestamp(clazz);
+  }
+  
+  /**
+   * Checks if is date.
+   *
+   * @param className the class name
+   * @return the bolean
+   */
+  public static Boolean isDateOrTimestamp(String className) {
+    try {
+      return isDate(Class.forName(className)) || isTimestamp(className);
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
+  
   /**
    * Checks if is {@link Byte} class.
    * 
@@ -397,6 +464,21 @@ public class ReflectionUtility {
     return Short.class.isAssignableFrom(clazz);
   }
 
+
+  /**
+   * Checks if is short class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isShortClass(String className) {
+    try {
+      return isShortClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
   /**
    * Checks if is {@link Integer} class.
    * 
@@ -409,6 +491,20 @@ public class ReflectionUtility {
   }
 
   /**
+   * Checks if is integer class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isIntegerClass(String className) {
+    try {
+      return isIntegerClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
+  /**
    * Checks if is {@link BigInteger} class.
    * 
    * @param clazz
@@ -419,6 +515,20 @@ public class ReflectionUtility {
     return BigInteger.class.isAssignableFrom(clazz);
   }
 
+  /**
+   * Checks if is big integer class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isBigIntegerClass(String className) {
+    try {
+      return isBigIntegerClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
   /**
    * Checks if is {@link Long} class.
    * 
@@ -431,6 +541,19 @@ public class ReflectionUtility {
   }
 
   /**
+   * Checks if is long class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isLongClass(String className) {
+    try {
+      return isLongClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  /**
    * Checks if is {@link Float} class.
    * 
    * @param clazz
@@ -442,6 +565,19 @@ public class ReflectionUtility {
   }
 
   /**
+   * Checks if is float class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isFloatClass(String className) {
+    try {
+      return isFloatClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  /**
    * Checks if is {@link Double} class.
    * 
    * @param clazz
@@ -451,7 +587,21 @@ public class ReflectionUtility {
   public static Boolean isDoubleClass(Class<?> clazz) {
     return Double.class.isAssignableFrom(clazz);
   }
-
+  
+  /**
+   * Checks if is double class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isDoubleClass(String className) {
+    try {
+      return isDoubleClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
   /**
    * Checks if is {@link BigDecimal} class.
    * 
@@ -463,6 +613,20 @@ public class ReflectionUtility {
     return BigDecimal.class.isAssignableFrom(clazz);
   }
 
+  /**
+   * Checks if is big decimal class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isBigDecimalClass(String className) {
+    try {
+      return isDoubleClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+  
   /**
    * Checks if is natural number class.
    * 
@@ -476,6 +640,20 @@ public class ReflectionUtility {
         || isIntegerClass(clazz) // integer
         || isLongClass(clazz) // long
         || isBigIntegerClass(clazz); // big integer
+  }
+  
+  /**
+   * Checks if is natural number class.
+   *
+   * @param className the class name
+   * @return the boolean
+   */
+  public static Boolean isNaturalNumberClass(String className) {
+    try {
+      return isNaturalNumberClass(Class.forName(className));
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
   }
 
   /**
