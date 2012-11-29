@@ -8,14 +8,14 @@ import com.p5solutions.search.FilterCriteriaCondition.Condition;
 /**
  * The Interface Filter.
  */
-public interface Filter {
+public interface Filter<STATE extends FilterStorageState> extends FilterDisplay {
 
   /**
    * New filter.
    *
    * @return the filter
    */
-  Filter newFilter();
+  Filter<STATE> newFilter();
   
   /**
    * @return
@@ -33,7 +33,7 @@ public interface Filter {
    * @param filter the filter
    * @param op the op
    */
-  void addFilter(Filter filter, Operator op);
+  void addFilter(Filter<? extends STATE> filter, Operator op);
   
   /**
    * Adds the filter.
@@ -47,7 +47,7 @@ public interface Filter {
    *
    * @param filter the filter
    */
-  void copy(Filter filter);
+  void copy(Filter<STATE> filter);
   
   /**
    * Gets the filter source accessor name.
@@ -177,4 +177,34 @@ public interface Filter {
    * @return the alias
    */
   String getSourceAlias();
+  
+  /**
+   * Gets the filter storage state.
+   *
+   * @return the filter storage state
+   */
+  STATE retrieveFilterStorageState();
+  
+  /**
+   * Initialize from filter storage state.
+   *
+   * @param <T> the generic type
+   * @param state the state
+   * @return the t
+   */
+   void initializeFromFilterStorageState(STATE state);
+  
+  /**
+   * Gets the filter state.
+   *
+   * @return the filter state
+   */
+  FilterState getFilterState();
+  
+  /**
+   * Gets the filter type.
+   *
+   * @return the filter type
+   */
+  String getFilterType();
 }

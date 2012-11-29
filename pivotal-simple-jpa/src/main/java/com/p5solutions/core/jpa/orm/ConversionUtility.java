@@ -17,6 +17,8 @@
  */
 package com.p5solutions.core.jpa.orm;
 
+import org.springframework.core.convert.ConversionService;
+
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
 
 /**
@@ -33,6 +35,30 @@ import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
  * 
  */
 public interface ConversionUtility {
+
+  /**
+   * Convert using the ConversionService, basic conversion from one type to
+   * another, e.g. String "2012-10-10" to proper Date instance.
+   * 
+   * @param value
+   *          the value
+   * @param className
+   *          the class name
+   * @return the object
+   */
+  Object convert(Object value, String className);
+
+  /**
+   * Convert using the ConversionService, basic conversion from one type to
+   * another, e.g. String "2012-10-10" to proper Date instance.
+   * 
+   * @param value
+   *          the value
+   * @param className
+   *          the class name
+   * @return the object
+   */
+  Object convert(Object value, Class<?> clazz);
 
   /**
    * Convert a number to a given target type. Supports various target types, All
@@ -113,4 +139,14 @@ public interface ConversionUtility {
    * @return true, if is same class
    */
   boolean isSameClass(Object value, Class<?> targetType);
+
+  /**
+   * Sets the conversion service. NOTE: YOU MUST USE THE
+   * {@link ConversionUtilityBeanConfigurator}, since there is a hierarchy of
+   * dependencies from the {@link FormattingConversionServiceFactoryBeanImpl}
+   * 
+   * @param conversionService
+   *          the new conversion service
+   */
+  void setConversionService(ConversionService conversionService);
 }

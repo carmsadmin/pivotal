@@ -1,5 +1,11 @@
+/*
+ * 
+ */
 package com.p5solutions.search;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +14,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.p5solutions.core.jpa.orm.Binder;
 import com.p5solutions.core.jpa.orm.ConversionUtility;
 import com.p5solutions.core.jpa.orm.EntityDetail;
 import com.p5solutions.core.jpa.orm.EntityUtility;
+import com.p5solutions.core.json.JsonDeserializer;
+import com.p5solutions.core.json.JsonSerializer;
 import com.p5solutions.core.utils.Comparison;
+import com.p5solutions.core.utils.ReflectionUtility;
 
 /**
  * The Class FilterUtility.
@@ -21,6 +29,9 @@ public class FilterUtility {
 
   /** The logger. */
   private static Log logger = LogFactory.getLog(EntityUtility.class);
+
+  /** The default charset. */
+  private Charset defaultCharset = Charset.forName("UTF-8");
 
   /** The filters. */
   private Map<Class<? extends Filter>, Filter> filters;
@@ -34,6 +45,15 @@ public class FilterUtility {
   /** The conversion utility. */
   private ConversionUtility conversionUtility;
 
+  /** The json serializer. */
+  private JsonSerializer jsonSerializer;
+
+  /** The json deserializer. */
+  private JsonDeserializer jsonDeserializer;
+
+  /** The filter storage. */
+  private FilterStorage<FilterStorageState, FilterStorageStateGroup> filterStorage;
+
   // todo should be a list of types, e.g. package scanner, hbase scanner, and so
   // on and so forth.
   /** The packages. */
@@ -42,6 +62,9 @@ public class FilterUtility {
   /** The generators. */
   private Map<Class<? extends FilterGenerator>, FilterGenerator> generators;
 
+  /**
+   * Instantiates a new filter utility.
+   */
   public FilterUtility() {
     super();
   }
@@ -123,10 +146,14 @@ public class FilterUtility {
    * @return the t
    */
   @SuppressWarnings("unchecked")
-  public <T> T findFilter(Class<T> filterClass) {
+  protected <T extends Filter> T findFilter(Class<T> filterClass) {
     // TODO log?
-    Class<?> clazz = (Class<?>) filterClass;
-    return (T) filters.get(clazz);
+    Class<T> clazz = (Class<T>) filterClass;
+    if (clazz != null) {
+      return (T)filters.get(filterClass);
+    }
+    
+    throw new NullPointerException("Filter of " + filterClass + " not found in list of injected filter types");
   }
 
   /**
@@ -183,22 +210,27 @@ public class FilterUtility {
 
   /**
    * Find generator.
-   *
-   * @param <T> the generic type
-   * @param clazz the clazz
+   * 
+   * @param <G>
+   *          the generic type
+   * @param <T>
+   *          the generic type
+   * @param clazz
+   *          the clazz
    * @return the filter generator
    */
   public <G extends FilterGenerator<T>, T extends FilterGeneratorResult> G findGenerator(Class<? extends FilterGenerator<T>> clazz) {
-    G generator = (G)this.generators.get(clazz);
+    G generator = (G) this.generators.get(clazz);
     return generator;
   }
-  
+
   /**
    * Generate filter result to be used at a later point in getting datasets from
    * the appropriate datasource, whatever that may be, RDBMS, HBASE, PIVOTS, so
    * forth.
    * 
-   * 
+   * @param <T>
+   *          the generic type
    * @param chain
    *          the chain
    * @param clazz
@@ -221,6 +253,27 @@ public class FilterUtility {
     return result;
   }
 
+  public <T extends FilterStorageStateGroup> T saveFilterGroup(T group) {
+    return (T) getFilterStorage().saveGroup(group);
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T extends Filter, S extends FilterStorageState> S saveFilter(T filter) {
+    return (S) getFilterStorage().save(filter);
+  }
+
+  /**
+   * Load filter.
+   *
+   * @param <T> the generic type
+   * @param stateId the state id
+   * @return the t
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends Filter> T loadFilter(Long stateId) {
+    return (T)getFilterStorage().load(stateId);
+  }
+  
   /**
    * Gets the filter source accessor.
    * 
@@ -323,6 +376,85 @@ public class FilterUtility {
     this.generators = new HashMap<Class<? extends FilterGenerator>, FilterGenerator>();
     for (FilterGenerator generator : generators) {
       this.generators.put(generator.getClass(), generator);
+    }
+  }
+
+  /**
+   * Gets the default charset.
+   * 
+   * @return the default charset
+   */
+  public Charset getDefaultCharset() {
+    return defaultCharset;
+  }
+
+  /**
+   * Sets the default charset.
+   * 
+   * @param defaultCharset
+   *          the new default charset
+   */
+  public void setDefaultCharset(Charset defaultCharset) {
+    this.defaultCharset = defaultCharset;
+  }
+
+  /**
+   * Gets the json serializer.
+   * 
+   * @return the json serializer
+   */
+  public JsonSerializer getJsonSerializer() {
+    return jsonSerializer;
+  }
+
+  /**
+   * Sets the json serializer.
+   * 
+   * @param jsonSerializer
+   *          the new json serializer
+   */
+  public void setJsonSerializer(JsonSerializer jsonSerializer) {
+    this.jsonSerializer = jsonSerializer;
+  }
+
+  /**
+   * Gets the json deserializer.
+   * 
+   * @return the json deserializer
+   */
+  public JsonDeserializer getJsonDeserializer() {
+    return jsonDeserializer;
+  }
+
+  /**
+   * Sets the json deserializer.
+   * 
+   * @param jsonDeserializer
+   *          the new json deserializer
+   */
+  public void setJsonDeserializer(JsonDeserializer jsonDeserializer) {
+    this.jsonDeserializer = jsonDeserializer;
+  }
+
+  /**
+   * Gets the filter storage.
+   * 
+   * @return the filter storage
+   */
+  public FilterStorage<FilterStorageState, FilterStorageStateGroup> getFilterStorage() {
+    return filterStorage;
+  }
+
+  /**
+   * Sets the filter storage.
+   * 
+   * @param filterStorage
+   *          the new filter storage
+   */
+  public void setFilterStorage(FilterStorage<FilterStorageState, FilterStorageStateGroup> filterStorage) {
+    this.filterStorage = filterStorage;
+    if (filterStorage != null) {
+      filterStorage.setFilterUtility(this);
     }
   }
 }

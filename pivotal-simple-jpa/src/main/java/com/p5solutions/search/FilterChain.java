@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
 
-import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.search.FilterCriteriaCondition.Condition;
 
 /**
@@ -14,10 +13,9 @@ import com.p5solutions.search.FilterCriteriaCondition.Condition;
  * @author Kasra Rasaee (krasaee)
  * 
  */
-
 // TODO reason this filter chain implement Filter is such that filter chains can
 // also be used as part of another filter chains intersect/join/minus, so forth.
-public class FilterChain implements Filter {
+public class FilterChain implements Filter<FilterStorageState> {
 
   private String[] returnColumns;
   
@@ -108,7 +106,7 @@ public class FilterChain implements Filter {
    * @see com.p5solutions.search.Filter#addFilter(com.p5solutions.search.Filter,
    *      com.p5solutions.search.FilterChain.Operator)
    */
-  public void addFilter(Filter filter, Operator op) {
+  public void addFilter(Filter<? extends FilterStorageState> filter, Operator op) {
     FilterJunctionComposite composite = new FilterJunctionComposite(filter, op);
     addFilter(composite);
   }
@@ -129,7 +127,7 @@ public class FilterChain implements Filter {
    * @see com.p5solutions.search.Filter#newFilter()
    */
   @Override
-  public Filter newFilter() {
+  public Filter<FilterStorageState> newFilter() {
     throw new NotImplementedException(
         "Not yet implemented, but should technically clone all filters associated to this filter chain and return a new filter chain");
   }
@@ -138,7 +136,7 @@ public class FilterChain implements Filter {
    * @see com.p5solutions.search.Filter#copy(com.p5solutions.search.Filter)
    */
   @Override
-  public void copy(Filter filter) {
+  public void copy(Filter<FilterStorageState> filter) {
     throw new NotImplementedException(
         "Filter sources cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
 
@@ -265,5 +263,67 @@ public class FilterChain implements Filter {
   public String getFilterSourceAccessorName() {
     throw new NotImplementedException(
         "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+  }
+
+  @Override
+  public FilterState getFilterState() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public String getFilterType() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+  }
+
+  @Override
+  public String getPresentationName() {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public void setPresentationName(String name) {
+    throw new NotImplementedException(
+        "Filter values cannot be set on filter chains, but rather on the individual filter itself since they are in turn dependant on the source");
+
+  }
+
+  @Override
+  public Long getFilterId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setFilterId(Long id) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public Long getFilterGroupId() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void setFilterGroupId(Long filterGroupId) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public FilterStorageState retrieveFilterStorageState() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void initializeFromFilterStorageState(FilterStorageState state) {
+    // TODO Auto-generated method stub    
   }
 }
