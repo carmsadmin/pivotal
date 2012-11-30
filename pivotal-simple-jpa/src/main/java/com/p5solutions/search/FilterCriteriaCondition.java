@@ -12,6 +12,8 @@ public class FilterCriteriaCondition {
 
     /** The in. */
     IN,
+    /** The not in. */
+    NOT_IN,
     /** The like. */
     LIKE,
     /** The eq. */

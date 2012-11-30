@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.p5solutions.core.jpa.orm.ConversionUtility;
+import com.p5solutions.core.jpa.orm.EntityUtility;
 import com.p5solutions.core.utils.ReflectionUtility;
 import com.p5solutions.search.FilterChain.Operator;
 import com.p5solutions.search.FilterCriteriaCondition.Condition;
@@ -17,6 +20,9 @@ import com.p5solutions.search.FilterCriteriaCondition.Condition;
  * The Class FilterCriteria.
  */
 public class FilterCriteria<STATE extends FilterStorageState> implements Filter<STATE> {
+
+  /** The logger. */
+  private static Log logger = LogFactory.getLog(FilterCriteria.class);
 
   /** The filter id. */
   private Long filterId;
@@ -389,6 +395,8 @@ public class FilterCriteria<STATE extends FilterStorageState> implements Filter<
    * @see com.p5solutions.search.Filter#initializeFromFilterStorageState(com.p5solutions.search.FilterStorageState)
    */
   public void initializeFromFilterStorageState(STATE state) {
+    logger.debug(state);
+    
     this.setFilterId(state.getStateId());
     this.setFilterGroupId(state.getStateGroupId());
     this.setPresentationName(state.getName());
