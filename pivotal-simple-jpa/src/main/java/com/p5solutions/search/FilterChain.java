@@ -326,4 +326,10 @@ public class FilterChain implements Filter<FilterStorageState> {
   public void initializeFromFilterStorageState(FilterStorageState state) {
     // TODO Auto-generated method stub    
   }
+
+  @Override
+  public String getResolvedDescription() {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

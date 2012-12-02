@@ -390,13 +390,13 @@ public class FilterCriteria<STATE extends FilterStorageState> implements Filter<
     }
     return state;
   }
-  
+
   /**
    * @see com.p5solutions.search.Filter#initializeFromFilterStorageState(com.p5solutions.search.FilterStorageState)
    */
   public void initializeFromFilterStorageState(STATE state) {
-    logger.debug(state);
-    
+    logger.debug("FilterStorageState: " + state);
+
     this.setFilterId(state.getStateId());
     this.setFilterGroupId(state.getStateGroupId());
     this.setPresentationName(state.getName());
@@ -409,7 +409,7 @@ public class FilterCriteria<STATE extends FilterStorageState> implements Filter<
       ConversionUtility conversionUtility = getFilterUtility().getConversionUtility();
       List<Object> values = fs.toCriteriaValues(conversionUtility);
       this.setValues(values, fs.getCondition());
-     
+
     } catch (IOException ioe) {
       throw new RuntimeException(ioe);
     }
@@ -468,14 +468,28 @@ public class FilterCriteria<STATE extends FilterStorageState> implements Filter<
     this.filterGroupId = filterGroupId;
   }
 
+  /**
+   * @see com.p5solutions.search.FilterDisplay#getPresentationName()
+   */
   @Override
   public String getPresentationName() {
     return this.presentationName;
   }
 
+  /**
+   * 
+   * @see com.p5solutions.search.FilterDisplay#setPresentationName(java.lang.String)
+   */
   @Override
   public void setPresentationName(String name) {
     this.presentationName = name;
   }
 
+  /**
+   * @see com.p5solutions.search.FilterDisplay#getResolvedDescription()
+   */
+  @Override
+  public String getResolvedDescription() {
+    return getPresentationName();
+  }
 }

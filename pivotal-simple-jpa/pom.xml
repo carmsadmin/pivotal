@@ -5,7 +5,7 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-simple-jpa</artifactId>
 	<name>pivotal-simple-jpa</name>
-	<version>1.2-DEV-SNAPSHOT-008</version>
+	<version>1.2-DEV-SNAPSHOT-011</version>
 	<packaging>jar</packaging>
 
 
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-core</artifactId>
-			<version>1.2-DEV-SNAPSHOT-008</version>
+			<version>1.2-DEV-SNAPSHOT-011</version>
 		</dependency>
 
 		<dependency>

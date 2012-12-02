@@ -141,6 +141,15 @@ public class FilterCriteriaCondition {
   }
 
   /**
+   * Checks if is not in.
+   * 
+   * @return the boolean
+   */
+  public Boolean isNotIn() {
+    return (Condition.NOT_IN.equals(condition));
+  }
+  
+  /**
    * Checks if is like.
    * 
    * @return the boolean

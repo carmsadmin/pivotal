@@ -9,7 +9,6 @@ import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.search.FilterChain.Operator;
 import com.p5solutions.search.FilterCriteriaCondition.Condition;
 
-// TODO: Auto-generated Javadoc
 /**
  * FilterCriteriaValue:.
  * 
@@ -438,16 +437,20 @@ public class FilterCriteriaValue implements Filter<FilterStorageState> {
     throw new NotImplementedException("Filter Criteria's could potentially be filters themselves?? however this has yet to be implemented");
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * com.p5solutions.search.Filter#initializeFromFilterStorageState(com.p5solutions
-   * .search.FilterStorageState)
+  /**
+   * @see com.p5solutions.search.Filter#initializeFromFilterStorageState(com.p5solutions
+   *      .search.FilterStorageState)
    */
   @Override
   public void initializeFromFilterStorageState(FilterStorageState state) {
-    // TODO Auto-generated method stub
+    throw new NotImplementedException("Filter Criteria's could potentially be filters themselves?? however this has yet to be implemented");
+  }
 
+  /**
+   * @see com.p5solutions.search.FilterDisplay#getResolvedDescription()
+   */
+  @Override
+  public String getResolvedDescription() {
+    throw new NotImplementedException("Filter Criteria's could potentially be filters themselves?? however this has yet to be implemented");
   }
 }

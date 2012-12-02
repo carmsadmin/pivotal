@@ -3,8 +3,6 @@
  */
 package com.p5solutions.search;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +18,6 @@ import com.p5solutions.core.jpa.orm.EntityUtility;
 import com.p5solutions.core.json.JsonDeserializer;
 import com.p5solutions.core.json.JsonSerializer;
 import com.p5solutions.core.utils.Comparison;
-import com.p5solutions.core.utils.ReflectionUtility;
 
 /**
  * The Class FilterUtility.
@@ -150,9 +147,9 @@ public class FilterUtility {
     // TODO log?
     Class<T> clazz = (Class<T>) filterClass;
     if (clazz != null) {
-      return (T)filters.get(filterClass);
+      return (T) filters.get(filterClass);
     }
-    
+
     throw new NullPointerException("Filter of " + filterClass + " not found in list of injected filter types");
   }
 
@@ -264,16 +261,22 @@ public class FilterUtility {
 
   /**
    * Load filter.
-   *
-   * @param <T> the generic type
-   * @param stateId the state id
+   * 
+   * @param <T>
+   *          the generic type
+   * @param stateId
+   *          the state id
    * @return the t
    */
   @SuppressWarnings("unchecked")
   public <T extends Filter> T loadFilter(Long stateId) {
-    return (T)getFilterStorage().load(stateId);
+    return (T) getFilterStorage().load(stateId);
   }
-  
+
+  public <T extends Filter> Map<Object, T> loadFilters(Long stateGroupId) {
+    return (Map<Object, T>) getFilterStorage().loadAll(stateGroupId);
+  }
+
   /**
    * Gets the filter source accessor.
    * 
