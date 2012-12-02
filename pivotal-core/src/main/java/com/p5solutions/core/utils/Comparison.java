@@ -244,6 +244,16 @@ public class Comparison {
   }
 
   /**
+   * Checks if is not empty and not null.
+   *
+   * @param list the list
+   * @return true, if is not empty or null
+   */
+  public static boolean isNotEmpty(Object[] list) {
+    return (list != null && list.length > 0);
+  }
+  
+  /**
    * Check if an array is empty or null.
    * 
    * @param list
