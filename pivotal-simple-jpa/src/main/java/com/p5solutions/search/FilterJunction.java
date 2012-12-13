@@ -1,5 +1,7 @@
 package com.p5solutions.search;
 
+import javax.persistence.Transient;
+
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.RandomCharacterGenerator;
 import com.p5solutions.search.FilterChain.Operator;
@@ -14,7 +16,7 @@ public class FilterJunction {
 
   /** The id. */
   private String id;
- 
+
   /** The filter. */
   private Filter filter;
 
@@ -23,31 +25,34 @@ public class FilterJunction {
 
   /**
    * Gets the id.
-   *
+   * 
    * @return the id
    */
   public String getId() {
     if (Comparison.isEmpty(id)) {
       this.id = RandomCharacterGenerator.generate(4);
     }
-    
+
     return this.id;
   }
-  
+
   /**
    * Sets the id.
-   *
-   * @param id the new id
+   * 
+   * @param id
+   *          the new id
    */
   public void setId(String id) {
     this.id = id;
   }
-  
+
   /**
    * Instantiates a new filter junction.
-   *
-   * @param filter the filter
-   * @param op the op
+   * 
+   * @param filter
+   *          the filter
+   * @param op
+   *          the op
    */
   protected FilterJunction(Filter filter, Operator op) {
     this.op = op;
@@ -56,16 +61,25 @@ public class FilterJunction {
 
   /**
    * Gets the op.
-   *
+   * 
    * @return the op
    */
   public Operator getOp() {
     return op;
   }
+  
+  /**
+   * Sets the op.
+   *
+   * @param op the new op
+   */
+  public void setOp(Operator op) {
+    this.op = op;
+  }
 
   /**
    * Gets the filter.
-   *
+   * 
    * @return the filter
    */
   public Filter getFilter() {
@@ -108,4 +122,18 @@ public class FilterJunction {
     return op.equals(Operator.VOID);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  @Transient
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Id: " + this.id);
+    sb.append(", Oper: " + this.op);
+    sb.append(", Filter: " + this.filter);
+    return sb.toString();
+  }
 }

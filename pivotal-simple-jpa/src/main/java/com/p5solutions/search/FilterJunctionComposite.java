@@ -6,6 +6,8 @@ package com.p5solutions.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Transient;
+
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.RandomCharacterGenerator;
 import com.p5solutions.search.FilterChain.Operator;
@@ -139,5 +141,17 @@ public class FilterJunctionComposite {
    */
   public FilterJunction getJunction(int index) {
     return junctions.get(index);
+  }
+  
+  @Override
+  @Transient
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    if (Comparison.isNotEmptyOrNull(junctions)) {
+      for (FilterJunction junction : this.junctions) {
+        sb.append("\n >>> junction: " + junction.toString());
+      }
+    }
+    return sb.toString();
   }
 }

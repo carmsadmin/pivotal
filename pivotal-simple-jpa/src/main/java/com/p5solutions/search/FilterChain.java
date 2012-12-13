@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.NotImplementedException;
 
+import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.search.FilterCriteriaCondition.Condition;
 
 /**
@@ -18,19 +19,20 @@ import com.p5solutions.search.FilterCriteriaCondition.Condition;
 public class FilterChain implements Filter<FilterStorageState> {
 
   private String[] returnColumns;
-  
+
   /** The filter utility. */
   private FilterUtility filterUtility;
 
   /**
    * Instantiates a new filter chain.
-   *
-   * @param returnColumns the return columns
+   * 
+   * @param returnColumns
+   *          the return columns
    */
   public FilterChain(String[] returnColumns) {
     this.returnColumns = returnColumns;
   }
-  
+
   /**
    * The Enum Operator.
    */
@@ -42,7 +44,12 @@ public class FilterChain implements Filter<FilterStorageState> {
     /** The or. */
     OR,
     /** The not. */
-    NOT
+    NOT;
+
+    public final static String OPER_AND = AND.toString();
+    public final static String OPER_OR = OR.toString();
+    public final static String OPER_NOT = NOT.toString();
+    public final static String OPER_VOID = VOID.toString();
   }
 
   /** The filters. */
@@ -50,25 +57,26 @@ public class FilterChain implements Filter<FilterStorageState> {
 
   /**
    * Gets the return columns.
-   *
+   * 
    * @return the return columns
    */
   public String[] getReturnColumns() {
     return this.returnColumns;
   }
-  
+
   /**
    * Sets the return columns.
-   *
-   * @param returnColumns the new return columns
+   * 
+   * @param returnColumns
+   *          the new return columns
    */
   public void setReturnColumns(String[] returnColumns) {
     this.returnColumns = returnColumns;
   }
-  
+
   /**
    * Gets the return column definitions.
-   *
+   * 
    * @return the return column definitions
    */
   public String getReturnColumnDefinitions() {
@@ -82,7 +90,7 @@ public class FilterChain implements Filter<FilterStorageState> {
     }
     return sb.toString();
   }
-  
+
   /**
    * Gets the filter junctions.
    * 
@@ -111,16 +119,48 @@ public class FilterChain implements Filter<FilterStorageState> {
     addFilter(composite);
   }
 
-
   /**
    * @see com.p5solutions.search.Filter#addFilter(com.p5solutions.search.FilterJunctionComposite)
    */
   @Override
   public void addFilter(FilterJunctionComposite composite) {
+    if (composite == null) {
+      // TODO debug warning.
+      return;
+    }
+
     if (filterJunctions == null) {
       filterJunctions = new ArrayList<FilterJunctionComposite>();
     }
     filterJunctions.add(composite);
+  }
+
+  /**
+   * Adds the a filter composite, and forces the first junction to be an AND,
+   * this will cause any previously added Junctions to be AND'ed and not OR'ed.
+   * 
+   * @param composite
+   *          the composite
+   */
+  public void addFilterForceAndWithPreviousJunction(FilterJunctionComposite composite) {
+    if (composite == null) {
+      // TODO warning
+      return;
+    }
+
+    List<FilterJunction> junctions = composite.getFilterJunctions();
+    if (Comparison.isEmptyOrNull(junctions)) {
+      // TODO warning
+      return;
+    }
+
+    FilterJunction junction = junctions.get(0);
+    if (!Operator.AND.equals(junction.getOp())) {
+      // TODO warning... first junction is not AND
+      junction.setOp(Operator.AND);
+    }
+
+    addFilter(composite);
   }
 
   /**
@@ -301,7 +341,7 @@ public class FilterChain implements Filter<FilterStorageState> {
   @Override
   public void setFilterId(Long id) {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -313,7 +353,7 @@ public class FilterChain implements Filter<FilterStorageState> {
   @Override
   public void setFilterGroupId(Long filterGroupId) {
     // TODO Auto-generated method stub
-    
+
   }
 
   @Override
@@ -324,12 +364,23 @@ public class FilterChain implements Filter<FilterStorageState> {
 
   @Override
   public void initializeFromFilterStorageState(FilterStorageState state) {
-    // TODO Auto-generated method stub    
+    // TODO Auto-generated method stub
   }
 
   @Override
   public String getResolvedDescription() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("Filter Junction Composites: \n");
+    if (Comparison.isNotEmptyOrNull(filterJunctions)) {
+      for (FilterJunctionComposite junction : this.filterJunctions) {
+        sb.append(" > Composite:" + junction);
+      }
+    }
+    return super.toString();
   }
 }

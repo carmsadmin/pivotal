@@ -9,7 +9,6 @@ import javax.persistence.Table;
 
 import com.p5solutions.core.jpa.orm.AbstractEntity;
 import com.p5solutions.core.jpa.orm.Binder;
-import com.p5solutions.core.jpa.orm.Query;
 import com.p5solutions.core.jpa.orm.transaction.TransactionTemplate;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
@@ -133,6 +132,15 @@ public class TableFilterGenerator implements FilterGenerator<TableFilterGenerato
    */
   protected void whereDefinitionNull(StringBuilder whereSQL) {
     whereSQL.append(" IS NULL");
+  }
+
+  /**
+   * Where definition not null.
+   *
+   * @param whereSQL the where sql
+   */
+  protected void whereDefinitionNotNull(StringBuilder whereSQL) {
+    whereSQL.append(" IS NOT NULL");
   }
 
   /**
@@ -278,6 +286,8 @@ public class TableFilterGenerator implements FilterGenerator<TableFilterGenerato
       whereDefinition(result, basicCondition, whereSQL, path, criteriaValue.getActualValue());
     } else if (condition.isNull()) {
       whereDefinitionNull(whereSQL);
+    } else if (condition.isNotNull()) {
+      whereDefinitionNotNull(whereSQL);
     } else if (condition.isIn()) {
       whereDefinitionIN(result, whereSQL, path, criteriaValue.getValues());
     } else if (condition.isNotIn()) {

@@ -33,7 +33,9 @@ public class FilterCriteriaCondition {
     /** The between. */
     BETWEEN,
     /** The null. */
-    NULL
+    NULL,
+    /** The not null. */
+    NOT_NULL,
   }
 
   /** The condition. */
@@ -113,6 +115,15 @@ public class FilterCriteriaCondition {
     return (Condition.NULL.equals(condition));
   }
 
+  /**
+   * Checks if is not null.
+   *
+   * @return the boolean
+   */
+  public Boolean isNotNull() {
+    return (Condition.NOT_NULL.equals(condition));
+  }
+  
   /**
    * Checks if is equal.
    * 

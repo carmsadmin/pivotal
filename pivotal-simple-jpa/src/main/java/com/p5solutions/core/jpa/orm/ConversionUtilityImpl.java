@@ -37,7 +37,9 @@ import javax.transaction.InvalidTransactionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 
 import com.p5solutions.core.aop.Targetable;
 import com.p5solutions.core.jpa.orm.exceptions.TypeConversionException;
@@ -97,6 +99,8 @@ public class ConversionUtilityImpl implements ConversionUtility {
         logger.error("Unable to parse " + value + " using date formatter " + DATE_FORMAT_STRING);
         return value;
       }
+    } else {
+      logger.warn("Unable to identify appropriate conversion strategy for value " + value + " using class type " + clazz);
     }
 
     return value;
@@ -111,11 +115,23 @@ public class ConversionUtilityImpl implements ConversionUtility {
     if (value instanceof String && conversionService == null) {
       return convertString((String) value, clazz);
     }
+    
+//    if (value instanceof String && ReflectionUtility.isBasicClass(clazz)) {
+//      return convertString((String) value, clazz);
+//    }
+
+    // Use the Spring Conversion service and try to map the
+    // values
+    TypeDescriptor sourceType = TypeDescriptor.forObject(value);
+
+    // setup the type descriptor and pass it to the converter
+    TypeDescriptor targetType = TypeDescriptor.valueOf(clazz);
 
     Class<?> fromClass = value.getClass();
-    Boolean convertable = conversionService.canConvert(fromClass, clazz);
-    if (convertable) {
-      return conversionService.convert(value, clazz);
+    //Boolean convertible = conversionService.canConvert(fromClass, clazz);
+    Boolean convertible = conversionService.canConvert(sourceType, targetType);
+    if (convertible) {
+      return conversionService.convert(value, sourceType, targetType);
     }
 
     return value;
