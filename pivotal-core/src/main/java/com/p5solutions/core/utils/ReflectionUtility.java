@@ -691,6 +691,10 @@ public class ReflectionUtility {
         return true;
       }
 
+      if (Boolean.class.equals(clazz)) {
+        return true;
+      }
+      
       // check for char
 
       if (String.class.equals(clazz)) {
