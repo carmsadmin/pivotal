@@ -208,8 +208,9 @@ public class EntityPersisterImpl implements EntityPersister {
     MapSqlParameterSource paramSource = new MapSqlParameterSource(params);
     // TODO <Object> should be of type T? how? import
     // org.apache.poi.hssf.record.formula.functions.T;??
-    getJdbcTemplate().execute(sql, paramSource, new PersistPreparedStatementCallback<Object>());
-    return 0L;
+    Integer updated = getJdbcTemplate().execute(sql, paramSource, new PersistPreparedStatementCallback<Integer>());
+    return updated != null ? updated.longValue() : 0L;
+    //return 0L;
   }
 
   /**
@@ -347,7 +348,7 @@ public class EntityPersisterImpl implements EntityPersister {
     DMLOperation operation = getDMLOperation(clazz, operationType);
     String sql = operation.getStatement();
     MapSqlParameterSource paramSource = process(clazz, entity);
-    getJdbcTemplate().execute(sql, paramSource, new PersistPreparedStatementCallback<T>());
+    getJdbcTemplate().execute(sql, paramSource, new PersistPreparedStatementCallback<Integer>());
 
     return entity;
   }
@@ -555,11 +556,12 @@ public class EntityPersisterImpl implements EntityPersister {
     ParameterBinder pkpb = pkParameterBinders.get(0);
     paramSource.addValue(pkpb.getBindingName(), id);
 
-    Object ret = getJdbcTemplate().execute(operation.getStatement(), paramSource,
-        new PersistPreparedStatementCallback<T>());
+    Integer updated = getJdbcTemplate().execute(operation.getStatement(), paramSource,
+        new PersistPreparedStatementCallback<Integer>());
 
+    return updated;
     // return the number of rows affected
-    return ret instanceof Integer ? ((Integer) ret).intValue() : 0;
+    //return ret instanceof Integer ? ((Integer) ret).intValue() : 0;
   }
 
   /**
@@ -575,19 +577,17 @@ public class EntityPersisterImpl implements EntityPersister {
      * 
      * @see org.springframework.jdbc.core.PreparedStatementCallback#doInPreparedStatement (java.sql.PreparedStatement)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public T doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
       // TODO Auto-generated method stub
 
       if (ps.execute()) {
         ResultSet rs = ps.getResultSet();
-
-        return null;
         // TODO fix me...
+        return null;
       } else {
-        ResultSet rs = ps.getResultSet();
-        // TODO fix me...
-        return null;
+        return (T)new Integer(ps.getUpdateCount());
       }
     }
 

@@ -5,7 +5,7 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-simple-jpa</artifactId>
 	<name>pivotal-simple-jpa</name>
-	<version>1.2-STABLE-01</version>
+	<version>1.2-STABLE-02</version>
 	<packaging>jar</packaging>
 
 
