@@ -8,7 +8,8 @@ Pivotal Simple Java Persistence API
 * Pivotal SimpleJPA - ITS VERY SIMPLE AND FAST
 * Simple object-relational-mapping library works with most JPA-annotations.
 
-- Current version 1.2 - STABLE
+Current version 1.3 - STABLE
+ + fix to DML operation execution ResultSet returning integers and expecting a resulset.
 
 
 
