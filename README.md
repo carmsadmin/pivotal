@@ -8,4 +8,4 @@ Pivotal Simple Java Persistence API - Oracle Extensions
 
 - See Pivotal SimpleJPA project and wiki for details
 
-- Current version 1.2 - STABLE
+- Current version 1.3 - STABLE
