@@ -6,11 +6,21 @@ Core Java Components for all other Pivotal Java Libraries.
 
 * Core Components for all other Pivotal Projects.
 
-- Current version 1.2-STABLE
+- Current version 1.3-STABLE
 - git'it, then mvn clean deploy/install
-- Stable Version 1.0.1 - STABLE (minor fixes) 
-- Stable Version 1.0.9 - STABLE (major fix in json deserializer)
-  if you are using the json deserializer, I highly recommend you use 1.0.9
+
+VERSIONS
+- Stable version 1.3 - STABLE 
+   + addition of search engine to pivotal-simple-jpa,
+   + fixes to JDBC DML operation execatuion causing exceptions 
+     with newer JDBC drivers such as Oracle 11.2.0.3 and UCP)
+
+- Stable Version 1.0.9 - STABLE (major fix in json deserializer) -- OBSOLETE version
+  + JSON DESERIALIZER - highly recommend you use 1.0.9 or higher, 
+    1.3-STABLE is the best version right now.
+
+- Stable Version 1.0.1 - STABLE (minor fixes) -- OBSOLETE
+  
 
 - bytecode enhancement (e.g. proxies) abstraction classes using javaassist.
 
