@@ -59,6 +59,8 @@ public class EntityMapper {
   /** The LOGGER. */
   protected static Log logger = LogFactory.getLog(EntityMapper.class);
 
+  private static PropertyMapPredicateImpl propertyMapPredicateImpl = new PropertyMapPredicateImpl();
+
   /**
    * The Interface Invoker.
    */
@@ -598,43 +600,7 @@ public class EntityMapper {
    * @return the destination object of type T
    */
   public static final <T> T mapOneToOne(T src, T dst, boolean ignoreMethodNotFound) {
-    if (src == null) {
-      throw new NullPointerException("Source object cannot be null when mapping source to target of same type.");
-    }
-
-    if (dst == null) {
-      throw new NullPointerException("Destination object cannot be null when mapping source to target of same type.");
-    }
-
-    // do this to get to source proxy's target annotations
-    Class<?> srcClazz = src instanceof Targetable ? ((Targetable) src).getTarget().getClass() : src.getClass();
-    // destination class' annotation don't matter
-    Class<?> dstClazz = dst.getClass();
-
-    /*
-     * if (!Comparison.isEqual(srcClazz, dstClazz)) { throw new RuntimeException("Class type for source type " +
-     * srcClazz + " and destination type " + dstClazz + "do not match"); }
-     */
-    List<Method> methods = ReflectionUtility.findGetMethodsWithNoParams(srcClazz);
-    for (Method method : methods) {
-      if (ignore(method)) {
-        continue;
-      }
-
-      Method setter = ReflectionUtility.findSetterMethod(dstClazz, method);
-
-      if (setter == null) {
-        if (!ignoreMethodNotFound) {
-          throw new RuntimeException("No setter method found for getter method " + method.getName()
-              + " defined in class type " + dstClazz);
-        }
-        continue;
-      }
-
-      Object value = ReflectionUtility.getValue(method, src);
-      ReflectionUtility.setValue(setter, dst, value);
-    }
-
+    mapOneToOne(src, dst, propertyMapPredicateImpl, ignoreMethodNotFound);
     return dst;
   }
 
@@ -711,4 +677,54 @@ public class EntityMapper {
     return (T) tracker.value();
   }
 
+  /**
+   * TODO move this to EntityMapper to please the goatee hair guy.
+   * 
+   * @param dst
+   * @param src
+   * @param predicate
+   * @param ignoreMethodNotFound
+   * @return
+   */
+  public static Boolean mapOneToOne(Object src, Object dst, PropertyMapPredicate predicate, boolean ignoreMethodNotFound) {
+    Boolean updated = Boolean.FALSE;
+
+    if (src == null) {
+      throw new NullPointerException("Source object cannot be null when mapping source to target of same type.");
+    }
+
+    if (dst == null) {
+      throw new NullPointerException("Destination object cannot be null when mapping source to target of same type.");
+    }
+
+    // do this to get to source proxy's target annotations
+    Class<?> srcClazz = src instanceof Targetable ? ((Targetable) src).getTarget().getClass() : src.getClass();
+
+    List<Method> methods = ReflectionUtility.findGetMethodsWithNoParams(srcClazz);
+    for (Method method : methods) {
+      Object value = ReflectionUtility.getValue(method, src);
+
+      if (predicate.ignoreProperty(method, value, dst)) {
+        continue;
+      }
+
+      // destination class' annotation don't matter
+      Class<?> dstClazz = dst.getClass();
+
+      Method setter = ReflectionUtility.findSetterMethod(dstClazz, method);
+
+      if (setter == null) {
+        if (!ignoreMethodNotFound) {
+          throw new RuntimeException("No setter method found for getter method " + method.getName()
+              + " defined in class type " + dstClazz);
+        }
+        continue;
+      }
+
+      updated = predicate.executeMap(method, setter, value, dst) || updated;
+
+    }
+
+    return updated;
+  }
 }
