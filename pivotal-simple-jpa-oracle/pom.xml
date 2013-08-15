@@ -5,19 +5,19 @@
 	<groupId>com.p5solutions</groupId>
 	<artifactId>pivotal-simple-jpa-oracle</artifactId>
 	<name>pivotal-simple-jpa-oracle</name>
-	<version>1.3-STABLE</version>
+	<version>1.3.1-STABLE</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-core</artifactId>
-			<version>1.3-STABLE</version>
+			<version>1.3.1-STABLE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.p5solutions</groupId>
 			<artifactId>pivotal-simple-jpa</artifactId>
-			<version>1.3-STABLE</version>
+			<version>1.3.1-STABLE</version>
 		</dependency>
 
 		<dependency>
