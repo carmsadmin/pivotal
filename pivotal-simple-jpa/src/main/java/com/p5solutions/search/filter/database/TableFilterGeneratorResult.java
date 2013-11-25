@@ -4,8 +4,11 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 import com.p5solutions.core.jpa.orm.Binder;
+import com.p5solutions.core.jpa.orm.EntityUtility;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.search.filter.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @User: sophanara Min
@@ -20,9 +23,10 @@ public class TableFilterGeneratorResult implements FilterResult {
   private Map<String, JoinTable> joinCriteriaMap = new HashMap<String, JoinTable>();
 
   // list the columns that we are interest in.
-  // todo Should be move some where else does not belong here
   private String[] returnColumns;
   private TableCriteria criteria;
+  /** The logger. */
+  private static Log logger = LogFactory.getLog(TableFilterGeneratorResult.class);
 
   /**
    * The query.
@@ -181,7 +185,6 @@ public class TableFilterGeneratorResult implements FilterResult {
     finalSQL.append("\n WHERE ");
     finalSQL.append(generateWhereSQL());
     finalSQL.append(generateEnding());
-
     setQuery(finalSQL.toString());
 
     return getQuery();
@@ -215,7 +218,7 @@ public class TableFilterGeneratorResult implements FilterResult {
   }
 
   /**
-   *
+   * 
    * @param alias
    * @param joinCriterias
    * @param resultList
@@ -538,25 +541,30 @@ public class TableFilterGeneratorResult implements FilterResult {
 
     if (!tableFilterGeneratorResult.getJoinCriteriaMap().isEmpty()) {
       for (JoinTable joinTable : tableFilterGeneratorResult.getJoinCriteriaMap().values()) {
-        String name = joinTable.getTargetTableName();
+        String name = joinTable.getTargetCriteria().getSourceAlias();
 
         // if it not in the current source and not already add
-        if (!name.equals(this.criteria.getFilterSourceAccessorName())) {
+        if (!name.equals(this.criteria.getSourceAlias())) {
           if (!this.getJoinCriteriaMap().keySet().contains(name)) {
             this.getJoinCriteriaMap().put(name, joinTable);
           }
         }
 
+        // if same source just continue
+        if (operand1.getSourceAlias().equals(this.criteria.getSourceAlias())) {
+          continue;
+        }
+
         // add the current source.
-        if (!this.getJoinCriteriaMap().keySet().contains(operand1.getFilterSourceAccessorName())) {
-          this.getJoinCriteriaMap().put(operand1.getFilterSourceAccessorName(), new JoinTable(this.criteria, operand1));
+        if (!this.getJoinCriteriaMap().keySet().contains(operand1.getSourceAlias())) {
+          this.getJoinCriteriaMap().put(operand1.getSourceAlias(), new JoinTable(this.criteria, operand1));
         }
       }
       return;
     }
 
-    String name = operand1.getFilterSourceAccessorName();
-    if (!name.equals(this.criteria.getFilterSourceAccessorName())) {
+    String name = operand1.getSourceAlias();
+    if (!name.equals(this.criteria.getSourceAlias())) {
       if (!this.getJoinCriteriaMap().keySet().contains(name)) {
         this.getJoinCriteriaMap().put(name, new JoinTable(this.criteria, operand1));
       }

@@ -1,5 +1,6 @@
 package com.p5solutions.search.filter.database;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ import com.p5solutions.core.jpa.orm.transaction.TransactionTemplate;
 import com.p5solutions.core.utils.Comparison;
 import com.p5solutions.core.utils.ReflectionUtility;
 import com.p5solutions.search.filter.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -23,6 +26,8 @@ public class TableFilterGenerator implements FilterGenerator<TableFilterGenerato
   // TODO should not be specific to simpleJPA transaction template, or at the
   // very least extend from the Spring Template.
   private TransactionTemplate transactionTemplate;
+  /** The logger. */
+  private static Log logger = LogFactory.getLog(TableFilterGenerator.class);
 
   /**
    * Generate the result
@@ -73,6 +78,8 @@ public class TableFilterGenerator implements FilterGenerator<TableFilterGenerato
   public <T extends AbstractEntity> List<T> processResult(Class<T> returnEntityClass, String[] filterColumns,
       TableFilterGeneratorResult result) {
 
+    long start  = new Date().getTime();
+
     if (Comparison.isEmptyOrNull(filterColumns)) {
       throw new NullPointerException(
           "Filter columns cannot be blank or null, you need to specify which columns are used when filtering out the final view, example, USR_ID, or a composite of columns, such as WHERE (x, y) IN (SELECT x, y FROM z)");
@@ -113,6 +120,16 @@ public class TableFilterGenerator implements FilterGenerator<TableFilterGenerato
     // Build query for transaction template.
     Map<String, Object> keyValue = result.getParameters();
     List<T> dataset = transactionTemplate.findResultsByQuery(returnEntityClass, finalSQL.toString(), keyValue);
+    long end  = new Date().getTime();
+
+    long duration = end - start;
+    //query take more then 5 sconds
+    //log it.
+    if ( duration / 1000  > 5 ) {
+        logger.warn("**************************************** Query running more then 5 seconds: **********************************");
+        logger.warn("Time in millisecond to run the query: " + duration);
+        logger.warn(finalSQL.toString());
+    }
 
     return dataset;
   }
