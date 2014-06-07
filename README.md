@@ -1,3 +1,5 @@
+# should really add a master pom now
+
 pivotal-core
 ============
 Core Java Components for all other Pivotal Java Libraries.
