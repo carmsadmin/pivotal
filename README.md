@@ -1,39 +1,29 @@
 pivotal-core
 ============
+pivotal-simple-jpa
+==================
 
-Core Java Components for all other Pivotal Java Libraries.
+Pivotal Simple Java Persistence API
 
 
-* Core Components for all other Pivotal Projects.
 
-- Current version 1.3-STABLE
-- git'it, then mvn clean deploy/install
+* Pivotal SimpleJPA - ITS VERY SIMPLE AND FAST
+* Simple object-relational-mapping library works with most JPA-annotations.
 
-VERSIONS
-Stable version 1.3 - STABLE 
-   + addition of search engine to pivotal-simple-jpa,
-   + fixes to JDBC DML operation execatuion causing exceptions 
-     with newer JDBC drivers such as Oracle 11.2.0.3 and UCP)
+Current version 1.3 - STABLE
+ + fix to DML operation execution ResultSet returning integers and expecting a resulset.
 
-Stable Version 1.0.9 - STABLE (major fix in json deserializer) -- OBSOLETE version
-  + JSON DESERIALIZER - highly recommend you use 1.0.9 or higher, 
-    1.3-STABLE is the best version right now.
 
-Stable Version 1.0.1 - STABLE (minor fixes) -- OBSOLETE
-  
 
-- bytecode enhancement (e.g. proxies) abstraction classes using javaassist.
+* IF YOU WANT TO CONTRIBUTE, PLEASE EMAIL THE OWNERS *
 
-- String, Number, and a bunch of other utilities.
+- No real documentation yet, check wiki please.
 
-- Reflection utilities.
+- Supports Oracle via pivotal-simple-jpa-oracle module
 
-- json serializer and deserializers, could be used in spring 
-(https://jira.springsource.org/browse/SPR-5087)
+- Supports PostgreSQL via pivotal-simple-jpa-postgresql module
 
-- bunch of other stuff, just check out the code, I'm sure 
-you'll figure it out, or ask.
+- MySQL support would be nice, I'm sure someone can help with this, its not that painful.
 
-* More updates will come, when I get time to actually update the site.
-
-* Send me an email or use the issue tracking, if you have questions.
+- Check wiki for configuration guide - if you have issues, email me.
+code[at]p5solutions[dot]com
