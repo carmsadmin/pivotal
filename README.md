@@ -2,28 +2,14 @@ pivotal-core
 ============
 pivotal-simple-jpa
 ==================
+pivotal-simple-jpa-oracle
+=========================
 
-Pivotal Simple Java Persistence API
+Pivotal Simple Java Persistence API - Oracle Extensions
 
-
-
-* Pivotal SimpleJPA - ITS VERY SIMPLE AND FAST
+* Pivotal SimpleJPA - Oracle Extension 
 * Simple object-relational-mapping library works with most JPA-annotations.
 
-Current version 1.3 - STABLE
- + fix to DML operation execution ResultSet returning integers and expecting a resulset.
+- See Pivotal SimpleJPA project and wiki for details
 
-
-
-* IF YOU WANT TO CONTRIBUTE, PLEASE EMAIL THE OWNERS *
-
-- No real documentation yet, check wiki please.
-
-- Supports Oracle via pivotal-simple-jpa-oracle module
-
-- Supports PostgreSQL via pivotal-simple-jpa-postgresql module
-
-- MySQL support would be nice, I'm sure someone can help with this, its not that painful.
-
-- Check wiki for configuration guide - if you have issues, email me.
-code[at]p5solutions[dot]com
+- Current version 1.3 - STABLE
